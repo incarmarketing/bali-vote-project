@@ -5,28 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>발리 여행 프로그램 선호도 조사</title>
 
-    <!-- ▼▼▼ 1. URL 공유 시 썸네일 표시를 위한 OG 태그 ▼▼▼ -->
     <meta property="og:title" content="✨ 발리에서 생길 일 ✨">
     <meta property="og:description" content="함께 떠날 발리 여행의 최고 프로그램을 선택해주세요!">
     <meta property="og:image" content="https://github.com/incarmarketing/bali-vote-project/blob/main/thumbnail.jpg?raw=true">
     <meta property="og:url" content="https://incarmarketing.github.io/bali-vote-project/">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="✨ 발리에서 생길 일 ✨">
-    <meta name="twitter:description" content="함께 떠날 발리 여행의 최고 프로그램을 선택해주세요!">
-    <meta name="twitter:image" content="https://github.com/incarmarketing/bali-vote-project/blob/main/thumbnail.jpg?raw=true">
-    <!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ -->
-
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%D%D');
+            background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
             background-size: cover; background-position: center; background-attachment: fixed;
             min-height: 100vh; padding: 20px;
         }
-        .container { max-width: 1200px; margin: 0 auto; background: rgba(255, 255, 255, 0.95); border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
         
+        /* ▼▼▼ 로고 스타일 추가 ▼▼▼ */
         .logo-container {
             text-align: center;
             margin-bottom: 20px;
@@ -34,8 +28,10 @@
         .company-logo {
             max-height: 60px;
         }
+        /* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
 
-        .header { background: linear-gradient(135deg, rgba(255,107,107,0.8), rgba(255,167,38,0.8)), url('https://images.unsplash.com/photo-1636619306699-2d27a100605e?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%D%D'); background-size: cover; background-position: center; color: white; padding: 40px; text-align: center; }
+        .container { max-width: 1200px; margin: 0 auto; background: rgba(255, 255, 255, 0.95); border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: linear-gradient(135deg, rgba(255,107,107,0.8), rgba(255,167,38,0.8)), url('https://images.unsplash.com/photo-1636619306699-2d27a100605e?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); background-size: cover; background-position: center; color: white; padding: 40px; text-align: center; }
         .header h1 { font-size: 2.5em; margin-bottom: 10px; }
         .header p { font-size: 1.2em; opacity: 0.9; }
         .main-content { padding: 40px; padding-bottom: 100px; }
@@ -79,7 +75,6 @@
         .view-voters-btn { background: #6c757d; color: white; border: none; padding: 5px 10px; font-size: 12px; border-radius: 5px; cursor: pointer; margin-left: 10px; }
         #voterList { list-style: none; text-align: left; max-height: 300px; overflow-y: auto; }
         #voterList li { padding: 8px; border-bottom: 1px solid #eee; }
-
         @media (max-width: 768px) {
             body { padding: 10px; }
             .header { padding: 30px 20px; }
@@ -95,7 +90,6 @@
     <div class="logo-container">
         <img src="https://github.com/incarmarketing/bali-vote-project/blob/main/logo.png?raw=true" alt="회사 로고" class="company-logo" onerror="this.style.display='none'">
     </div>
-
     <div class="container">
         <div class="header">
             <h1>✨ 발리에서 생길 일 ✨</h1>
@@ -134,7 +128,6 @@
         <button class="admin-toggle" onclick="showPasswordModal()" title="관리자 모드">🔧</button>
     </div>
 
-    <!-- Modals -->
     <div class="modal" id="passwordModal">
         <div class="modal-content">
             <h3>🔐 관리자 로그인</h3>
@@ -167,7 +160,6 @@
         </div>
     </div>
 
-    <!-- Firebase 연결 스크립트 (비밀 열쇠) -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
       import { getFirestore, collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, increment, arrayUnion, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -191,7 +183,6 @@
       };
     </script>
 
-    <!-- 메인 로직 스크립트 -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         let programs = [];
