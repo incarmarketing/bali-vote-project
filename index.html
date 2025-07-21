@@ -173,14 +173,13 @@
       import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
       const firebaseConfig = {
-  apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
-  authDomain: "incarhigh-balihi.firebaseapp.com",
-  projectId: "incarhigh-balihi",
-  storageBucket: "incarhigh-balihi.firebasestorage.app",
-  messagingSenderId: "777053953777",
-  appId: "1:777053953777:web:bd21c80707306f54da9350",
-  measurementId: "G-T8BW822SLS"
-};
+        apiKey: "YOUR_API_KEY", // 중요: 이 부분은 본인의 Firebase 키로 채워주세요.
+        authDomain: "YOUR_AUTH_DOMAIN",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
+      };
 
       const app = initializeApp(firebaseConfig);
       window.db = getFirestore(app);
