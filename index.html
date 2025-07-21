@@ -5,15 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>발리 여행 프로그램 선호도 조사</title>
 
-    <!-- ▼▼▼ 썸네일 기능 추가 ▼▼▼ -->
     <meta property="og:title" content="✨ 발리에서 생길 일 ✨">
     <meta property="og:description" content="함께 떠날 발리 여행의 최고 프로그램을 선택해주세요!">
     <meta property="og:image" content="https://github.com/incarmarketing/bali-vote-project/blob/main/thumbnail.jpg?raw=true">
     <meta property="og:url" content="https://incarmarketing.github.io/bali-vote-project/">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
-    <!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ -->
-
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -23,16 +20,9 @@
             min-height: 100vh; padding: 20px;
         }
         
-        /* ▼▼▼ 로고 스타일 추가 ▼▼▼ */
-        .logo-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .company-logo {
-            max-height: 60px;
-        }
-        /* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
-
+        .logo-container { text-align: center; margin-bottom: 20px; }
+        .company-logo { max-height: 60px; }
+        
         .container { max-width: 1200px; margin: 0 auto; background: rgba(255, 255, 255, 0.95); border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
         .header { background: linear-gradient(135deg, rgba(255,107,107,0.8), rgba(255,167,38,0.8)), url('https://images.unsplash.com/photo-1636619306699-2d27a100605e?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); background-size: cover; background-position: center; color: white; padding: 40px; text-align: center; }
         .header h1 { font-size: 2.5em; margin-bottom: 10px; }
@@ -90,11 +80,9 @@
     </style>
 </head>
 <body>
-    <!-- ▼▼▼ 로고 추가 ▼▼▼ -->
     <div class="logo-container">
         <img src="https://github.com/incarmarketing/bali-vote-project/blob/main/logo.png?raw=true" alt="회사 로고" class="company-logo" onerror="this.style.display='none'">
     </div>
-    <!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ -->
 
     <div class="container">
         <div class="header">
@@ -118,9 +106,15 @@
                         <input type="url" id="programImage" placeholder="https://example.com/image.jpg">
                     </div>
                     <button type="submit" class="btn">프로그램 추가</button>
-                    <button type="button" class="btn btn-danger" onclick="clearForm()">입력 초기화</button>
+                    <button type="button" class="btn" onclick="clearForm()">입력 초기화</button>
                 </form>
-            </div>
+                <hr style="margin: 30px 0; border: 1px solid #eee;">
+                <h2 style="color: #c0392b;">🚨 위험 구역 🚨</h2>
+                <button type="button" class="btn btn-danger" onclick="runInitialization()">DB 초기화 및 기본값 설정</button>
+                <p style="font-size: 14px; color: #7f8c8d; margin-top: 10px;">
+                    주의: 이 버튼을 누르면 DB의 모든 프로그램이 삭제되고, 코드에 정의된 기본 프로그램으로 덮어씁니다.
+                </p>
+                </div>
             <div class="programs-grid" id="programsGrid"></div>
             <div class="no-programs" id="noPrograms">프로그램을 불러오는 중입니다...</div>
             <div class="results-section">
@@ -134,7 +128,6 @@
         <button class="admin-toggle" onclick="showPasswordModal()" title="관리자 모드">🔧</button>
     </div>
 
-    <!-- Modals -->
     <div class="modal" id="passwordModal">
         <div class="modal-content">
             <h3>🔐 관리자 로그인</h3>
@@ -168,30 +161,30 @@
     </div>
 
     <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-      import { getFirestore, collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, increment, arrayUnion, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-      import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, increment, arrayUnion, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-      const firebaseConfig = {
-  apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
-  authDomain: "incarhigh-balihi.firebaseapp.com",
-  projectId: "incarhigh-balihi",
-  storageBucket: "incarhigh-balihi.firebasestorage.app",
-  messagingSenderId: "777053953777",
-  appId: "1:777053953777:web:bd21c80707306f54da9350",
-  measurementId: "G-T8BW822SLS"
-};
+        const firebaseConfig = {
+            apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
+            authDomain: "incarhigh-balihi.firebaseapp.com",
+            projectId: "incarhigh-balihi",
+            storageBucket: "incarhigh-balihi.firebasestorage.app",
+            messagingSenderId: "777053953777",
+            appId: "1:777053953777:web:bd21c80707306f54da9350",
+            measurementId: "G-T8BW822SLS"
+        };
 
-      const app = initializeApp(firebaseConfig);
-      window.db = getFirestore(app);
-      window.auth = getAuth(app);
-      window.firebase = {
-          collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, increment, arrayUnion, query, orderBy, signInWithEmailAndPassword
-      };
+        const app = initializeApp(firebaseConfig);
+        window.db = getFirestore(app);
+        window.auth = getAuth(app);
+        window.firebase = {
+            collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, increment, arrayUnion, query, orderBy, signInWithEmailAndPassword
+        };
     </script>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', async function() {
         let programs = [];
         let editingId = null;
         let votingForId = null;
@@ -199,15 +192,68 @@
 
         const { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, increment, arrayUnion, query, orderBy, signInWithEmailAndPassword } = window.firebase;
 
+        // ▼▼▼▼▼▼▼▼▼▼▼▼▼ 관리자용 DB 초기화 함수 ▼▼▼▼▼▼▼▼▼▼▼▼▼
+        window.runInitialization = async function() {
+            if (!isAdminMode) {
+                alert('관리자로 로그인해야 실행할 수 있습니다.');
+                return;
+            }
+
+            const confirmation = confirm("🚨정말로 모든 투표 데이터를 삭제하고 기본 프로그램으로 덮어쓰시겠습니까?\n이 작업은 되돌릴 수 없습니다!");
+            if (!confirmation) {
+                alert('초기화가 취소되었습니다.');
+                return;
+            }
+
+            try {
+                alert('DB 초기화를 시작합니다. 기존 데이터를 모두 삭제합니다...');
+                const programsCollection = collection(window.db, "programs");
+                const oldDocsSnapshot = await getDocs(programsCollection);
+                for (const oldDoc of oldDocsSnapshot.docs) {
+                    await deleteDoc(doc(window.db, "programs", oldDoc.id));
+                }
+                
+                alert('기존 데이터 삭제 완료. 이제 기본 프로그램을 추가합니다.');
+
+                const defaultPrograms = [
+                    { order: 1, title: '🚣 우붓 + 래프팅', description: '아융강에서 스릴 넘치는 래프팅을 즐기고 우붓 왕궁과 전통시장, 마을을 둘러보는 코스입니다.', image: 'https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+                    { order: 2, title: '🌿 우붓 + 스파', description: '우붓의 왕궁과 전통시장, 마을을 둘러보고 발리 전통 마사지를 받으며 심신의 피로를 푸는 힐링 코스입니다.', image: 'https://images.unsplash.com/photo-1708436137498-1b660e94c782?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+                    { order: 3, title: '🍹 리조트 자유시간', description: '고급 리조트의 수영장과 부대시설을 마음껏 이용하며 누구의 방해도 받지 않는 완벽한 자유시간을 만끽합니다.', image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80' },
+                    { order: 4, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸타 골프 클럽에서 환상적인 해안절경과 서핑하는 이들 감상하며 라운딩을 즐깁니다.', image: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+                    { order: 5, title: '🚤 해양 스포츠', description: '제트스키, 도넛, 바나나보트, 스노클링을 즐기는 액티비티 패키지입니다.', image: 'https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format=fit&crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+                    { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다. 스릴 넘치는 워터슬라이드와 다양한 편의시설을 갖춰 즐기기 좋은 곳입니다.', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format=fit&crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' }
+                ];
+
+                for (const program of defaultPrograms) {
+                    await addDoc(programsCollection, {
+                        ...program,
+                        votes: 0,
+                        voters: []
+                    });
+                }
+                alert('초기 데이터 설정이 완료되었습니다. 페이지를 다시 로드합니다.');
+                window.location.reload();
+            } catch (error) {
+                console.error("DB 초기화 중 오류 발생:", error);
+                alert(`DB 초기화에 실패했습니다. Firebase 권한을 확인해주세요.\n오류: ${error.message}`);
+            }
+        }
+        // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+
         async function loadProgramsAndRender() {
             try {
                 const programsCollection = collection(window.db, "programs");
                 const q = query(programsCollection, orderBy("order"));
                 const querySnapshot = await getDocs(q);
                 programs = [];
-                querySnapshot.forEach((doc) => {
-                    programs.push({ id: doc.id, ...doc.data() });
-                });
+                if (querySnapshot.empty) {
+                    const noProgramsEl = document.getElementById('noPrograms');
+                    noProgramsEl.textContent = '프로그램이 없습니다. 관리자로 로그인하여 DB를 초기화해주세요.';
+                } else {
+                    querySnapshot.forEach((doc) => {
+                        programs.push({ id: doc.id, ...doc.data() });
+                    });
+                }
                 renderPrograms();
                 updateResults();
             } catch (error) {
@@ -266,7 +312,6 @@
             if (!programs || programs.length === 0) {
                 grid.style.display = 'none';
                 noProgramsEl.style.display = 'block';
-                noProgramsEl.textContent = '아직 추가된 프로그램이 없습니다. 관리자로 로그인하여 프로그램을 추가해주세요.';
                 return;
             }
             grid.style.display = 'grid';
@@ -374,6 +419,7 @@
             }
         });
         
+        // 페이지 로딩 시 프로그램 목록을 바로 불러옵니다.
         loadProgramsAndRender();
     });
     </script>
