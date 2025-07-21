@@ -175,15 +175,14 @@
       import { getFirestore, collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, increment, arrayUnion, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
       import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-     const firebaseConfig = {
-  apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
-  authDomain: "incarhigh-balihi.firebaseapp.com",
-  projectId: "incarhigh-balihi",
-  storageBucket: "incarhigh-balihi.firebasestorage.app",
-  messagingSenderId: "777053953777",
-  appId: "1:777053953777:web:bd21c80707306f54da9350",
-  measurementId: "G-T8BW822SLS"
-};
+      const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
+      };
 
       const app = initializeApp(firebaseConfig);
       window.db = getFirestore(app);
@@ -354,19 +353,28 @@
         
         document.getElementById('programForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const title = document.getElementById('programTitle').value.trim();
-            const description = document.getElementById('programDescription').value.trim();
-            const image = document.getElementById('programImage').value.trim();
-            if (!title || !description) return alert('프로그램 이름과 설명을 모두 입력해주세요.');
-            const data = { title, description, image };
-            if (editingId) {
-                await updateDoc(doc(window.db, "programs", editingId), data);
-            } else {
-                const maxOrder = programs.reduce((max, p) => Math.max(max, p.order || 0), 0);
-                await addDoc(collection(window.db, "programs"), { ...data, votes: 0, voters: [], order: maxOrder + 1 });
+            try {
+                const title = document.getElementById('programTitle').value.trim();
+                const description = document.getElementById('programDescription').value.trim();
+                const image = document.getElementById('programImage').value.trim();
+                if (!title || !description) return alert('프로그램 이름과 설명을 모두 입력해주세요.');
+                
+                const data = { title, description, image };
+
+                if (editingId) {
+                    await updateDoc(doc(window.db, "programs", editingId), data);
+                    alert('프로그램이 성공적으로 수정되었습니다.');
+                } else {
+                    const maxOrder = programs.reduce((max, p) => Math.max(max, p.order || 0), 0);
+                    await addDoc(collection(window.db, "programs"), { ...data, votes: 0, voters: [], order: maxOrder + 1 });
+                    alert('새로운 프로그램이 성공적으로 추가되었습니다.');
+                }
+                clearForm();
+                await loadProgramsAndRender();
+            } catch (error) {
+                console.error("프로그램 추가/수정 중 오류 발생:", error);
+                alert(`오류가 발생했습니다. 다시 시도해주세요.\n(오류 메시지: ${error.message})`);
             }
-            clearForm();
-            await loadProgramsAndRender();
         });
         
         loadProgramsAndRender();
