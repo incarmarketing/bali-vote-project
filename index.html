@@ -4,19 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>발리 여행 프로그램 선호도 조사</title>
+
+    <!-- ▼▼▼ 1. URL 공유 시 썸네일 표시를 위한 OG 태그 ▼▼▼ -->
+    <meta property="og:title" content="✨ 발리에서 생길 일 ✨">
+    <meta property="og:description" content="함께 떠날 발리 여행의 최고 프로그램을 선택해주세요!">
+    <!-- 중요: 썸네일 이미지 주소를 제공해주신 URL로 변경했습니다. -->
+    <meta property="og:image" content="https://github.com/incarmarketing/bali-vote-project/blob/main/thumbnail.jpg?raw=true">
+    <!-- 중요: 이 URL을 GitHub나 Netlify에 배포된 실제 사이트 주소로 변경하세요. -->
+    <meta property="og:url" content="https://incarmarketing.github.io/bali-vote-project/">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="✨ 발리에서 생길 일 ✨">
+    <meta name="twitter:description" content="함께 떠날 발리 여행의 최고 프로그램을 선택해주세요!">
+    <meta name="twitter:image" content="https://github.com/incarmarketing/bali-vote-project/blob/main/thumbnail.jpg?raw=true">
+    <!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ -->
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%D%D');
             background-size: cover; background-position: center; background-attachment: fixed;
             min-height: 100vh; padding: 20px;
         }
         .container { max-width: 1200px; margin: 0 auto; background: rgba(255, 255, 255, 0.95); border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
-        .header { background: linear-gradient(135deg, rgba(255,107,107,0.8), rgba(255,167,38,0.8)), url('https://images.unsplash.com/photo-1636619306699-2d27a100605e?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); background-size: cover; background-position: center; color: white; padding: 40px; text-align: center; }
+        
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .company-logo {
+            max-height: 60px;
+        }
+
+        .header { background: linear-gradient(135deg, rgba(255,107,107,0.8), rgba(255,167,38,0.8)), url('https://images.unsplash.com/photo-1636619306699-2d27a100605e?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%D%D'); background-size: cover; background-position: center; color: white; padding: 40px; text-align: center; }
         .header h1 { font-size: 2.5em; margin-bottom: 10px; }
         .header p { font-size: 1.2em; opacity: 0.9; }
-        .main-content { padding: 40px; padding-bottom: 100px; /* 맨 아래쪽에 100px의 추가 여백을 줍니다. */ }
+        .main-content { padding: 40px; padding-bottom: 100px; }
         .admin-panel { background: #f8f9fa; border-radius: 15px; padding: 30px; margin-bottom: 40px; border: 2px dashed #dee2e6; display: none; }
         .admin-panel.show { display: block; }
         .admin-toggle { position: fixed; bottom: 20px; right: 20px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 15px; border-radius: 50%; font-size: 20px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 1000; transition: all 0.3s; }
@@ -58,12 +82,11 @@
         #voterList { list-style: none; text-align: left; max-height: 300px; overflow-y: auto; }
         #voterList li { padding: 8px; border-bottom: 1px solid #eee; }
 
-        /* 모바일 최적화 미디어 쿼리 */
         @media (max-width: 768px) {
             body { padding: 10px; }
             .header { padding: 30px 20px; }
             .header h1 { font-size: 2em; }
-            .main-content { padding: 20px; }
+            .main-content { padding: 20px; padding-bottom: 100px; }
             .programs-grid { grid-template-columns: 1fr; }
             .results-header { flex-direction: column; gap: 15px; }
             .excel-download-btn { position: static; }
@@ -71,6 +94,10 @@
     </style>
 </head>
 <body>
+    <div class="logo-container">
+        <img src="https://github.com/incarmarketing/bali-vote-project/blob/main/logo.png?raw=true" alt="회사 로고" class="company-logo" onerror="this.style.display='none'">
+    </div>
+
     <div class="container">
         <div class="header">
             <h1>✨ 발리에서 생길 일 ✨</h1>
@@ -109,6 +136,7 @@
         <button class="admin-toggle" onclick="showPasswordModal()" title="관리자 모드">🔧</button>
     </div>
 
+    <!-- Modals -->
     <div class="modal" id="passwordModal">
         <div class="modal-content">
             <h3>🔐 관리자 로그인</h3>
@@ -141,12 +169,13 @@
         </div>
     </div>
 
+    <!-- Firebase 연결 스크립트 (비밀 열쇠) -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
       import { getFirestore, collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, increment, arrayUnion, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
       import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-      const firebaseConfig = {
+     const firebaseConfig = {
   apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
   authDomain: "incarhigh-balihi.firebaseapp.com",
   projectId: "incarhigh-balihi",
@@ -156,7 +185,6 @@
   measurementId: "G-T8BW822SLS"
 };
 
-
       const app = initializeApp(firebaseConfig);
       window.db = getFirestore(app);
       window.auth = getAuth(app);
@@ -165,13 +193,13 @@
       };
     </script>
 
+    <!-- 메인 로직 스크립트 -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         let programs = [];
         let editingId = null;
         let votingForId = null;
         let isAdminMode = false;
-        const adminPassword = 'bali2024'; // 이 부분은 이제 사용되지 않지만, 만약을 위해 남겨둡니다.
 
         const { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, increment, arrayUnion, query, orderBy, signInWithEmailAndPassword } = window.firebase;
 
@@ -296,8 +324,33 @@
 
         window.deleteProgram = async (id) => { if (confirm('정말로 이 프로그램을 삭제하시겠습니까?')) { await deleteDoc(doc(window.db, "programs", id)); await loadProgramsAndRender(); } }
         window.editProgram = async (id) => { const docSnap = await getDoc(doc(window.db, "programs", id)); if (docSnap.exists()) { const p = docSnap.data(); document.getElementById('programTitle').value = p.title; document.getElementById('programDescription').value = p.description; document.getElementById('programImage').value = p.image || ''; editingId = id; document.querySelector('.btn[type="submit"]').textContent = '프로그램 수정'; document.getElementById('adminPanel').scrollIntoView({ behavior: 'smooth' }); } }
-        window.showVoters = (id) => { const p = programs.find(p => p.id === id); if (!p) return; const voterListEl = document.getElementById('voterList'); document.getElementById('voterListTitle').textContent = `[${p.title}] 투표자 명단`; const voters = p.voters || []; voterListEl.innerHTML = voters.length ? voters.map(v => `<li>${v.name} (${v.id})</li>`).join('') : '<li>아직 투표한 사람이 없습니다.</li>'; showModal('voterListModal'); }
-        window.exportToExcel = async () => { alert('모든 투표자 정보를 준비합니다...'); const allVoters = []; const querySnapshot = await getDocs(collection(window.db, "programs")); querySnapshot.forEach(d => { const p = { id: d.id, ...d.data() }; if (p.voters?.length) { p.voters.forEach(v => allVoters.push({ program: p.title.replace(/,/g, ''), id: v.id, name: v.name })); } }); if (!allVoters.length) return alert('다운로드할 데이터가 없습니다.'); const csv = `${"\uFEFF"}"프로그램","사번","이름"\n${allVoters.map(v => `"${v.program}","${v.id}","${v.name}"`).join('\n')}`; const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = "bali_vote_results.csv"; link.click(); }
+        window.showVoters = (id) => { 
+            const p = programs.find(p => p.id === id); 
+            if (!p) return; 
+            const voterListEl = document.getElementById('voterList'); 
+            document.getElementById('voterListTitle').textContent = `[${p.title}] 투표자 명단`; 
+            const voters = p.voters || []; 
+            voterListEl.innerHTML = voters.length ? voters.map(v => `<li>${v.name} (${v.id})</li>`).join('') : '<li>아직 투표한 사람이 없습니다.</li>'; 
+            showModal('voterListModal'); 
+        }
+        window.exportToExcel = async () => { 
+            alert('모든 투표자 정보를 준비합니다...'); 
+            const allVoters = []; 
+            const querySnapshot = await getDocs(collection(window.db, "programs")); 
+            querySnapshot.forEach(d => { 
+                const p = { id: d.id, ...d.data() }; 
+                if (p.voters?.length) { 
+                    p.voters.forEach(v => allVoters.push({ program: p.title.replace(/,/g, ''), id: v.id, name: v.name })); 
+                } 
+            }); 
+            if (!allVoters.length) return alert('다운로드할 데이터가 없습니다.'); 
+            const csv = `${"\uFEFF"}"프로그램","사번","이름"\n${allVoters.map(v => `"${v.program}","${v.id}","${v.name}"`).join('\n')}`; 
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); 
+            const link = document.createElement("a"); 
+            link.href = URL.createObjectURL(blob); 
+            link.download = "bali_vote_results.csv"; 
+            link.click(); 
+        }
         
         document.getElementById('programForm').addEventListener('submit', async (e) => {
             e.preventDefault();
