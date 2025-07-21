@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>발리 여행 프로그램 선호도 조사</title>
 
+    <!-- ▼▼▼ 썸네일 기능 추가 ▼▼▼ -->
     <meta property="og:title" content="✨ 발리에서 생길 일 ✨">
     <meta property="og:description" content="함께 떠날 발리 여행의 최고 프로그램을 선택해주세요!">
     <meta property="og:image" content="https://github.com/incarmarketing/bali-vote-project/blob/main/thumbnail.jpg?raw=true">
     <meta property="og:url" content="https://incarmarketing.github.io/bali-vote-project/">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
+    <!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ -->
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -87,9 +90,12 @@
     </style>
 </head>
 <body>
+    <!-- ▼▼▼ 로고 추가 ▼▼▼ -->
     <div class="logo-container">
         <img src="https://github.com/incarmarketing/bali-vote-project/blob/main/logo.png?raw=true" alt="회사 로고" class="company-logo" onerror="this.style.display='none'">
     </div>
+    <!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ -->
+
     <div class="container">
         <div class="header">
             <h1>✨ 발리에서 생길 일 ✨</h1>
@@ -128,6 +134,7 @@
         <button class="admin-toggle" onclick="showPasswordModal()" title="관리자 모드">🔧</button>
     </div>
 
+    <!-- Modals -->
     <div class="modal" id="passwordModal">
         <div class="modal-content">
             <h3>🔐 관리자 로그인</h3>
@@ -165,7 +172,7 @@
       import { getFirestore, collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, increment, arrayUnion, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
       import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-     const firebaseConfig = {
+      const firebaseConfig = {
   apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
   authDomain: "incarhigh-balihi.firebaseapp.com",
   projectId: "incarhigh-balihi",
