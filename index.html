@@ -141,7 +141,6 @@
             .programs-grid { grid-template-columns: 1fr; }
             .results-header { flex-direction: column; gap: 15px; }
             .excel-download-btn { position: static; }
-            /* [수정됨] 모바일 화면에서는 영상의 오른쪽 부분을 더 많이 보여줍니다. */
             #intro-video {
                 object-position: 75% 50%;
             }
@@ -258,7 +257,7 @@
     <script type="module">
         // Firebase 모듈 가져오기 (최신 버전으로 통일)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, increment, arrayUnion, onSnapshot, writeBatch, query, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- 전역 변수 및 설정 ---
@@ -328,16 +327,14 @@
                 // '구성(config)' 옵션을 선택하여 아래 내용을 복사/붙여넣기 하세요.
                 // =======================================================================
                 const firebaseConfig = {
-  apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
-  authDomain: "incarhigh-balihi.firebaseapp.com",
-  projectId: "incarhigh-balihi",
-  storageBucket: "incarhigh-balihi.firebasestorage.app",
-  messagingSenderId: "777053953777",
-  appId: "1:777053953777:web:bd21c80707306f54da9350",
-  measurementId: "G-T8BW822SLS"
-};
+                  apiKey: "YOUR_API_KEY",
+                  authDomain: "YOUR_AUTH_DOMAIN",
+                  projectId: "YOUR_PROJECT_ID",
+                  storageBucket: "YOUR_STORAGE_BUCKET",
+                  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+                  appId: "YOUR_APP_ID"
+                };
 
-                // API 키가 placeholder 상태인지 확인
                 if (firebaseConfig.apiKey === "YOUR_API_KEY") {
                     throw new Error("Firebase 설정이 필요합니다. 스크립트에서 firebaseConfig 변수를 자신의 프로젝트 정보로 교체해주세요.");
                 }
@@ -346,42 +343,37 @@
                 db = getFirestore(app);
                 auth = getAuth(app);
 
-                // Firebase가 준비되었으므로 관리자 버튼 활성화
                 adminToggleBtn.disabled = false;
                 adminToggleBtn.title = '관리자 모드';
                 console.log("Firebase is ready. Admin functions are now available.");
 
-                // 사용자 인증 상태 변화 감지
+                // [수정됨] 사용자 인증 상태 변화 감지 로직 강화
                 onAuthStateChanged(auth, user => {
+                    // 사용자가 있고, 익명이 아닌 경우에만 관리자로 간주
                     if (user && !user.isAnonymous) {
                         console.log("관리자로 인증됨:", user.uid);
                         isAdminMode = true;
                         document.getElementById('adminPanel').classList.add('show');
                         document.getElementById('excelDownloadBtn').classList.add('show');
-                        renderPrograms();
-                        updateResults();
-                    } else if (user && user.isAnonymous) {
-                        console.log("익명 사용자로 인증됨:", user.uid);
                     } else {
-                        console.log("로그인된 사용자가 없습니다.");
+                        // 그 외 모든 경우(익명 사용자, 로그아웃 상태 등)는 관리자가 아님
+                        console.log("관리자 아님 (익명 또는 로그아웃):", user ? user.uid : '없음');
                         isAdminMode = false;
                         document.getElementById('adminPanel').classList.remove('show');
                         document.getElementById('excelDownloadBtn').classList.remove('show');
-                        renderPrograms();
-                        updateResults();
                     }
+                    // 모든 경우에 UI를 다시 렌더링하여 관리자 버튼 등을 올바르게 표시
+                    renderPrograms();
+                    updateResults();
                 });
                 
-                // 익명으로 먼저 로그인 시도
                 await signInAnonymously(auth);
                 
-                // 데이터 리스너 연결
                 loadAndListenPrograms();
 
             } catch (error) {
                 console.error("Firebase 초기화 실패:", error);
                 showAlert(`Firebase 초기화에 실패했습니다. <br><br><b>오류: ${error.message}</b><br><br>페이지를 새로고침 하시거나, 관리자에게 문의하세요.`, "치명적 오류");
-                noProgramsEl.textContent = 'Firebase 초기화 오류. 새로고침 해주세요.';
                 
                 adminToggleBtn.disabled = true;
                 adminToggleBtn.title = '초기화 실패! 새로고침하세요.';
@@ -481,6 +473,7 @@
         }
 
         function renderPrograms() {
+            if (!programsGrid) return;
             if (!programs || programs.length === 0) {
                 programsGrid.style.display = 'none';
                 noProgramsEl.style.display = 'block';
@@ -510,6 +503,7 @@
 
         function updateResults() {
             const resultsChart = document.getElementById('resultsChart');
+            if (!resultsChart) return;
             if (!programs || programs.length === 0) {
                 resultsChart.innerHTML = '<div class="no-programs">투표 결과가 여기에 표시됩니다.</div>';
                 return;
@@ -726,7 +720,7 @@
                     { order: 3, title: '🏖️ 리조트 자유시간', description: '고급 리조트의 수영장과 부대시설을<br>마음껏 이용하며 누구의 방해도 받지 않는<br>완벽한 자유시간을 만끽합니다.', image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80' },
                     { order: 4, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸타 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>라운딩을 즐깁니다.', image: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
                     { order: 5, title: '🚤 해양 스포츠', description: '제트스키, 도넛, 바나나보트,<br>스노클링을 즐기는<br>액티비티 패키지입니다.', image: 'https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format=fit&crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-                    { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와<br>다양한 편의시설을 갖춰 즐기기 좋은 곳입니다.', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit&crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' }
+                    { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와<br>다양한 편의시설을 갖춰 즐기기 좋은 곳입니다.', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format=fit&crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' }
                 ];
 
                 const programsToAdd = defaultPrograms.filter(p => !existingOrders.has(p.order));
