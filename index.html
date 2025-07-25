@@ -30,7 +30,12 @@
             display: flex; justify-content: center; align-items: center;
             transition: opacity 1s ease-out;
         }
-        #intro-video { width: 100%; height: 100%; object-fit: cover; }
+        #intro-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center; /* 데스크탑에서는 중앙 정렬 */
+        }
         #skip-intro {
             position: absolute; bottom: 30px; right: 30px;
             background-color: rgba(0, 0, 0, 0.7); color: white;
@@ -69,6 +74,13 @@
         .admin-panel.show { display: block; }
         .admin-toggle { position: fixed; bottom: 20px; right: 20px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 15px; border-radius: 50%; font-size: 20px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 1000; transition: all 0.3s; }
         .admin-toggle:hover { transform: scale(1.1); }
+        .admin-toggle:disabled {
+            background: linear-gradient(135deg, #9E9E9E, #757575);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .admin-toggle:disabled:hover { transform: none; }
+        .admin-toggle.failed { background: linear-gradient(135deg, #e74c3c, #c0392b); }
         .admin-panel h2 { color: #495057; margin-bottom: 20px; font-size: 1.5em; }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #495057; }
@@ -129,6 +141,10 @@
             .programs-grid { grid-template-columns: 1fr; }
             .results-header { flex-direction: column; gap: 15px; }
             .excel-download-btn { position: static; }
+            /* [수정됨] 모바일 화면에서는 영상의 오른쪽 부분을 더 많이 보여줍니다. */
+            #intro-video {
+                object-position: 75% 50%;
+            }
         }
     </style>
 </head>
@@ -191,7 +207,7 @@
                     <div id="resultsChart"></div>
                 </div>
             </div>
-            <button class="admin-toggle" id="adminToggleBtn" title="관리자 모드">🔧</button>
+            <button class="admin-toggle" id="adminToggleBtn" title="초기화 중..." disabled>🔧</button>
         </div>
     </div>
 
@@ -261,6 +277,7 @@
         const programsGrid = document.getElementById('programsGrid');
         const noProgramsEl = document.getElementById('noPrograms');
         const programForm = document.getElementById('programForm');
+        const adminToggleBtn = document.getElementById('adminToggleBtn');
 
         // --- 모달 도우미 함수 ---
         window.showModal = (id) => document.getElementById(id).classList.add('show');
@@ -305,35 +322,47 @@
 
         async function initializeFirebase() {
             try {
-                // 플랫폼에서 제공하는 환경 변수 사용
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-                const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+                // =======================================================================
+                // [중요] 깃허브 배포 시 이 부분을 자신의 Firebase 프로젝트 정보로 교체하세요!
+                // Firebase 콘솔 > 프로젝트 설정 > 일반 > 내 앱 > SDK 설정 및 구성
+                // '구성(config)' 옵션을 선택하여 아래 내용을 복사/붙여넣기 하세요.
+                // =======================================================================
+                const firebaseConfig = {
+  apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
+  authDomain: "incarhigh-balihi.firebaseapp.com",
+  projectId: "incarhigh-balihi",
+  storageBucket: "incarhigh-balihi.firebasestorage.app",
+  messagingSenderId: "777053953777",
+  appId: "1:777053953777:web:bd21c80707306f54da9350",
+  measurementId: "G-T8BW822SLS"
+};
 
-                if (!firebaseConfig.apiKey) {
-                    showAlert("Firebase 설정이 올바르지 않습니다. 앱이 정상적으로 동작하지 않을 수 있습니다.", "설정 오류");
-                    noProgramsEl.textContent = 'Firebase 설정 오류. 관리자에게 문의하세요.';
-                    return;
+                // API 키가 placeholder 상태인지 확인
+                if (firebaseConfig.apiKey === "YOUR_API_KEY") {
+                    throw new Error("Firebase 설정이 필요합니다. 스크립트에서 firebaseConfig 변수를 자신의 프로젝트 정보로 교체해주세요.");
                 }
 
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
 
+                // Firebase가 준비되었으므로 관리자 버튼 활성화
+                adminToggleBtn.disabled = false;
+                adminToggleBtn.title = '관리자 모드';
+                console.log("Firebase is ready. Admin functions are now available.");
+
                 // 사용자 인증 상태 변화 감지
                 onAuthStateChanged(auth, user => {
                     if (user && !user.isAnonymous) {
-                        // 이메일/비밀번호로 로그인한 관리자
                         console.log("관리자로 인증됨:", user.uid);
                         isAdminMode = true;
                         document.getElementById('adminPanel').classList.add('show');
                         document.getElementById('excelDownloadBtn').classList.add('show');
-                        renderPrograms(); // 관리자 UI 업데이트
+                        renderPrograms();
                         updateResults();
                     } else if (user && user.isAnonymous) {
-                        // 익명 사용자
                         console.log("익명 사용자로 인증됨:", user.uid);
                     } else {
-                        // 로그아웃 상태
                         console.log("로그인된 사용자가 없습니다.");
                         isAdminMode = false;
                         document.getElementById('adminPanel').classList.remove('show');
@@ -343,20 +372,21 @@
                     }
                 });
                 
-                // 초기 인증 시도
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
+                // 익명으로 먼저 로그인 시도
+                await signInAnonymously(auth);
                 
-                // 인증과 별개로 프로그램 데이터는 항상 로드
+                // 데이터 리스너 연결
                 loadAndListenPrograms();
 
             } catch (error) {
                 console.error("Firebase 초기화 실패:", error);
-                showAlert(`Firebase 초기화에 실패했습니다. 페이지를 새로고침 해주세요. <br><br>오류: ${error.message}`, "치명적 오류");
+                showAlert(`Firebase 초기화에 실패했습니다. <br><br><b>오류: ${error.message}</b><br><br>페이지를 새로고침 하시거나, 관리자에게 문의하세요.`, "치명적 오류");
                 noProgramsEl.textContent = 'Firebase 초기화 오류. 새로고침 해주세요.';
+                
+                adminToggleBtn.disabled = true;
+                adminToggleBtn.title = '초기화 실패! 새로고침하세요.';
+                adminToggleBtn.classList.add('failed');
+                adminToggleBtn.innerHTML = '❌';
             }
         }
 
@@ -365,14 +395,13 @@
             document.getElementById('skip-intro').onclick = showMainContent;
             introVideo.onended = showMainContent;
             
-            // 영상 로드 실패 시 자동 건너뛰기
             introVideo.addEventListener('error', (e) => {
                 console.error("비디오 로드 오류:", e);
                 showMainContent();
             });
 
             document.getElementById('music-toggle').addEventListener('click', toggleMusic);
-            document.getElementById('adminToggleBtn').onclick = () => showModal('passwordModal');
+            adminToggleBtn.onclick = () => showModal('passwordModal');
             document.getElementById('loginBtn').onclick = checkAdminPassword;
             document.getElementById('clearFormBtn').onclick = clearForm;
             document.getElementById('initDbBtn').onclick = runInitialization;
@@ -388,9 +417,7 @@
             if (playPromise !== undefined) {
                 playPromise.catch(error => {
                     console.warn("영상 자동 재생 실패. 사용자 상호작용이 필요합니다.", error);
-                    splashScreen.addEventListener('click', () => {
-                        introVideo.play();
-                    }, { once: true });
+                    splashScreen.addEventListener('click', () => introVideo.play(), { once: true });
                 });
             }
         }
@@ -406,12 +433,11 @@
         }
 
         function showMainContent() {
-            if (splashScreen.style.display === 'none') return; // 중복 실행 방지
+            if (splashScreen.style.display === 'none') return;
             splashScreen.style.opacity = '0';
             setTimeout(() => {
                 splashScreen.style.display = 'none';
                 mainWrapper.classList.add('visible');
-                // 음악 토글 상태에 따라 음악 재생 결정
                 const musicToggle = document.getElementById('music-toggle');
                 if (musicToggle.textContent === '🔊') {
                     music.muted = false;
@@ -431,12 +457,11 @@
                 noProgramsEl.textContent = '데이터베이스 연결 오류. 새로고침 해주세요.';
                 return;
             }
-            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-            const programsCollectionRef = collection(db, `artifacts/${appId}/public/data/programs`);
+            const programsCollectionRef = collection(db, "programs");
             
-            if (unsubscribePrograms) unsubscribePrograms(); // 이전 리스너가 있는 경우 구독 해제
+            if (unsubscribePrograms) unsubscribePrograms();
 
-            unsubscribePrograms = onSnapshot(programsCollectionRef, (querySnapshot) => {
+            unsubscribePrograms = onSnapshot(query(programsCollectionRef), (querySnapshot) => {
                 programs = [];
                 if (querySnapshot.empty) {
                     noProgramsEl.textContent = '프로그램이 없습니다. 관리자로 로그인하여 DB를 초기화해주세요.';
@@ -444,7 +469,6 @@
                     querySnapshot.forEach((doc) => {
                         programs.push({ id: doc.id, ...doc.data() });
                     });
-                    // 메모리에서 'order' 순서로 프로그램 정렬
                     programs.sort((a, b) => (a.order || 0) - (b.order || 0));
                 }
                 renderPrograms();
@@ -529,7 +553,6 @@
                 return showAlert('사번과 이름을 모두 입력해주세요.');
             }
             
-            // 사용자가 이미 투표했는지 확인
             const alreadyVoted = programs.some(p => p.voters?.some(v => v.id === employeeId));
             if (alreadyVoted) {
                 hideModal('voterAuthModal');
@@ -537,8 +560,7 @@
             }
             
             try {
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-                const programRef = doc(db, `artifacts/${appId}/public/data/programs`, votingForId);
+                const programRef = doc(db, "programs", votingForId);
                 await updateDoc(programRef, { 
                     votes: increment(1), 
                     voters: arrayUnion({ id: employeeId, name: name }) 
@@ -556,10 +578,7 @@
 
         // --- 관리자 로직 ---
         async function checkAdminPassword() {
-            // [수정됨] auth 객체가 초기화되었는지 먼저 확인
-            if (!auth) {
-                return showAlert('Firebase 인증 서비스가 아직 준비되지 않았습니다. 잠시 후 다시 시도해주세요.', '초기화 중');
-            }
+            if (!auth) return showAlert('Firebase 인증 서비스가 아직 준비되지 않았습니다. 잠시 후 다시 시도해주세요.', '초기화 중');
 
             const email = document.getElementById('adminEmail').value.trim();
             const password = document.getElementById('adminPassword').value;
@@ -571,15 +590,8 @@
                 showAlert('관리자 로그인 성공! 🔓');
             } catch (error) {
                 console.error("로그인 실패 상세 정보:", error);
-                
-                let errorDetails = `<b>오류 코드:</b> ${error.code || '정의되지 않음'}<br>`;
-                errorDetails += `<b>오류 메시지:</b> ${error.message || '메시지 없음'}`;
-
-                showAlert(
-                    `로그인에 실패했습니다. 아래 상세 정보를 확인하여 원인을 파악해주세요.<br><br>${errorDetails}`, 
-                    '로그인 오류'
-                );
-
+                let errorDetails = `<b>오류 코드:</b> ${error.code || '정의되지 않음'}<br><b>오류 메시지:</b> ${error.message || '메시지 없음'}`;
+                showAlert(`로그인에 실패했습니다. 아래 상세 정보를 확인하여 원인을 파악해주세요.<br><br>${errorDetails}`, '로그인 오류');
             } finally {
                 document.getElementById('adminPassword').value = '';
             }
@@ -594,8 +606,7 @@
             const image = document.getElementById('programImage').value.trim();
             if (!title || !description) return showAlert('프로그램 이름과 설명을 모두 입력해주세요.');
             
-            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-            const programsCollectionRef = collection(db, `artifacts/${appId}/public/data/programs`);
+            const programsCollectionRef = collection(db, "programs");
             const data = { title, description, image };
 
             try {
@@ -638,8 +649,7 @@
             const confirmed = await showConfirm('정말로 이 프로그램을 삭제하시겠습니까? 투표 정보도 함께 삭제됩니다.', '삭제 확인');
             if (confirmed) {
                 try {
-                    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-                    await deleteDoc(doc(db, `artifacts/${appId}/public/data/programs`, id));
+                    await deleteDoc(doc(db, "programs", id));
                     showAlert('프로그램이 삭제되었습니다.');
                 } catch (error) {
                     console.error("삭제 오류:", error);
@@ -667,23 +677,20 @@
 
             try {
                 showAlert('DB 초기화를 시작합니다. 잠시만 기다려주세요...');
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-                const programsCollectionRef = collection(db, `artifacts/${appId}/public/data/programs`);
+                const programsCollectionRef = collection(db, "programs");
                 
-                // 배치(batch)로 모든 기존 문서 삭제
                 const oldDocsSnapshot = await getDocs(query(programsCollectionRef));
                 const deleteBatch = writeBatch(db);
                 oldDocsSnapshot.forEach(doc => deleteBatch.delete(doc.ref));
                 await deleteBatch.commit();
                 
-                // 배치(batch)로 기본 프로그램 추가
                 const defaultPrograms = [
-                    { order: 1, title: '🚣 우붓 + 래프팅', description: '아융강에서 스릴 넘치는 래프팅을 즐기고<br>우붓 왕궁과 전통시장, 마을을<br>둘러보는 코스입니다.', image: 'https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+                    { order: 1, title: '🚣 우붓 + 래프팅', description: '아융강에서 스릴 넘치는 래프팅을 즐기고<br>우붓 왕궁과 전통시장, 마을을<br>둘러보는 코스입니다.', image: 'https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
                     { order: 2, title: '🌿 우붓 + 스파', description: '우붓의 왕궁과 전통시장, 마을을 둘러보고<br>발리 전통 마사지를 받으며<br>심신의 피로를 푸는 힐링 코스입니다.', image: 'https://images.unsplash.com/photo-1708436137498-1b660e94c782?q=80&w=687&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
                     { order: 3, title: '🏖️ 리조트 자유시간', description: '고급 리조트의 수영장과 부대시설을<br>마음껏 이용하며 누구의 방해도 받지 않는<br>완벽한 자유시간을 만끽합니다.', image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80' },
                     { order: 4, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸타 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>라운딩을 즐깁니다.', image: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
                     { order: 5, title: '🚤 해양 스포츠', description: '제트스키, 도넛, 바나나보트,<br>스노클링을 즐기는<br>액티비티 패키지입니다.', image: 'https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format=fit&crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-                    { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와<br>다양한 편의시설을 갖춰 즐기기 좋은 곳입니다.', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format=fit&crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' }
+                    { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와<br>다양한 편의시설을 갖춰 즐기기 좋은 곳입니다.', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit&crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' }
                 ];
                 
                 const addBatch = writeBatch(db);
@@ -708,10 +715,8 @@
 
             try {
                 showAlert('기본 프로그램 추가를 시작합니다...');
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-                const programsCollectionRef = collection(db, `artifacts/${appId}/public/data/programs`);
+                const programsCollectionRef = collection(db, "programs");
 
-                // 중복을 피하기 위해 기존 프로그램 순서 가져오기
                 const existingProgramsSnapshot = await getDocs(query(programsCollectionRef));
                 const existingOrders = new Set(existingProgramsSnapshot.docs.map(doc => doc.data().order));
 
@@ -721,7 +726,7 @@
                     { order: 3, title: '🏖️ 리조트 자유시간', description: '고급 리조트의 수영장과 부대시설을<br>마음껏 이용하며 누구의 방해도 받지 않는<br>완벽한 자유시간을 만끽합니다.', image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80' },
                     { order: 4, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸타 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>라운딩을 즐깁니다.', image: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
                     { order: 5, title: '🚤 해양 스포츠', description: '제트스키, 도넛, 바나나보트,<br>스노클링을 즐기는<br>액티비티 패키지입니다.', image: 'https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format=fit&crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-                    { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와<br>다양한 편의시설을 갖춰 즐기기 좋은 곳입니다.', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format=fit&crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' }
+                    { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와<br>다양한 편의시설을 갖춰 즐기기 좋은 곳입니다.', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit&crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' }
                 ];
 
                 const programsToAdd = defaultPrograms.filter(p => !existingOrders.has(p.order));
