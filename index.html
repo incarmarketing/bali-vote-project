@@ -18,7 +18,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?q=80&w=1935&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
             background-size: cover; background-position: center; background-attachment: fixed;
             min-height: 100vh;
         }
@@ -315,8 +315,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             initializeFirebase();
             setupEventListeners();
-            playIntroVideo();
             playMusic();
+            playIntroVideo();
         });
 
         async function initializeFirebase() {
@@ -326,7 +326,7 @@
                 // Firebase 콘솔 > 프로젝트 설정 > 일반 > 내 앱 > SDK 설정 및 구성
                 // '구성(config)' 옵션을 선택하여 아래 내용을 복사/붙여넣기 하세요.
                 // =======================================================================
-               const firebaseConfig = {
+                const firebaseConfig = {
   apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
   authDomain: "incarhigh-balihi.firebaseapp.com",
   projectId: "incarhigh-balihi",
@@ -348,22 +348,18 @@
                 adminToggleBtn.title = '관리자 모드';
                 console.log("Firebase is ready. Admin functions are now available.");
 
-                // [수정됨] 사용자 인증 상태 변화 감지 로직 강화
                 onAuthStateChanged(auth, user => {
-                    // 사용자가 있고, 익명이 아닌 경우에만 관리자로 간주
                     if (user && !user.isAnonymous) {
                         console.log("관리자로 인증됨:", user.uid);
                         isAdminMode = true;
                         document.getElementById('adminPanel').classList.add('show');
                         document.getElementById('excelDownloadBtn').classList.add('show');
                     } else {
-                        // 그 외 모든 경우(익명 사용자, 로그아웃 상태 등)는 관리자가 아님
                         console.log("관리자 아님 (익명 또는 로그아웃):", user ? user.uid : '없음');
                         isAdminMode = false;
                         document.getElementById('adminPanel').classList.remove('show');
                         document.getElementById('excelDownloadBtn').classList.remove('show');
                     }
-                    // 모든 경우에 UI를 다시 렌더링하여 관리자 버튼 등을 올바르게 표시
                     renderPrograms();
                     updateResults();
                 });
@@ -405,36 +401,40 @@
         }
 
         // --- 인트로 및 음악 관련 ---
-        function playIntroVideo() {
-            const playPromise = introVideo.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.warn("영상 자동 재생 실패. 사용자 상호작용이 필요합니다.", error);
-                    splashScreen.addEventListener('click', () => introVideo.play(), { once: true });
-                });
-            }
-        }
-        
         function playMusic() {
             music.muted = true;
-            music.play().catch(() => {
-                console.warn('음악 재생을 위해 사용자의 상호작용이 필요합니다.');
+            music.play().catch(error => {
+                console.warn('음악 자동 재생 실패. 사용자 상호작용이 필요합니다.', error);
                 document.body.addEventListener('click', () => {
                     if (music.paused) music.play();
                 }, { once: true });
             });
         }
 
+        function playIntroVideo() {
+            const playPromise = introVideo.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    console.log("Intro video playback started, unmuting music.");
+                    music.muted = false;
+                    document.getElementById('music-toggle').textContent = '🔊';
+                }).catch(error => {
+                    console.warn("영상 자동 재생 실패. 사용자 상호작용이 필요합니다.", error);
+                    splashScreen.addEventListener('click', () => {
+                        introVideo.play();
+                        music.muted = false;
+                        document.getElementById('music-toggle').textContent = '🔊';
+                    }, { once: true });
+                });
+            }
+        }
+        
         function showMainContent() {
             if (splashScreen.style.display === 'none') return;
             splashScreen.style.opacity = '0';
             setTimeout(() => {
                 splashScreen.style.display = 'none';
                 mainWrapper.classList.add('visible');
-                const musicToggle = document.getElementById('music-toggle');
-                if (musicToggle.textContent === '🔊') {
-                    music.muted = false;
-                }
             }, 1000);
         }
         
@@ -680,12 +680,12 @@
                 await deleteBatch.commit();
                 
                 const defaultPrograms = [
-                    { order: 1, title: '🚣 우붓 + 래프팅', description: '아융강에서 스릴 넘치는 래프팅을 즐기고<br>우붓 왕궁과 전통시장, 마을을<br>둘러보는 코스입니다.', image: 'https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+                    { order: 1, title: '🚣 우붓 + 래프팅', description: '아융강에서 스릴 넘치는 래프팅을 즐기고<br>우붓 왕궁과 전통시장, 마을을<br>둘러보는 코스입니다.', image: 'https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
                     { order: 2, title: '🌿 우붓 + 스파', description: '우붓의 왕궁과 전통시장, 마을을 둘러보고<br>발리 전통 마사지를 받으며<br>심신의 피로를 푸는 힐링 코스입니다.', image: 'https://images.unsplash.com/photo-1708436137498-1b660e94c782?q=80&w=687&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
                     { order: 3, title: '🏖️ 리조트 자유시간', description: '고급 리조트의 수영장과 부대시설을<br>마음껏 이용하며 누구의 방해도 받지 않는<br>완벽한 자유시간을 만끽합니다.', image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80' },
                     { order: 4, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸타 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>라운딩을 즐깁니다.', image: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-                    { order: 5, title: '🚤 해양 스포츠', description: '제트스키, 도넛, 바나나보트,<br>스노클링을 즐기는<br>액티비티 패키지입니다.', image: 'https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format=fit&crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-                    { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와<br>다양한 편의시설을 갖춰 즐기기 좋은 곳입니다.', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit&crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' }
+                    { order: 5, title: '🚤 해양 스포츠', description: '제트스키, 도넛, 바나나보트,<br>스노클링을 즐기는<br>액티비티 패키지입니다.', image: 'https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+                    { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와<br>다양한 편의시설을 갖춰 즐기기 좋은 곳입니다.', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' }
                 ];
                 
                 const addBatch = writeBatch(db);
@@ -716,12 +716,12 @@
                 const existingOrders = new Set(existingProgramsSnapshot.docs.map(doc => doc.data().order));
 
                 const defaultPrograms = [
-                    { order: 1, title: '🚣 우붓 + 래프팅', description: '아융강에서 스릴 넘치는 래프팅을 즐기고<br>우붓 왕궁과 전통시장, 마을을<br>둘러보는 코스입니다.', image: 'https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+                    { order: 1, title: '� 우붓 + 래프팅', description: '아융강에서 스릴 넘치는 래프팅을 즐기고<br>우붓 왕궁과 전통시장, 마을을<br>둘러보는 코스입니다.', image: 'https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
                     { order: 2, title: '🌿 우붓 + 스파', description: '우붓의 왕궁과 전통시장, 마을을 둘러보고<br>발리 전통 마사지를 받으며<br>심신의 피로를 푸는 힐링 코스입니다.', image: 'https://images.unsplash.com/photo-1708436137498-1b660e94c782?q=80&w=687&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
                     { order: 3, title: '🏖️ 리조트 자유시간', description: '고급 리조트의 수영장과 부대시설을<br>마음껏 이용하며 누구의 방해도 받지 않는<br>완벽한 자유시간을 만끽합니다.', image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80' },
                     { order: 4, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸타 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>라운딩을 즐깁니다.', image: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-                    { order: 5, title: '🚤 해양 스포츠', description: '제트스키, 도넛, 바나나보트,<br>스노클링을 즐기는<br>액티비티 패키지입니다.', image: 'https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format=fit&crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-                    { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와<br>다양한 편의시설을 갖춰 즐기기 좋은 곳입니다.', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format=fit&crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' }
+                    { order: 5, title: '🚤 해양 스포츠', description: '제트스키, 도넛, 바나나보트,<br>스노클링을 즐기는<br>액티비티 패키지입니다.', image: 'https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format&fit&crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+                    { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와<br>다양한 편의시설을 갖춰 즐기기 좋은 곳입니다.', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit&crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' }
                 ];
 
                 const programsToAdd = defaultPrograms.filter(p => !existingOrders.has(p.order));
@@ -772,3 +772,4 @@
     </script>
 </body>
 </html>
+�
