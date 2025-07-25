@@ -59,7 +59,7 @@
 
         /* 핵심 레이아웃 */
         .container { max-width: 1200px; margin: 0 auto; background: rgba(255, 255, 255, 0.95); border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
-        .header { background: linear-gradient(135deg, rgba(255,107,107,0.8), rgba(255,167,38,0.8)), url('https://images.unsplash.com/photo-1636619306699-2d27a100605e?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); background-size: cover; background-position: center; color: white; padding: 40px; text-align: center; }
+        .header { background: linear-gradient(135deg, rgba(255,107,107,0.8), rgba(255,167,38,0.8)), url('https://images.unsplash.com/photo-1636619306699-2d27a100605e?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); background-size: cover; background-position: center; color: white; padding: 40px; text-align: center; }
         .header h1 { font-size: 2.5em; margin-bottom: 10px; }
         .header p { font-size: 1.2em; opacity: 0.9; }
         .main-content { padding: 40px; padding-bottom: 100px; }
@@ -166,9 +166,16 @@
                         <button type="button" class="btn btn-danger" id="clearFormBtn">입력 초기화</button>
                     </form>
                     <hr style="margin: 30px 0; border: 1px solid #eee;">
+                    <h2 style="color: #495057;">✨ 데이터 관리</h2>
+                    <button type="button" class="btn" id="addDefaultsBtn">기본 프로그램 추가</button>
+                    <p style="font-size: 14px; color: #7f8c8d; margin-top: 10px; margin-bottom: 20px;">
+                        현재 목록에 없는 기본 프로그램을 추가합니다. 기존 데이터는 삭제되지 않습니다.
+                    </p>
                     <h2 style="color: #c0392b;">🚨 위험 구역 🚨</h2>
                     <button type="button" class="btn btn-danger" id="initDbBtn">DB 초기화 및 기본값 설정</button>
-                    <p style="font-size: 14px; color: #7f8c8d; margin-top: 10px;">주의: 이 버튼을 누르면 DB의 모든 프로그램이 삭제되고, 코드에 정의된 기본 프로그램으로 덮어씁니다.</p>
+                    <p style="font-size: 14px; color: #7f8c8d; margin-top: 10px;">
+                        주의: 이 버튼을 누르면 DB의 모든 프로그램이 삭제되고, 코드에 정의된 기본 프로그램으로 덮어씁니다.
+                    </p>
                 </div>
                 
                 <!-- 프로그램 카드 -->
@@ -192,6 +199,7 @@
     <div class="modal" id="passwordModal">
         <div class="modal-content">
             <h3>🔐 관리자 로그인</h3>
+            <p style="font-size:14px; color:#7f8c8d;">Firebase 콘솔에서 생성한<br>관리자 계정으로 로그인하세요.</p>
             <input type="email" id="adminEmail" placeholder="관리자 이메일을 입력하세요">
             <input type="password" id="adminPassword" placeholder="관리자 비밀번호를 입력하세요">
             <div class="modal-buttons">
@@ -232,10 +240,10 @@
 
 
     <script type="module">
-        // Firebase 모듈 가져오기
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, increment, arrayUnion, onSnapshot, writeBatch, query, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        // Firebase 모듈 가져오기 (최신 버전으로 통일)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, increment, arrayUnion, onSnapshot, writeBatch, query, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- 전역 변수 및 설정 ---
         let db, auth;
@@ -311,22 +319,39 @@
                 db = getFirestore(app);
                 auth = getAuth(app);
 
-                // 사용자 인증
+                // 사용자 인증 상태 변화 감지
                 onAuthStateChanged(auth, user => {
-                    if (user) {
-                        console.log("인증된 사용자:", user.uid);
-                        // 인증 완료 후 데이터 수신 시작
-                        loadAndListenPrograms();
+                    if (user && !user.isAnonymous) {
+                        // 이메일/비밀번호로 로그인한 관리자
+                        console.log("관리자로 인증됨:", user.uid);
+                        isAdminMode = true;
+                        document.getElementById('adminPanel').classList.add('show');
+                        document.getElementById('excelDownloadBtn').classList.add('show');
+                        renderPrograms(); // 관리자 UI 업데이트
+                        updateResults();
+                    } else if (user && user.isAnonymous) {
+                        // 익명 사용자
+                        console.log("익명 사용자로 인증됨:", user.uid);
                     } else {
+                        // 로그아웃 상태
                         console.log("로그인된 사용자가 없습니다.");
+                        isAdminMode = false;
+                        document.getElementById('adminPanel').classList.remove('show');
+                        document.getElementById('excelDownloadBtn').classList.remove('show');
+                        renderPrograms();
+                        updateResults();
                     }
                 });
                 
+                // 초기 인증 시도
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
                     await signInAnonymously(auth);
                 }
+                
+                // 인증과 별개로 프로그램 데이터는 항상 로드
+                loadAndListenPrograms();
 
             } catch (error) {
                 console.error("Firebase 초기화 실패:", error);
@@ -351,6 +376,7 @@
             document.getElementById('loginBtn').onclick = checkAdminPassword;
             document.getElementById('clearFormBtn').onclick = clearForm;
             document.getElementById('initDbBtn').onclick = runInitialization;
+            document.getElementById('addDefaultsBtn').onclick = addDefaultPrograms;
             document.getElementById('submitVoteBtn').onclick = submitVote;
             document.getElementById('excelDownloadBtn').onclick = exportToExcel;
             programForm.addEventListener('submit', handleFormSubmit);
@@ -362,7 +388,6 @@
             if (playPromise !== undefined) {
                 playPromise.catch(error => {
                     console.warn("영상 자동 재생 실패. 사용자 상호작용이 필요합니다.", error);
-                    // 자동 재생 실패 시, 화면 클릭으로 재생 시도
                     splashScreen.addEventListener('click', () => {
                         introVideo.play();
                     }, { once: true });
@@ -386,9 +411,10 @@
             setTimeout(() => {
                 splashScreen.style.display = 'none';
                 mainWrapper.classList.add('visible');
-                if (!music.muted) {
+                // 음악 토글 상태에 따라 음악 재생 결정
+                const musicToggle = document.getElementById('music-toggle');
+                if (musicToggle.textContent === '🔊') {
                     music.muted = false;
-                    document.getElementById('music-toggle').textContent = '🔊';
                 }
             }, 1000);
         }
@@ -400,6 +426,11 @@
 
         // --- 핵심 앱 로직 ---
         function loadAndListenPrograms() {
+            if (!db) {
+                console.error("Firestore DB가 초기화되지 않았습니다.");
+                noProgramsEl.textContent = '데이터베이스 연결 오류. 새로고침 해주세요.';
+                return;
+            }
             const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
             const programsCollectionRef = collection(db, `artifacts/${appId}/public/data/programs`);
             
@@ -484,12 +515,14 @@
 
         // --- 투표 로직 ---
         window.requestVote = (id) => {
+            if (!db) return showAlert('데이터베이스가 준비되지 않았습니다. 잠시 후 다시 시도해주세요.');
             votingForId = id;
             showModal('voterAuthModal');
             document.getElementById('voterEmployeeId').focus();
         };
 
         async function submitVote() {
+            if (!db) return showAlert('데이터베이스가 준비되지 않았습니다. 잠시 후 다시 시도해주세요.');
             const employeeId = document.getElementById('voterEmployeeId').value.trim();
             const name = document.getElementById('voterName').value.trim();
             if (!employeeId || !name) {
@@ -499,6 +532,7 @@
             // 사용자가 이미 투표했는지 확인
             const alreadyVoted = programs.some(p => p.voters?.some(v => v.id === employeeId));
             if (alreadyVoted) {
+                hideModal('voterAuthModal');
                 return showAlert('이미 다른 프로그램에 투표하셨습니다. 한 사람당 한 번만 투표할 수 있습니다.');
             }
             
@@ -522,30 +556,39 @@
 
         // --- 관리자 로직 ---
         async function checkAdminPassword() {
-            const email = document.getElementById('adminEmail').value;
+            // [수정됨] auth 객체가 초기화되었는지 먼저 확인
+            if (!auth) {
+                return showAlert('Firebase 인증 서비스가 아직 준비되지 않았습니다. 잠시 후 다시 시도해주세요.', '초기화 중');
+            }
+
+            const email = document.getElementById('adminEmail').value.trim();
             const password = document.getElementById('adminPassword').value;
             if (!email || !password) return showAlert('이메일과 비밀번호를 모두 입력해주세요.');
             
             try {
                 await signInWithEmailAndPassword(auth, email, password);
-                isAdminMode = true;
-                document.getElementById('adminPanel').classList.add('show');
-                document.getElementById('excelDownloadBtn').classList.add('show');
                 hideModal('passwordModal');
                 showAlert('관리자 로그인 성공! 🔓');
-                renderPrograms();
-                updateResults();
             } catch (error) {
-                console.error("로그인 실패:", error.code);
-                showAlert('이메일 또는 비밀번호가 잘못되었습니다.');
+                console.error("로그인 실패 상세 정보:", error);
+                
+                let errorDetails = `<b>오류 코드:</b> ${error.code || '정의되지 않음'}<br>`;
+                errorDetails += `<b>오류 메시지:</b> ${error.message || '메시지 없음'}`;
+
+                showAlert(
+                    `로그인에 실패했습니다. 아래 상세 정보를 확인하여 원인을 파악해주세요.<br><br>${errorDetails}`, 
+                    '로그인 오류'
+                );
+
             } finally {
-                document.getElementById('adminEmail').value = '';
                 document.getElementById('adminPassword').value = '';
             }
         }
 
         async function handleFormSubmit(e) {
             e.preventDefault();
+            if (!isAdminMode || !db) return showAlert('관리자만 사용 가능하거나, 데이터베이스가 준비되지 않았습니다.');
+            
             const title = document.getElementById('programTitle').value.trim();
             const description = document.getElementById('programDescription').value.trim();
             const image = document.getElementById('programImage').value.trim();
@@ -578,6 +621,7 @@
         }
 
         window.editProgram = (id) => {
+            if (!isAdminMode) return;
             const p = programs.find(prog => prog.id === id);
             if (p) {
                 document.getElementById('programTitle').value = p.title;
@@ -590,6 +634,7 @@
         };
 
         window.deleteProgram = async (id) => {
+            if (!isAdminMode || !db) return;
             const confirmed = await showConfirm('정말로 이 프로그램을 삭제하시겠습니까? 투표 정보도 함께 삭제됩니다.', '삭제 확인');
             if (confirmed) {
                 try {
@@ -604,6 +649,7 @@
         };
         
         window.showVoters = (id) => { 
+            if (!isAdminMode) return;
             const p = programs.find(p => p.id === id); 
             if (!p) return; 
             const voterListEl = document.getElementById('voterList'); 
@@ -614,7 +660,7 @@
         };
 
         async function runInitialization() {
-            if (!isAdminMode) return showAlert('관리자로 로그인해야 실행할 수 있습니다.');
+            if (!isAdminMode || !db) return showAlert('관리자로 로그인해야 하거나, 데이터베이스가 준비되지 않았습니다.');
             
             const confirmed = await showConfirm("🚨정말로 모든 투표 데이터를 삭제하고 기본 프로그램으로 덮어쓰시겠습니까?<br>이 작업은 되돌릴 수 없습니다!", "DB 초기화 확인");
             if (!confirmed) return showAlert('초기화가 취소되었습니다.');
@@ -625,19 +671,19 @@
                 const programsCollectionRef = collection(db, `artifacts/${appId}/public/data/programs`);
                 
                 // 배치(batch)로 모든 기존 문서 삭제
-                const oldDocsSnapshot = await getDocs(programsCollectionRef);
+                const oldDocsSnapshot = await getDocs(query(programsCollectionRef));
                 const deleteBatch = writeBatch(db);
                 oldDocsSnapshot.forEach(doc => deleteBatch.delete(doc.ref));
                 await deleteBatch.commit();
                 
                 // 배치(batch)로 기본 프로그램 추가
                 const defaultPrograms = [
-                    { order: 1, title: '🚣 우붓 + 래프팅', description: '아융강에서 스릴 넘치는 래프팅을 즐기고<br>우붓 왕궁과 전통시장, 마을을<br>둘러보는 코스입니다.', image: 'https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-                    { order: 2, title: '🌿 우붓 + 스파', description: '우붓의 왕궁과 전통시장, 마을을 둘러보고<br>발리 전통 마사지를 받으며<br>심신의 피로를 푸는 힐링 코스입니다.', image: 'https://images.unsplash.com/photo-1708436137498-1b660e94c782?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+                    { order: 1, title: '🚣 우붓 + 래프팅', description: '아융강에서 스릴 넘치는 래프팅을 즐기고<br>우붓 왕궁과 전통시장, 마을을<br>둘러보는 코스입니다.', image: 'https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+                    { order: 2, title: '🌿 우붓 + 스파', description: '우붓의 왕궁과 전통시장, 마을을 둘러보고<br>발리 전통 마사지를 받으며<br>심신의 피로를 푸는 힐링 코스입니다.', image: 'https://images.unsplash.com/photo-1708436137498-1b660e94c782?q=80&w=687&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
                     { order: 3, title: '🏖️ 리조트 자유시간', description: '고급 리조트의 수영장과 부대시설을<br>마음껏 이용하며 누구의 방해도 받지 않는<br>완벽한 자유시간을 만끽합니다.', image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80' },
-                    { order: 4, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸타 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>라운딩을 즐깁니다.', image: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+                    { order: 4, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸타 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>라운딩을 즐깁니다.', image: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
                     { order: 5, title: '🚤 해양 스포츠', description: '제트스키, 도넛, 바나나보트,<br>스노클링을 즐기는<br>액티비티 패키지입니다.', image: 'https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format=fit&crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-                    { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와<br>다양한 편의시설을 갖춰 즐기기 좋은 곳입니다.', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit&crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' }
+                    { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와<br>다양한 편의시설을 갖춰 즐기기 좋은 곳입니다.', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format=fit&crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' }
                 ];
                 
                 const addBatch = writeBatch(db);
@@ -651,6 +697,51 @@
             } catch (error) {
                 console.error("DB 초기화 중 오류 발생:", error);
                 showAlert(`DB 초기화에 실패했습니다. Firebase 권한을 확인해주세요.<br>오류: ${error.message}`);
+            }
+        }
+
+        async function addDefaultPrograms() {
+            if (!isAdminMode || !db) return showAlert('관리자로 로그인해야 하거나, 데이터베이스가 준비되지 않았습니다.');
+
+            const confirmed = await showConfirm("기본 프로그램을 추가하시겠습니까? <br>이미 목록에 있는 프로그램은 중복으로 추가되지 않습니다.", "기본 프로그램 추가");
+            if (!confirmed) return;
+
+            try {
+                showAlert('기본 프로그램 추가를 시작합니다...');
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const programsCollectionRef = collection(db, `artifacts/${appId}/public/data/programs`);
+
+                // 중복을 피하기 위해 기존 프로그램 순서 가져오기
+                const existingProgramsSnapshot = await getDocs(query(programsCollectionRef));
+                const existingOrders = new Set(existingProgramsSnapshot.docs.map(doc => doc.data().order));
+
+                const defaultPrograms = [
+                    { order: 1, title: '🚣 우붓 + 래프팅', description: '아융강에서 스릴 넘치는 래프팅을 즐기고<br>우붓 왕궁과 전통시장, 마을을<br>둘러보는 코스입니다.', image: 'https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+                    { order: 2, title: '🌿 우붓 + 스파', description: '우붓의 왕궁과 전통시장, 마을을 둘러보고<br>발리 전통 마사지를 받으며<br>심신의 피로를 푸는 힐링 코스입니다.', image: 'https://images.unsplash.com/photo-1708436137498-1b660e94c782?q=80&w=687&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+                    { order: 3, title: '🏖️ 리조트 자유시간', description: '고급 리조트의 수영장과 부대시설을<br>마음껏 이용하며 누구의 방해도 받지 않는<br>완벽한 자유시간을 만끽합니다.', image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80' },
+                    { order: 4, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸타 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>라운딩을 즐깁니다.', image: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+                    { order: 5, title: '🚤 해양 스포츠', description: '제트스키, 도넛, 바나나보트,<br>스노클링을 즐기는<br>액티비티 패키지입니다.', image: 'https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format=fit&crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+                    { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와<br>다양한 편의시설을 갖춰 즐기기 좋은 곳입니다.', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format=fit&crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' }
+                ];
+
+                const programsToAdd = defaultPrograms.filter(p => !existingOrders.has(p.order));
+
+                if (programsToAdd.length === 0) {
+                    showAlert('모든 기본 프로그램이 이미 목록에 있습니다.', '알림');
+                    return;
+                }
+
+                const addBatch = writeBatch(db);
+                programsToAdd.forEach(program => {
+                    const newProgramRef = doc(programsCollectionRef);
+                    addBatch.set(newProgramRef, { ...program, votes: 0, voters: [] });
+                });
+                await addBatch.commit();
+
+                showAlert(`${programsToAdd.length}개의 기본 프로그램이 추가되었습니다.`, '추가 완료');
+            } catch (error) {
+                console.error("기본 프로그램 추가 중 오류 발생:", error);
+                showAlert(`기본 프로그램 추가에 실패했습니다.<br>오류: ${error.message}`);
             }
         }
 
