@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>발리 여행 프로그램 선호도 조사</title>
 
-    <!-- ▼▼▼ 썸네일 기능 추가 ▼▼▼ -->
+    <!-- 소셜 공유를 위한 Open Graph 메타 태그 -->
     <meta property="og:title" content="✨ 발리에서 생길 일 ✨">
     <meta property="og:description" content="★ 발리 여행 최고의 프로그램을 뽑아주세요 ★">
     <meta property="og:image" content="https://github.com/incarmarketing/bali-vote-project/blob/main/thumbnail.jpg?raw=true">
     <meta property="og:url" content="https://incarmarketing.github.io/bali-vote-project/">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
-    <!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ -->
 
     <style>
+        /* 일반 스타일 */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -23,75 +23,48 @@
             min-height: 100vh;
         }
         
-        /* ▼▼▼ 인트로 영상 스타일 ▼▼▼ */
+        /* 인트로 영상 스플래시 화면 */
         #splash-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            z-index: 10000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000; z-index: 10000;
+            display: flex; justify-content: center; align-items: center;
             transition: opacity 1s ease-out;
         }
-        #intro-video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        #intro-video { width: 100%; height: 100%; object-fit: cover; }
         #skip-intro {
-            position: absolute;
-            bottom: 30px;
-            right: 30px;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: 1px solid white;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            z-index: 10001;
+            position: absolute; bottom: 30px; right: 30px;
+            background-color: rgba(0, 0, 0, 0.7); color: white;
+            border: 1px solid white; padding: 10px 20px;
+            border-radius: 20px; cursor: pointer; font-size: 14px; z-index: 10001;
         }
         
-        /* ▼▼▼ 메인 콘텐츠 래퍼 ▼▼▼ */
+        /* 메인 콘텐츠 래퍼 */
         .main-wrapper {
-            padding: 20px;
-            opacity: 0; /* 처음에는 숨김 */
+            padding: 20px; opacity: 0; /* 처음에는 숨김 */
             transition: opacity 1s ease-in;
         }
-        .main-wrapper.visible {
-            opacity: 1;
-        }
+        .main-wrapper.visible { opacity: 1; }
 
         .logo-container { text-align: center; margin-bottom: 20px; }
         .company-logo { max-height: 60px; }
         
+        /* 음악 토글 버튼 */
         #music-toggle {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: 1px solid white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            font-size: 24px;
-            cursor: pointer;
-            z-index: 1000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: fixed; bottom: 20px; left: 20px;
+            background-color: rgba(0, 0, 0, 0.5); color: white;
+            border: 1px solid white; width: 50px; height: 50px;
+            border-radius: 50%; font-size: 24px; cursor: pointer;
+            z-index: 1000; display: flex; justify-content: center; align-items: center;
         }
 
+        /* 핵심 레이아웃 */
         .container { max-width: 1200px; margin: 0 auto; background: rgba(255, 255, 255, 0.95); border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
         .header { background: linear-gradient(135deg, rgba(255,107,107,0.8), rgba(255,167,38,0.8)), url('https://images.unsplash.com/photo-1636619306699-2d27a100605e?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); background-size: cover; background-position: center; color: white; padding: 40px; text-align: center; }
         .header h1 { font-size: 2.5em; margin-bottom: 10px; }
         .header p { font-size: 1.2em; opacity: 0.9; }
         .main-content { padding: 40px; padding-bottom: 100px; }
+        
+        /* 관리자 패널 */
         .admin-panel { background: #f8f9fa; border-radius: 15px; padding: 30px; margin-bottom: 40px; border: 2px dashed #dee2e6; display: none; }
         .admin-panel.show { display: block; }
         .admin-toggle { position: fixed; bottom: 20px; right: 20px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 15px; border-radius: 50%; font-size: 20px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 1000; transition: all 0.3s; }
@@ -101,39 +74,55 @@
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #495057; }
         .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 2px solid #dee2e6; border-radius: 8px; font-size: 16px; transition: border-color 0.3s; }
         .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+        
+        /* 버튼 */
         .btn { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; margin-right: 10px; }
         .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3); }
         .btn-danger { background: linear-gradient(135deg, #ff6b6b, #ee5a52); }
+        .btn-secondary { background: linear-gradient(135deg, #6c757d, #495057); }
+        
+        /* 프로그램 카드 */
         .programs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin-top: 30px; }
         .program-card { background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; transition: transform 0.3s, box-shadow 0.3s; position: relative; }
         .program-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
         .program-image { width: 100%; height: 200px; object-fit: cover; }
         .program-content { padding: 25px; }
         .program-title { font-size: 1.3em; font-weight: 700; margin-bottom: 10px; color: #2c3e50; }
-        .program-description { color: #7f8c8d; line-height: 1.6; margin-bottom: 20px; }
+        .program-description { color: #7f8c8d; line-height: 1.6; margin-bottom: 20px; min-height: 75px; }
         .vote-section { display: flex; align-items: center; justify-content: space-between; padding-top: 20px; border-top: 1px solid #ecf0f1; }
         .vote-btn { background: linear-gradient(135deg, #00b894, #00cec9); color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
         .vote-btn:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(0, 184, 148, 0.3); }
         .vote-count { font-weight: 700; color: #2c3e50; font-size: 1.1em; }
+        .admin-controls { display: none; gap: 10px; margin-top: 15px; }
+        .admin-controls.show { display: flex; }
+
+        /* 결과 섹션 */
         .results-section { background: #f8f9fa; border-radius: 15px; padding: 30px; margin-top: 40px; }
         .results-header { display: flex; justify-content: center; align-items: center; margin-bottom: 20px; position: relative; }
         .results-header h2 { color: #2c3e50; margin: 0; }
         .excel-download-btn { position: absolute; right: 0; background: linear-gradient(135deg, #28a745, #218838); color: white; border: none; padding: 8px 15px; border-radius: 8px; font-size: 14px; cursor: pointer; display: none; }
         .excel-download-btn.show { display: inline-block; }
         .no-programs { text-align: center; color: #7f8c8d; font-size: 1.1em; padding: 40px; }
-        .admin-controls { display: none; gap: 10px; margin-top: 15px; }
-        .admin-controls.show { display: flex; }
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 2000; }
+        
+        /* 모달 */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(5px); }
         .modal.show { display: flex; }
-        .modal-content { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-width: 400px; width: 90%; text-align: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); max-width: 400px; width: 90%; text-align: center; animation: modal-appear 0.3s ease-out; }
+        @keyframes modal-appear { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
         .modal-content h3 { margin-bottom: 20px; color: #2c3e50; }
+        .modal-content p { margin-bottom: 20px; color: #495057; line-height: 1.6; }
         .modal-content input { width: 100%; padding: 12px; border: 2px solid #dee2e6; border-radius: 8px; font-size: 16px; margin-bottom: 20px; }
         .modal-buttons { display: flex; gap: 10px; justify-content: center; }
+        
+        /* 투표자 목록 모달 */
         .view-voters-btn { background: #6c757d; color: white; border: none; padding: 5px 10px; font-size: 12px; border-radius: 5px; cursor: pointer; margin-left: 10px; }
-        #voterList { list-style: none; text-align: left; max-height: 300px; overflow-y: auto; }
+        #voterList { list-style: none; text-align: left; max-height: 300px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; padding: 10px; }
         #voterList li { padding: 8px; border-bottom: 1px solid #eee; }
+        #voterList li:last-child { border-bottom: none; }
+
+        /* 반응형 디자인 */
         @media (max-width: 768px) {
-            body { padding: 10px; }
+            .main-wrapper { padding: 10px; }
             .header { padding: 30px 20px; }
             .header h1 { font-size: 2em; }
             .main-content { padding: 20px; padding-bottom: 100px; }
@@ -144,14 +133,17 @@
     </style>
 </head>
 <body>
+    <!-- 스플래시 화면 -->
     <div id="splash-screen">
-        <video id="intro-video" src="https://github.com/incarmarketing/bali-vote-project/blob/372a45ad240d6c2c6de1df9dad586e4aafd3543c" autoplay muted playsinline></video>
+        <video id="intro-video" src="https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/intro.mp4" autoplay muted playsinline></video>
         <button id="skip-intro">인트로 건너뛰기 &gt;</button>
     </div>
 
+    <!-- 배경 음악 -->
     <audio id="background-music" src="https://cdn.pixabay.com/download/audio/2022/08/27/audio_2932470728.mp3" loop></audio>
     <button id="music-toggle">🔇</button>
 
+    <!-- 메인 콘텐츠 -->
     <div class="main-wrapper">
         <div class="logo-container">
             <img src="https://github.com/incarmarketing/bali-vote-project/blob/main/logo.png?raw=true" alt="회사 로고" class="company-logo" onerror="this.style.display='none'">
@@ -163,53 +155,47 @@
                 <p>함께 떠날 발리 여행<br>최고의 프로그램을 선택해주세요!</p>
             </div>
             <div class="main-content">
+                <!-- 관리자 패널 -->
                 <div class="admin-panel" id="adminPanel">
                     <h2>✨ 프로그램 추가/편집</h2>
                     <form id="programForm">
-                        <div class="form-group">
-                            <label for="programTitle">프로그램 이름</label>
-                            <input type="text" id="programTitle" placeholder="예: 우붓 라이스 테라스 투어">
-                        </div>
-                        <div class="form-group">
-                            <label for="programDescription">프로그램 설명</label>
-                            <textarea id="programDescription" placeholder="프로그램에 대한 자세한 설명을 입력해주세요..."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="programImage">이미지 URL (선택사항)</label>
-                            <input type="url" id="programImage" placeholder="https://example.com/image.jpg">
-                        </div>
+                        <div class="form-group"><label for="programTitle">프로그램 이름</label><input type="text" id="programTitle" placeholder="예: 우붓 라이스 테라스 투어" required></div>
+                        <div class="form-group"><label for="programDescription">프로그램 설명</label><textarea id="programDescription" placeholder="프로그램에 대한 자세한 설명을 입력해주세요..." required></textarea></div>
+                        <div class="form-group"><label for="programImage">이미지 URL (선택사항)</label><input type="url" id="programImage" placeholder="https://example.com/image.jpg"></div>
                         <button type="submit" class="btn">프로그램 추가</button>
-                        <button type="button" class="btn btn-danger" onclick="clearForm()">입력 초기화</button>
+                        <button type="button" class="btn btn-danger" id="clearFormBtn">입력 초기화</button>
                     </form>
                     <hr style="margin: 30px 0; border: 1px solid #eee;">
                     <h2 style="color: #c0392b;">🚨 위험 구역 🚨</h2>
-                    <button type="button" class="btn btn-danger" onclick="runInitialization()">DB 초기화 및 기본값 설정</button>
-                    <p style="font-size: 14px; color: #7f8c8d; margin-top: 10px;">
-                        주의: 이 버튼을 누르면 DB의 모든 프로그램이 삭제되고, 코드에 정의된 기본 프로그램으로 덮어씁니다.
-                    </p>
+                    <button type="button" class="btn btn-danger" id="initDbBtn">DB 초기화 및 기본값 설정</button>
+                    <p style="font-size: 14px; color: #7f8c8d; margin-top: 10px;">주의: 이 버튼을 누르면 DB의 모든 프로그램이 삭제되고, 코드에 정의된 기본 프로그램으로 덮어씁니다.</p>
                 </div>
+                
+                <!-- 프로그램 카드 -->
                 <div class="programs-grid" id="programsGrid"></div>
                 <div class="no-programs" id="noPrograms">프로그램을 불러오는 중입니다...</div>
+                
+                <!-- 결과 섹션 -->
                 <div class="results-section">
-                     <div class="results-header">
+                    <div class="results-header">
                         <h2>📊 실시간 투표 결과</h2>
-                        <button id="excelDownloadBtn" class="excel-download-btn" onclick="exportToExcel()">엑셀로 다운로드</button>
+                        <button id="excelDownloadBtn" class="excel-download-btn">엑셀로 다운로드</button>
                     </div>
                     <div id="resultsChart"></div>
                 </div>
             </div>
-            <button class="admin-toggle" onclick="showPasswordModal()" title="관리자 모드">🔧</button>
+            <button class="admin-toggle" id="adminToggleBtn" title="관리자 모드">🔧</button>
         </div>
     </div>
 
-    <!-- Modals -->
+    <!-- 모달 -->
     <div class="modal" id="passwordModal">
         <div class="modal-content">
             <h3>🔐 관리자 로그인</h3>
             <input type="email" id="adminEmail" placeholder="관리자 이메일을 입력하세요">
             <input type="password" id="adminPassword" placeholder="관리자 비밀번호를 입력하세요">
             <div class="modal-buttons">
-                <button class="btn" onclick="checkAdminPassword()">로그인</button>
+                <button class="btn" id="loginBtn">로그인</button>
                 <button class="btn btn-danger" onclick="hideModal('passwordModal')">취소</button>
             </div>
         </div>
@@ -220,7 +206,7 @@
             <input type="text" id="voterEmployeeId" placeholder="사번을 입력하세요">
             <input type="text" id="voterName" placeholder="이름을 입력하세요">
             <div class="modal-buttons">
-                <button class="btn" onclick="submitVote()">투표하기</button>
+                <button class="btn" id="submitVoteBtn">투표하기</button>
                 <button class="btn btn-danger" onclick="hideModal('voterAuthModal')">취소</button>
             </div>
         </div>
@@ -229,220 +215,228 @@
         <div class="modal-content">
             <h3 id="voterListTitle">투표자 명단</h3>
             <ul id="voterList"></ul>
-            <div class="modal-buttons" style="margin-top: 20px;">
-                <button class="btn btn-danger" onclick="hideModal('voterListModal')">닫기</button>
+            <div class="modal-buttons" style="margin-top: 20px;"><button class="btn btn-danger" onclick="hideModal('voterListModal')">닫기</button></div>
+        </div>
+    </div>
+    <!-- 일반 알림/확인 모달 -->
+    <div class="modal" id="alertModal">
+        <div class="modal-content">
+            <h3 id="alertTitle">알림</h3>
+            <p id="alertMessage"></p>
+            <div class="modal-buttons">
+                <button class="btn" id="alertOkBtn">확인</button>
+                <button class="btn btn-secondary" id="alertCancelBtn" style="display:none;">취소</button>
             </div>
         </div>
     </div>
 
+
     <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-      import { getFirestore, collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, increment, arrayUnion, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-      import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        // Firebase 모듈 가져오기
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, increment, arrayUnion, onSnapshot, writeBatch, query, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-      const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_AUTH_DOMAIN",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_STORAGE_BUCKET",
-        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-        appId: "YOUR_APP_ID"
-      };
-
-      const app = initializeApp(firebaseConfig);
-      window.db = getFirestore(app);
-      window.auth = getAuth(app);
-      window.firebase = {
-          collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, increment, arrayUnion, query, orderBy, signInWithEmailAndPassword
-      };
-    </script>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
+        // --- 전역 변수 및 설정 ---
+        let db, auth;
         let programs = [];
         let editingId = null;
         let votingForId = null;
         let isAdminMode = false;
+        let unsubscribePrograms = null; // 리스너 구독 해제 함수를 저장하기 위함
 
-        const { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, increment, arrayUnion, query, orderBy, signInWithEmailAndPassword } = window.firebase;
-
+        // --- DOM 요소 ---
         const splashScreen = document.getElementById('splash-screen');
         const introVideo = document.getElementById('intro-video');
-        const skipButton = document.getElementById('skip-intro');
         const mainWrapper = document.querySelector('.main-wrapper');
         const music = document.getElementById('background-music');
-        const musicToggle = document.getElementById('music-toggle');
-        let isMusicPlaying = false;
+        const programsGrid = document.getElementById('programsGrid');
+        const noProgramsEl = document.getElementById('noPrograms');
+        const programForm = document.getElementById('programForm');
 
-        function playMusic() {
-            if (!isMusicPlaying) {
-                music.play().then(() => {
-                    isMusicPlaying = true;
-                    musicToggle.textContent = '🔊';
-                }).catch(error => {
-                    console.log('음악 자동 재생이 차단되었습니다.');
+        // --- 모달 도우미 함수 ---
+        window.showModal = (id) => document.getElementById(id).classList.add('show');
+        window.hideModal = (id) => document.getElementById(id).classList.remove('show');
+
+        // --- 커스텀 알림/확인 창 ---
+        const showAlert = (message, title = '알림', onOk) => {
+            document.getElementById('alertTitle').textContent = title;
+            document.getElementById('alertMessage').innerHTML = message;
+            const okBtn = document.getElementById('alertOkBtn');
+            const cancelBtn = document.getElementById('alertCancelBtn');
+            cancelBtn.style.display = 'none';
+            
+            okBtn.onclick = () => {
+                hideModal('alertModal');
+                if (onOk) onOk();
+            };
+            showModal('alertModal');
+        };
+
+        const showConfirm = (message, title = '확인 필요') => {
+            return new Promise((resolve) => {
+                document.getElementById('alertTitle').textContent = title;
+                document.getElementById('alertMessage').innerHTML = message;
+                const okBtn = document.getElementById('alertOkBtn');
+                const cancelBtn = document.getElementById('alertCancelBtn');
+                cancelBtn.style.display = 'inline-block';
+
+                okBtn.onclick = () => { hideModal('alertModal'); resolve(true); };
+                cancelBtn.onclick = () => { hideModal('alertModal'); resolve(false); };
+                showModal('alertModal');
+            });
+        };
+
+        // --- 초기화 ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeFirebase();
+            setupEventListeners();
+            playIntroVideo();
+            playMusic();
+        });
+
+        async function initializeFirebase() {
+            try {
+                // 플랫폼에서 제공하는 환경 변수 사용
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+
+                if (!firebaseConfig.apiKey) {
+                    showAlert("Firebase 설정이 올바르지 않습니다. 앱이 정상적으로 동작하지 않을 수 있습니다.", "설정 오류");
+                    noProgramsEl.textContent = 'Firebase 설정 오류. 관리자에게 문의하세요.';
+                    return;
+                }
+
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                // 사용자 인증
+                onAuthStateChanged(auth, user => {
+                    if (user) {
+                        console.log("인증된 사용자:", user.uid);
+                        // 인증 완료 후 데이터 수신 시작
+                        loadAndListenPrograms();
+                    } else {
+                        console.log("로그인된 사용자가 없습니다.");
+                    }
                 });
+                
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+            } catch (error) {
+                console.error("Firebase 초기화 실패:", error);
+                showAlert(`Firebase 초기화에 실패했습니다. 페이지를 새로고침 해주세요. <br><br>오류: ${error.message}`, "치명적 오류");
+                noProgramsEl.textContent = 'Firebase 초기화 오류. 새로고침 해주세요.';
             }
         }
 
-        function showMainContent() {
-            if (splashScreen.style.display === 'none') return;
-            splashScreen.style.opacity = '0';
-            setTimeout(() => {
-                splashScreen.style.display = 'none';
-                mainWrapper.classList.add('visible');
-                playMusic();
-            }, 1000);
+        // --- 이벤트 리스너 설정 ---
+        function setupEventListeners() {
+            document.getElementById('skip-intro').onclick = showMainContent;
+            introVideo.onended = showMainContent;
+            
+            // 영상 로드 실패 시 자동 건너뛰기
+            introVideo.addEventListener('error', (e) => {
+                console.error("비디오 로드 오류:", e);
+                showMainContent();
+            });
+
+            document.getElementById('music-toggle').addEventListener('click', toggleMusic);
+            document.getElementById('adminToggleBtn').onclick = () => showModal('passwordModal');
+            document.getElementById('loginBtn').onclick = checkAdminPassword;
+            document.getElementById('clearFormBtn').onclick = clearForm;
+            document.getElementById('initDbBtn').onclick = runInitialization;
+            document.getElementById('submitVoteBtn').onclick = submitVote;
+            document.getElementById('excelDownloadBtn').onclick = exportToExcel;
+            programForm.addEventListener('submit', handleFormSubmit);
         }
 
+        // --- 인트로 및 음악 관련 ---
         function playIntroVideo() {
             const playPromise = introVideo.play();
             if (playPromise !== undefined) {
                 playPromise.catch(error => {
-                    console.error("영상 자동 재생 실패:", error);
-                    showMainContent();
+                    console.warn("영상 자동 재생 실패. 사용자 상호작용이 필요합니다.", error);
+                    // 자동 재생 실패 시, 화면 클릭으로 재생 시도
+                    splashScreen.addEventListener('click', () => {
+                        introVideo.play();
+                    }, { once: true });
                 });
             }
         }
-
-        introVideo.onended = showMainContent;
-        skipButton.onclick = showMainContent;
-        playIntroVideo();
-
-        musicToggle.addEventListener('click', () => {
-            if (music.paused) {
-                music.play();
-                musicToggle.textContent = '🔊';
-            } else {
-                music.pause();
-                musicToggle.textContent = '🔇';
-            }
-            isMusicPlaying = !music.paused;
-        });
         
-        window.runInitialization = async function() {
-            if (!isAdminMode) {
-                alert('관리자로 로그인해야 실행할 수 있습니다.');
-                return;
-            }
-            const confirmation = confirm("🚨정말로 모든 투표 데이터를 삭제하고 기본 프로그램으로 덮어쓰시겠습니까?\n이 작업은 되돌릴 수 없습니다!");
-            if (!confirmation) {
-                alert('초기화가 취소되었습니다.');
-                return;
-            }
-            try {
-                alert('DB 초기화를 시작합니다. 기존 데이터를 모두 삭제합니다...');
-                const programsCollection = collection(window.db, "programs");
-                const oldDocsSnapshot = await getDocs(programsCollection);
-                for (const oldDoc of oldDocsSnapshot.docs) {
-                    await deleteDoc(doc(window.db, "programs", oldDoc.id));
-                }
-                
-                alert('기존 데이터 삭제 완료. 이제 기본 프로그램을 추가합니다.');
-
-                const defaultPrograms = [
-                    { order: 1, title: '🚣 우붓 + 래프팅', description: '아융강에서 스릴 넘치는 래프팅을 즐기고<br>우붓 왕궁과 전통시장, 마을을<br>둘러보는 코스입니다.', image: 'https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-                    { order: 2, title: '🌿 우붓 + 스파', description: '우붓의 왕궁과 전통시장, 마을을 둘러보고<br>발리 전통 마사지를 받으며<br>심신의 피로를 푸는 힐링 코스입니다.', image: 'https://images.unsplash.com/photo-1708436137498-1b660e94c782?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-                    { order: 3, title: '🍹 리조트 자유시간', description: '고급 리조트의 수영장과 부대시설을<br>마음껏 이용하며 누구의 방해도 받지 않는<br>완벽한 자유시간을 만끽합니다.', image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80' },
-                    { order: 4, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸타 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>라운딩을 즐깁니다.', image: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-                    { order: 5, title: '🚤 해양 스포츠', description: '제트스키, 도넛, 바나나보트,<br>스노클링을 즐기는<br>액티비티 패키지입니다.', image: 'https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format=fit&crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-                    { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와<br>다양한 편의시설을 갖춰 즐기기 좋은 곳입니다.', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format=fit&crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' }
-                ];
-
-                for (const program of defaultPrograms) {
-                    await addDoc(collection(window.db, "programs"), {
-                        ...program,
-                        votes: 0,
-                        voters: []
-                    });
-                }
-                alert('초기 데이터 설정이 완료되었습니다. 페이지를 다시 로드합니다.');
-                window.location.reload();
-            } catch (error) {
-                console.error("DB 초기화 중 오류 발생:", error);
-                alert(`DB 초기화에 실패했습니다. Firebase 권한을 확인해주세요.\n오류: ${error.message}`);
-            }
+        function playMusic() {
+            music.muted = true;
+            music.play().catch(() => {
+                console.warn('음악 재생을 위해 사용자의 상호작용이 필요합니다.');
+                document.body.addEventListener('click', () => {
+                    if (music.paused) music.play();
+                }, { once: true });
+            });
         }
 
-        async function loadProgramsAndRender() {
-            try {
-                const programsCollection = collection(window.db, "programs");
-                const q = query(programsCollection, orderBy("order"));
-                const querySnapshot = await getDocs(q);
+        function showMainContent() {
+            if (splashScreen.style.display === 'none') return; // 중복 실행 방지
+            splashScreen.style.opacity = '0';
+            setTimeout(() => {
+                splashScreen.style.display = 'none';
+                mainWrapper.classList.add('visible');
+                if (!music.muted) {
+                    music.muted = false;
+                    document.getElementById('music-toggle').textContent = '🔊';
+                }
+            }, 1000);
+        }
+        
+        function toggleMusic() {
+            music.muted = !music.muted;
+            document.getElementById('music-toggle').textContent = music.muted ? '🔇' : '🔊';
+        }
+
+        // --- 핵심 앱 로직 ---
+        function loadAndListenPrograms() {
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            const programsCollectionRef = collection(db, `artifacts/${appId}/public/data/programs`);
+            
+            if (unsubscribePrograms) unsubscribePrograms(); // 이전 리스너가 있는 경우 구독 해제
+
+            unsubscribePrograms = onSnapshot(programsCollectionRef, (querySnapshot) => {
                 programs = [];
                 if (querySnapshot.empty) {
-                    const noProgramsEl = document.getElementById('noPrograms');
                     noProgramsEl.textContent = '프로그램이 없습니다. 관리자로 로그인하여 DB를 초기화해주세요.';
                 } else {
                     querySnapshot.forEach((doc) => {
                         programs.push({ id: doc.id, ...doc.data() });
                     });
+                    // 메모리에서 'order' 순서로 프로그램 정렬
+                    programs.sort((a, b) => (a.order || 0) - (b.order || 0));
                 }
                 renderPrograms();
                 updateResults();
-            } catch (error) {
-                console.error("데이터 로딩 실패:", error);
-                alert("데이터를 불러오는 데 실패했습니다. Firebase 설정 또는 보안 규칙을 확인해주세요.");
-            }
+            }, (error) => {
+                console.error("데이터 수신 오류:", error);
+                showAlert(`실시간 데이터 수신에 실패했습니다. <br><br>오류: ${error.message}`, "데이터 오류");
+                noProgramsEl.textContent = '데이터를 불러오는 중 오류가 발생했습니다.';
+            });
         }
 
-        window.showModal = (id) => document.getElementById(id).classList.add('show');
-        window.hideModal = (id) => document.getElementById(id).classList.remove('show');
-        window.showPasswordModal = () => { showModal('passwordModal'); document.getElementById('adminEmail').focus(); }
-
-        window.checkAdminPassword = async () => {
-            const email = document.getElementById('adminEmail').value;
-            const password = document.getElementById('adminPassword').value;
-            if (!email || !password) return alert('이메일과 비밀번호를 모두 입력해주세요.');
-            try {
-                await signInWithEmailAndPassword(window.auth, email, password);
-                isAdminMode = true;
-                document.getElementById('adminPanel').classList.add('show');
-                document.getElementById('excelDownloadBtn').classList.add('show');
-                hideModal('passwordModal');
-                alert('관리자 로그인 성공! 🔓');
-                renderPrograms(); updateResults();
-            } catch (error) {
-                console.error("로그인 실패:", error.code);
-                alert('이메일 또는 비밀번호가 잘못되었습니다.');
-            }
-            document.getElementById('adminEmail').value = '';
-            document.getElementById('adminPassword').value = '';
-        }
-
-        window.clearForm = () => { document.getElementById('programForm').reset(); editingId = null; document.querySelector('.btn[type="submit"]').textContent = '프로그램 추가'; }
-        window.requestVote = (id) => { votingForId = id; showModal('voterAuthModal'); document.getElementById('voterEmployeeId').focus(); }
-
-        window.submitVote = async () => {
-            const employeeId = document.getElementById('voterEmployeeId').value.trim();
-            const name = document.getElementById('voterName').value.trim();
-            if (!employeeId || !name) return alert('사번과 이름을 모두 입력해주세요.');
-            
-            const allDocs = await getDocs(collection(window.db, "programs"));
-            const alreadyVoted = allDocs.docs.some(doc => doc.data().voters?.some(v => v.id === employeeId));
-            if (alreadyVoted) return alert('이미 다른 프로그램에 투표하셨습니다. 한 사람당 한 번만 투표할 수 있습니다.');
-
-            const programRef = doc(window.db, "programs", votingForId);
-            await updateDoc(programRef, { votes: increment(1), voters: arrayUnion({ id: employeeId, name: name }) });
-            await loadProgramsAndRender();
-            hideModal('voterAuthModal');
-            document.getElementById('voterEmployeeId').value = '';
-            document.getElementById('voterName').value = '';
-        }
-        
         function renderPrograms() {
-            const grid = document.getElementById('programsGrid');
-            const noProgramsEl = document.getElementById('noPrograms');
             if (!programs || programs.length === 0) {
-                grid.style.display = 'none';
+                programsGrid.style.display = 'none';
                 noProgramsEl.style.display = 'block';
                 return;
             }
-            grid.style.display = 'grid';
+            programsGrid.style.display = 'grid';
             noProgramsEl.style.display = 'none';
-            grid.innerHTML = programs.map(p => `
+
+            programsGrid.innerHTML = programs.map(p => `
                 <div class="program-card">
-                    <img src="${p.image || 'https://via.placeholder.com/400x200.png?text=No+Image'}" alt="${p.title}" class="program-image" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x200.png?text=Image+Load+Failed';">
+                    <img src="${p.image || 'https://placehold.co/400x200/png?text=이미지+없음'}" alt="${p.title}" class="program-image" onerror="this.onerror=null; this.src='https://placehold.co/400x200/png?text=이미지+오류';">
                     <div class="program-content">
                         <h3 class="program-title">${p.title}</h3>
                         <p class="program-description">${p.description}</p>
@@ -466,10 +460,10 @@
                 return;
             }
             const totalVotes = programs.reduce((sum, p) => sum + (p.votes || 0), 0);
-            const sortedPrograms = [...programs].sort((a, b) => (a.order || 0) - (b.order || 0));
+            
             resultsChart.innerHTML = `
                 <div style="margin-bottom: 20px; text-align: center;"><strong>총 투표 수: ${totalVotes}표</strong></div>
-                ${sortedPrograms.map((p, index) => {
+                ${programs.map(p => {
                     const percentage = totalVotes > 0 ? ((p.votes || 0) / totalVotes * 100).toFixed(1) : 0;
                     return `
                         <div style="margin-bottom: 15px;">
@@ -480,15 +474,135 @@
                                 </div>
                                 <span style="color: #7f8c8d;">${p.votes || 0}표 (${percentage}%)</span>
                             </div>
-                            <div style="background: #ecf0f1; border-radius: 10px; height: 20px;"><div style="background: linear-gradient(90deg, #667eea, #764ba2); height: 100%; width: ${percentage}%;"></div></div>
-                        </div>
-                    `;
+                            <div style="background: #ecf0f1; border-radius: 10px; height: 20px; overflow: hidden;">
+                                <div style="background: linear-gradient(90deg, #667eea, #764ba2); height: 100%; width: ${percentage}%; transition: width 0.5s ease-in-out;"></div>
+                            </div>
+                        </div>`;
                 }).join('')}
             `;
         }
 
-        window.deleteProgram = async (id) => { if (confirm('정말로 이 프로그램을 삭제하시겠습니까?')) { await deleteDoc(doc(window.db, "programs", id)); await loadProgramsAndRender(); } }
-        window.editProgram = async (id) => { const docSnap = await getDoc(doc(window.db, "programs", id)); if (docSnap.exists()) { const p = docSnap.data(); document.getElementById('programTitle').value = p.title; document.getElementById('programDescription').value = p.description; document.getElementById('programImage').value = p.image || ''; editingId = id; document.querySelector('.btn[type="submit"]').textContent = '프로그램 수정'; document.getElementById('adminPanel').scrollIntoView({ behavior: 'smooth' }); } }
+        // --- 투표 로직 ---
+        window.requestVote = (id) => {
+            votingForId = id;
+            showModal('voterAuthModal');
+            document.getElementById('voterEmployeeId').focus();
+        };
+
+        async function submitVote() {
+            const employeeId = document.getElementById('voterEmployeeId').value.trim();
+            const name = document.getElementById('voterName').value.trim();
+            if (!employeeId || !name) {
+                return showAlert('사번과 이름을 모두 입력해주세요.');
+            }
+            
+            // 사용자가 이미 투표했는지 확인
+            const alreadyVoted = programs.some(p => p.voters?.some(v => v.id === employeeId));
+            if (alreadyVoted) {
+                return showAlert('이미 다른 프로그램에 투표하셨습니다. 한 사람당 한 번만 투표할 수 있습니다.');
+            }
+            
+            try {
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const programRef = doc(db, `artifacts/${appId}/public/data/programs`, votingForId);
+                await updateDoc(programRef, { 
+                    votes: increment(1), 
+                    voters: arrayUnion({ id: employeeId, name: name }) 
+                });
+                
+                hideModal('voterAuthModal');
+                document.getElementById('voterEmployeeId').value = '';
+                document.getElementById('voterName').value = '';
+                showAlert('투표가 성공적으로 완료되었습니다!', '투표 완료');
+            } catch (error) {
+                console.error("투표 중 오류:", error);
+                showAlert(`투표 중 오류가 발생했습니다. <br><br>오류: ${error.message}`, "오류");
+            }
+        }
+
+        // --- 관리자 로직 ---
+        async function checkAdminPassword() {
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            if (!email || !password) return showAlert('이메일과 비밀번호를 모두 입력해주세요.');
+            
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                isAdminMode = true;
+                document.getElementById('adminPanel').classList.add('show');
+                document.getElementById('excelDownloadBtn').classList.add('show');
+                hideModal('passwordModal');
+                showAlert('관리자 로그인 성공! 🔓');
+                renderPrograms();
+                updateResults();
+            } catch (error) {
+                console.error("로그인 실패:", error.code);
+                showAlert('이메일 또는 비밀번호가 잘못되었습니다.');
+            } finally {
+                document.getElementById('adminEmail').value = '';
+                document.getElementById('adminPassword').value = '';
+            }
+        }
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            const title = document.getElementById('programTitle').value.trim();
+            const description = document.getElementById('programDescription').value.trim();
+            const image = document.getElementById('programImage').value.trim();
+            if (!title || !description) return showAlert('프로그램 이름과 설명을 모두 입력해주세요.');
+            
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            const programsCollectionRef = collection(db, `artifacts/${appId}/public/data/programs`);
+            const data = { title, description, image };
+
+            try {
+                if (editingId) {
+                    await updateDoc(doc(programsCollectionRef, editingId), data);
+                    showAlert('프로그램이 성공적으로 수정되었습니다.');
+                } else {
+                    const maxOrder = programs.reduce((max, p) => Math.max(max, p.order || 0), 0);
+                    await addDoc(programsCollectionRef, { ...data, votes: 0, voters: [], order: maxOrder + 1 });
+                    showAlert('새로운 프로그램이 성공적으로 추가되었습니다.');
+                }
+                clearForm();
+            } catch (error) {
+                console.error("프로그램 추가/수정 오류:", error);
+                showAlert(`오류가 발생했습니다. 다시 시도해주세요.<br>(오류 메시지: ${error.message})`);
+            }
+        }
+        
+        function clearForm() {
+            programForm.reset();
+            editingId = null;
+            document.querySelector('#programForm button[type="submit"]').textContent = '프로그램 추가';
+        }
+
+        window.editProgram = (id) => {
+            const p = programs.find(prog => prog.id === id);
+            if (p) {
+                document.getElementById('programTitle').value = p.title;
+                document.getElementById('programDescription').value = p.description.replace(/<br\s*\/?>/gi, '\n');
+                document.getElementById('programImage').value = p.image || '';
+                editingId = id;
+                document.querySelector('#programForm button[type="submit"]').textContent = '프로그램 수정';
+                document.getElementById('adminPanel').scrollIntoView({ behavior: 'smooth' });
+            }
+        };
+
+        window.deleteProgram = async (id) => {
+            const confirmed = await showConfirm('정말로 이 프로그램을 삭제하시겠습니까? 투표 정보도 함께 삭제됩니다.', '삭제 확인');
+            if (confirmed) {
+                try {
+                    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                    await deleteDoc(doc(db, `artifacts/${appId}/public/data/programs`, id));
+                    showAlert('프로그램이 삭제되었습니다.');
+                } catch (error) {
+                    console.error("삭제 오류:", error);
+                    showAlert(`삭제 중 오류가 발생했습니다: ${error.message}`);
+                }
+            }
+        };
+        
         window.showVoters = (id) => { 
             const p = programs.find(p => p.id === id); 
             if (!p) return; 
@@ -497,55 +611,73 @@
             const voters = p.voters || []; 
             voterListEl.innerHTML = voters.length ? voters.map(v => `<li>${v.name} (${v.id})</li>`).join('') : '<li>아직 투표한 사람이 없습니다.</li>'; 
             showModal('voterListModal'); 
+        };
+
+        async function runInitialization() {
+            if (!isAdminMode) return showAlert('관리자로 로그인해야 실행할 수 있습니다.');
+            
+            const confirmed = await showConfirm("🚨정말로 모든 투표 데이터를 삭제하고 기본 프로그램으로 덮어쓰시겠습니까?<br>이 작업은 되돌릴 수 없습니다!", "DB 초기화 확인");
+            if (!confirmed) return showAlert('초기화가 취소되었습니다.');
+
+            try {
+                showAlert('DB 초기화를 시작합니다. 잠시만 기다려주세요...');
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const programsCollectionRef = collection(db, `artifacts/${appId}/public/data/programs`);
+                
+                // 배치(batch)로 모든 기존 문서 삭제
+                const oldDocsSnapshot = await getDocs(programsCollectionRef);
+                const deleteBatch = writeBatch(db);
+                oldDocsSnapshot.forEach(doc => deleteBatch.delete(doc.ref));
+                await deleteBatch.commit();
+                
+                // 배치(batch)로 기본 프로그램 추가
+                const defaultPrograms = [
+                    { order: 1, title: '🚣 우붓 + 래프팅', description: '아융강에서 스릴 넘치는 래프팅을 즐기고<br>우붓 왕궁과 전통시장, 마을을<br>둘러보는 코스입니다.', image: 'https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+                    { order: 2, title: '🌿 우붓 + 스파', description: '우붓의 왕궁과 전통시장, 마을을 둘러보고<br>발리 전통 마사지를 받으며<br>심신의 피로를 푸는 힐링 코스입니다.', image: 'https://images.unsplash.com/photo-1708436137498-1b660e94c782?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+                    { order: 3, title: '🏖️ 리조트 자유시간', description: '고급 리조트의 수영장과 부대시설을<br>마음껏 이용하며 누구의 방해도 받지 않는<br>완벽한 자유시간을 만끽합니다.', image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80' },
+                    { order: 4, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸타 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>라운딩을 즐깁니다.', image: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+                    { order: 5, title: '🚤 해양 스포츠', description: '제트스키, 도넛, 바나나보트,<br>스노클링을 즐기는<br>액티비티 패키지입니다.', image: 'https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format=fit&crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+                    { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와<br>다양한 편의시설을 갖춰 즐기기 좋은 곳입니다.', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit&crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' }
+                ];
+                
+                const addBatch = writeBatch(db);
+                defaultPrograms.forEach(program => {
+                    const newProgramRef = doc(programsCollectionRef);
+                    addBatch.set(newProgramRef, { ...program, votes: 0, voters: [] });
+                });
+                await addBatch.commit();
+                
+                showAlert('초기 데이터 설정이 완료되었습니다.', '초기화 완료');
+            } catch (error) {
+                console.error("DB 초기화 중 오류 발생:", error);
+                showAlert(`DB 초기화에 실패했습니다. Firebase 권한을 확인해주세요.<br>오류: ${error.message}`);
+            }
         }
-        window.exportToExcel = async () => { 
-            alert('모든 투표자 정보를 준비합니다...'); 
+
+        function exportToExcel() {
+            if (!isAdminMode) return showAlert('관리자만 사용할 수 있는 기능입니다.');
+            if (programs.length === 0) return showAlert('다운로드할 데이터가 없습니다.');
+            
+            showAlert('모든 투표자 정보를 준비합니다...'); 
             const allVoters = []; 
-            const querySnapshot = await getDocs(collection(window.db, "programs")); 
-            querySnapshot.forEach(d => { 
-                const p = { id: d.id, ...d.data() }; 
+            programs.forEach(p => { 
                 if (p.voters?.length) { 
                     p.voters.forEach(v => allVoters.push({ program: p.title.replace(/,/g, ''), id: v.id, name: v.name })); 
                 } 
             }); 
-            if (!allVoters.length) return alert('다운로드할 데이터가 없습니다.'); 
+            
+            if (!allVoters.length) return showAlert('다운로드할 투표 데이터가 없습니다.'); 
+            
             const csv = `${"\uFEFF"}"프로그램","사번","이름"\n${allVoters.map(v => `"${v.program}","${v.id}","${v.name}"`).join('\n')}`; 
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); 
             const link = document.createElement("a"); 
             link.href = URL.createObjectURL(blob); 
             link.download = "bali_vote_results.csv"; 
-            link.click(); 
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
-        
-        document.getElementById('programForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            try {
-                const title = document.getElementById('programTitle').value.trim();
-                const description = document.getElementById('programDescription').value.trim();
-                const image = document.getElementById('programImage').value.trim();
-                if (!title || !description) return alert('프로그램 이름과 설명을 모두 입력해주세요.');
-                
-                const data = { title, description, image };
 
-                if (editingId) {
-                    await updateDoc(doc(window.db, "programs", editingId), data);
-                    alert('프로그램이 성공적으로 수정되었습니다.');
-                } else {
-                    const maxOrder = programs.reduce((max, p) => Math.max(max, p.order || 0), 0);
-                    await addDoc(collection(window.db, "programs"), { ...data, votes: 0, voters: [], order: maxOrder + 1 });
-                    alert('새로운 프로그램이 성공적으로 추가되었습니다.');
-                }
-                clearForm();
-                await loadProgramsAndRender();
-            } catch (error) {
-                console.error("프로그램 추가/수정 중 오류 발생:", error);
-                alert(`오류가 발생했습니다. 다시 시도해주세요.\n(오류 메시지: ${error.message})`);
-            }
-        });
-        
-        loadProgramsAndRender();
-    });
     </script>
 </body>
 </html>
-이코드에서 DB초기화 버튼을 추
