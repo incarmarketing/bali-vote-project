@@ -8,8 +8,8 @@
     <!-- 소셜 공유를 위한 Open Graph 메타 태그 -->
     <meta property="og:title" content="✨ 발리에서 생길 일 ✨">
     <meta property="og:description" content="★ 발리 여행 최고의 프로그램을 뽑아주세요 ★">
-    <meta property="og:image" content="https://github.com/incarmarketing/bali-vote-project/blob/main/thumbnail.jpg?raw=true">
-    <meta property="og:url" content="https://incarmarketing.github.io/bali-vote-project/">
+    <meta property="og:image" content="[https://github.com/incarmarketing/bali-vote-project/blob/main/thumbnail.jpg?raw=true](https://github.com/incarmarketing/bali-vote-project/blob/main/thumbnail.jpg?raw=true)">
+    <meta property="og:url" content="[https://incarmarketing.github.io/bali-vote-project/](https://incarmarketing.github.io/bali-vote-project/)">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
 
@@ -18,7 +18,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1747235811701-c488682f5c7d?q=80&w=1150&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(0,0,0,0.3)), url('[https://images.unsplash.com/photo-1747235811701-c488682f5c7d?q=80&w=1150&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D](https://images.unsplash.com/photo-1747235811701-c488682f5c7d?q=80&w=1150&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)');
             background-size: cover; background-position: center; background-attachment: fixed;
             min-height: 100vh;
         }
@@ -64,7 +64,7 @@
 
         /* 핵심 레이아웃 */
         .container { max-width: 1200px; margin: 0 auto; background: rgba(255, 255, 255, 0.95); border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
-        .header { background: linear-gradient(135deg, rgba(255,107,107,0.8), rgba(255,167,38,0.8)), url('https://images.unsplash.com/photo-1636619306699-2d27a100605e?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); background-size: cover; background-position: center; color: white; padding: 40px; text-align: center; }
+        .header { background: linear-gradient(135deg, rgba(255,107,107,0.8), rgba(255,167,38,0.8)), url('[https://images.unsplash.com/photo-1636619306699-2d27a100605e?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D](https://images.unsplash.com/photo-1636619306699-2d27a100605e?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)'); background-size: cover; background-position: center; color: white; padding: 40px; text-align: center; }
         .header h1 { font-size: 2.5em; margin-bottom: 10px; }
         .header p { font-size: 1.2em; opacity: 0.9; }
         .main-content { padding: 40px; padding-bottom: 100px; }
@@ -109,7 +109,14 @@
         .admin-controls.show { display: flex; }
 
         /* 결과 섹션 */
-        .results-section { background: #f8f9fa; border-radius: 15px; padding: 30px; margin-top: 40px; }
+        .results-section { 
+            background: #f8f9fa; 
+            border-radius: 15px; 
+            padding: 30px; 
+            margin-top: 40px; 
+            /* 기본적으로 숨김 */
+            display: none; 
+        }
         .results-header { display: flex; justify-content: center; align-items: center; margin-bottom: 20px; position: relative; }
         .results-header h2 { color: #2c3e50; margin: 0; }
         .excel-download-btn { position: absolute; right: 0; background: linear-gradient(135deg, #28a745, #218838); color: white; border: none; padding: 8px 15px; border-radius: 8px; font-size: 14px; cursor: pointer; display: none; }
@@ -148,37 +155,39 @@
     </style>
 </head>
 <body>
-    <!-- 스플래시 화면 -->
+    <!-- 스플래시 화면: 인트로 비디오와 건너뛰기 버튼을 포함 -->
     <div id="splash-screen">
-        <video id="intro-video" src="https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/intro.mp4" autoplay muted playsinline></video>
+        <video id="intro-video" src="[https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/intro.mp4](https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/intro.mp4)" autoplay muted playsinline></video>
         <button id="skip-intro">인트로 건너뛰기 &gt;</button>
     </div>
 
-    <!-- 배경 음악 -->
-    <audio id="background-music" src="https://cdn.pixabay.com/download/audio/2022/08/27/audio_2932470728.mp3" loop></audio>
+    <!-- 배경 음악: 자동 재생 및 반복 -->
+    <audio id="background-music" src="[https://cdn.pixabay.com/download/audio/2022/08/27/audio_2932470728.mp3](https://cdn.pixabay.com/download/audio/2022/08/27/audio_2932470728.mp3)" loop></audio>
+    <!-- 음악 토글 버튼 -->
     <button id="music-toggle">🔇</button>
 
-    <!-- 메인 콘텐츠 -->
+    <!-- 메인 콘텐츠 래퍼 -->
     <div class="main-wrapper">
+        <!-- 회사 로고 컨테이너 -->
         <div class="logo-container">
-            <img src="https://github.com/incarmarketing/bali-vote-project/blob/main/logo.png?raw=true" alt="회사 로고" class="company-logo" onerror="this.style.display='none'">
+            <img src="[https://github.com/incarmarketing/bali-vote-project/blob/main/logo.png?raw=true](https://github.com/incarmarketing/bali-vote-project/blob/main/logo.png?raw=true)" alt="회사 로고" class="company-logo" onerror="this.style.display='none'">
         </div>
 
         <div class="container">
+            <!-- 헤더 섹션: 제목과 설명 -->
             <div class="header">
                 <h1>✨ 발리에서 생길 일 ✨</h1>
                 <p>함께 떠날 발리 여행<br>최고의 프로그램을 선택해주세요!</p>
             </div>
             <div class="main-content">
-                <!-- 관리자 패널 -->
+                <!-- 관리자 패널: 프로그램 추가/편집 및 데이터 관리 기능 -->
                 <div class="admin-panel" id="adminPanel">
                     <h2>✨ 프로그램 추가/편집</h2>
                     <form id="programForm">
                         <div class="form-group"><label for="programTitle">프로그램 이름</label><input type="text" id="programTitle" placeholder="예: 우붓 라이스 테라스 투어" required></div>
                         <div class="form-group"><label for="programDescription">프로그램 설명</label><textarea id="programDescription" placeholder="프로그램에 대한 자세한 설명을 입력해주세요..." required></textarea></div>
-                        <div class="form-group"><label for="programImage">이미지 URL (필수)</label><input type="url" id="programImage" placeholder="https://example.com/image.jpg" required></div>
-                        <!-- [수정됨] 비디오 URL 입력 필드 추가 -->
-                        <div class="form-group"><label for="programVideo">비디오 URL (선택사항)</label><input type="url" id="programVideo" placeholder="https://example.com/video.mp4"></div>
+                        <div class="form-group"><label for="programImage">이미지 URL (필수)</label><input type="url" id="programImage" placeholder="[https://example.com/image.jpg](https://example.com/image.jpg)" required></div>
+                        <div class="form-group"><label for="programVideo">비디오 URL (선택사항)</label><input type="url" id="programVideo" placeholder="[https://example.com/video.mp4](https://example.com/video.mp4)"></div>
                         <button type="submit" class="btn">프로그램 추가</button>
                         <button type="button" class="btn btn-danger" id="clearFormBtn">입력 초기화</button>
                     </form>
@@ -195,12 +204,13 @@
                     </p>
                 </div>
                 
-                <!-- 프로그램 카드 -->
+                <!-- 프로그램 카드 그리드: 투표 가능한 프로그램 목록 표시 -->
                 <div class="programs-grid" id="programsGrid"></div>
                 <div class="no-programs" id="noPrograms">프로그램을 불러오는 중입니다...</div>
                 
-                <!-- 결과 섹션 -->
-                <div class="results-section">
+                <!-- 결과 섹션: 실시간 투표 결과 차트 및 엑셀 다운로드 버튼 -->
+                <!-- 이 섹션은 기본적으로 숨겨져 있으며, 관리자 로그인 시에만 표시됩니다. -->
+                <div class="results-section" id="resultsSection">
                     <div class="results-header">
                         <h2>📊 실시간 투표 결과</h2>
                         <button id="excelDownloadBtn" class="excel-download-btn">엑셀로 다운로드</button>
@@ -208,11 +218,12 @@
                     <div id="resultsChart"></div>
                 </div>
             </div>
+            <!-- 관리자 토글 버튼 -->
             <button class="admin-toggle" id="adminToggleBtn" title="초기화 중..." disabled>🔧</button>
         </div>
     </div>
 
-    <!-- 모달 -->
+    <!-- 모달: 관리자 로그인, 투표자 정보 입력, 투표자 명단 보기, 일반 알림/확인 -->
     <div class="modal" id="passwordModal">
         <div class="modal-content">
             <h3>🔐 관리자 로그인</h3>
@@ -257,19 +268,25 @@
 
 
     <script type="module">
-        // Firebase 모듈 가져오기 (최신 버전으로 통일)
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, increment, arrayUnion, onSnapshot, writeBatch, query, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // Firebase 모듈 가져오기
+        import { initializeApp } from "[https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js](https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js)";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "[https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js](https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js)";
+        import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, increment, arrayUnion, onSnapshot, writeBatch, query, getDocs } from "[https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js](https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js)";
 
         // --- 전역 변수 및 설정 ---
-        let db, auth;
-        let programs = [];
-        let editingId = null;
-        let votingForId = null;
-        let isAdminMode = false;
-        let unsubscribePrograms = null;
-        let videoObserver = null; // [수정됨] Intersection Observer 인스턴스를 저장할 변수
+        let db; // Firestore 인스턴스
+        let auth; // Firebase Auth 인스턴스
+        let programs = []; // 프로그램 데이터 배열
+        let editingId = null; // 현재 편집 중인 프로그램 ID
+        let votingForId = null; // 현재 투표하려는 프로그램 ID
+        let isAdminMode = false; // 관리자 모드 여부
+        let unsubscribePrograms = null; // Firestore 스냅샷 리스너 해제 함수
+        let videoObserver = null; // Intersection Observer 인스턴스를 저장할 변수
+
+        // Canvas 환경에서 제공되는 전역 변수 (Firebase 설정 및 초기 인증 토큰)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         // --- DOM 요소 ---
         const splashScreen = document.getElementById('splash-screen');
@@ -280,18 +297,27 @@
         const noProgramsEl = document.getElementById('noPrograms');
         const programForm = document.getElementById('programForm');
         const adminToggleBtn = document.getElementById('adminToggleBtn');
+        const resultsSection = document.getElementById('resultsSection'); // 결과 섹션 DOM 요소 추가
 
         // --- 모달 도우미 함수 ---
+        // 특정 ID의 모달을 표시하는 함수
         window.showModal = (id) => document.getElementById(id).classList.add('show');
+        // 특정 ID의 모달을 숨기는 함수
         window.hideModal = (id) => document.getElementById(id).classList.remove('show');
 
-        // --- 커스텀 알림/확인 창 ---
+        // --- 커스텀 알림/확인 창 (alert, confirm 대체) ---
+        /**
+         * 사용자에게 알림 메시지를 표시하는 커스텀 모달
+         * @param {string} message - 표시할 메시지 (HTML 포함 가능)
+         * @param {string} [title='알림'] - 모달 제목
+         * @param {function} [onOk] - '확인' 버튼 클릭 시 실행될 콜백 함수
+         */
         const showAlert = (message, title = '알림', onOk) => {
             document.getElementById('alertTitle').textContent = title;
             document.getElementById('alertMessage').innerHTML = message;
             const okBtn = document.getElementById('alertOkBtn');
             const cancelBtn = document.getElementById('alertCancelBtn');
-            cancelBtn.style.display = 'none';
+            cancelBtn.style.display = 'none'; // 알림 모달에서는 취소 버튼 숨김
             
             okBtn.onclick = () => {
                 hideModal('alertModal');
@@ -300,13 +326,19 @@
             showModal('alertModal');
         };
 
+        /**
+         * 사용자에게 확인 메시지를 표시하고 응답을 받는 커스텀 모달
+         * @param {string} message - 표시할 메시지 (HTML 포함 가능)
+         * @param {string} [title='확인 필요'] - 모달 제목
+         * @returns {Promise<boolean>} - 사용자가 '확인'을 누르면 true, '취소'를 누르면 false를 반환하는 Promise
+         */
         const showConfirm = (message, title = '확인 필요') => {
             return new Promise((resolve) => {
                 document.getElementById('alertTitle').textContent = title;
                 document.getElementById('alertMessage').innerHTML = message;
                 const okBtn = document.getElementById('alertOkBtn');
                 const cancelBtn = document.getElementById('alertCancelBtn');
-                cancelBtn.style.display = 'inline-block';
+                cancelBtn.style.display = 'inline-block'; // 확인 모달에서는 취소 버튼 표시
 
                 okBtn.onclick = () => { hideModal('alertModal'); resolve(true); };
                 cancelBtn.onclick = () => { hideModal('alertModal'); resolve(false); };
@@ -314,7 +346,8 @@
             });
         };
 
-        // --- 초기화 ---
+        // --- 초기화 함수 ---
+        // DOM 로드 완료 후 Firebase 초기화, 이벤트 리스너 설정, 음악 및 인트로 비디오 재생
         document.addEventListener('DOMContentLoaded', () => {
             initializeFirebase();
             setupEventListeners();
@@ -322,52 +355,60 @@
             playIntroVideo();
         });
 
+        // Firebase 초기화 함수
         async function initializeFirebase() {
             try {
-               const firebaseConfig = {
-  apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
-  authDomain: "incarhigh-balihi.firebaseapp.com",
-  projectId: "incarhigh-balihi",
-  storageBucket: "incarhigh-balihi.firebasestorage.app",
-  messagingSenderId: "777053953777",
-  appId: "1:777053953777:web:bd21c80707306f54da9350",
-  measurementId: "G-T8BW822SLS"
-};
-
-                if (firebaseConfig.apiKey === "YOUR_API_KEY") {
-                    throw new Error("Firebase 설정이 필요합니다. 스크립트에서 firebaseConfig 변수를 자신의 프로젝트 정보로 교체해주세요.");
+                // Firebase 설정 객체가 유효한지 확인
+                if (!firebaseConfig || Object.keys(firebaseConfig).length === 0) {
+                    throw new Error("Firebase 설정이 필요합니다. Canvas 환경 변수를 확인해주세요.");
                 }
 
+                // Firebase 앱 초기화
                 const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
+                db = getFirestore(app); // Firestore 인스턴스 가져오기
+                auth = getAuth(app); // Auth 인스턴스 가져오기
 
+                // 초기 인증 토큰이 있으면 커스텀 토큰으로 로그인, 없으면 익명 로그인
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                // 관리자 토글 버튼 활성화
                 adminToggleBtn.disabled = false;
                 adminToggleBtn.title = '관리자 모드';
-                console.log("Firebase is ready. Admin functions are now available.");
+                console.log("Firebase가 준비되었습니다. 관리자 기능 사용 가능.");
 
+                // 인증 상태 변경 감지 리스너
+                // 사용자가 로그인하거나 로그아웃할 때마다 호출됨
                 onAuthStateChanged(auth, user => {
+                    // 사용자가 로그인했고 익명 사용자가 아니면 관리자 모드 활성화
                     if (user && !user.isAnonymous) {
                         isAdminMode = true;
-                        document.getElementById('adminPanel').classList.add('show');
-                        document.getElementById('excelDownloadBtn').classList.add('show');
+                        document.getElementById('adminPanel').classList.add('show'); // 관리자 패널 표시
+                        document.getElementById('excelDownloadBtn').classList.add('show'); // 엑셀 다운로드 버튼 표시
+                        resultsSection.style.display = 'block'; // 결과 섹션 표시
                     } else {
+                        // 관리자 모드 비활성화
                         isAdminMode = false;
-                        document.getElementById('adminPanel').classList.remove('show');
-                        document.getElementById('excelDownloadBtn').classList.remove('show');
+                        document.getElementById('adminPanel').classList.remove('show'); // 관리자 패널 숨김
+                        document.getElementById('excelDownloadBtn').classList.remove('show'); // 엑셀 다운로드 버튼 숨김
+                        resultsSection.style.display = 'none'; // 결과 섹션 숨김
                     }
-                    renderPrograms();
-                    updateResults();
+                    renderPrograms(); // 프로그램 목록 다시 렌더링 (관리자 컨트롤 표시/숨김)
+                    updateResults(); // 투표 결과 업데이트 (관리자 정보 표시/숨김)
                 });
                 
-                await signInAnonymously(auth);
-                
+                // 프로그램 데이터 로드 및 실시간 감지 시작
                 loadAndListenPrograms();
 
             } catch (error) {
+                // Firebase 초기화 실패 시 오류 처리
                 console.error("Firebase 초기화 실패:", error);
                 showAlert(`Firebase 초기화에 실패했습니다. <br><br><b>오류: ${error.message}</b><br><br>페이지를 새로고침 하시거나, 관리자에게 문의하세요.`, "치명적 오류");
                 
+                // 관리자 토글 버튼 비활성화 및 오류 상태 표시
                 adminToggleBtn.disabled = true;
                 adminToggleBtn.title = '초기화 실패! 새로고침하세요.';
                 adminToggleBtn.classList.add('failed');
@@ -377,45 +418,60 @@
 
         // --- 이벤트 리스너 설정 ---
         function setupEventListeners() {
+            // 인트로 건너뛰기 버튼 및 비디오 종료 시 메인 콘텐츠 표시
             document.getElementById('skip-intro').onclick = showMainContent;
             introVideo.onended = showMainContent;
             
+            // 비디오 로드 오류 시에도 메인 콘텐츠 표시
             introVideo.addEventListener('error', (e) => {
                 console.error("비디오 로드 오류:", e);
                 showMainContent();
             });
 
+            // 음악 토글 버튼 클릭 이벤트
             document.getElementById('music-toggle').addEventListener('click', toggleMusic);
+            // 관리자 토글 버튼 클릭 시 비밀번호 모달 표시
             adminToggleBtn.onclick = () => showModal('passwordModal');
+            // 관리자 로그인 버튼 클릭 이벤트
             document.getElementById('loginBtn').onclick = checkAdminPassword;
+            // 프로그램 추가/편집 폼 초기화 버튼 클릭 이벤트
             document.getElementById('clearFormBtn').onclick = clearForm;
+            // DB 초기화 및 기본값 설정 버튼 클릭 이벤트
             document.getElementById('initDbBtn').onclick = runInitialization;
+            // 기본 프로그램 추가 버튼 클릭 이벤트
             document.getElementById('addDefaultsBtn').onclick = addDefaultPrograms;
+            // 투표 제출 버튼 클릭 이벤트
             document.getElementById('submitVoteBtn').onclick = submitVote;
+            // 엑셀 다운로드 버튼 클릭 이벤트
             document.getElementById('excelDownloadBtn').onclick = exportToExcel;
+            // 프로그램 추가/편집 폼 제출 이벤트
             programForm.addEventListener('submit', handleFormSubmit);
         }
 
-        // --- 인트로 및 음악 관련 ---
+        // --- 인트로 및 음악 관련 함수 ---
+        // 배경 음악 재생 시도
         function playMusic() {
-            music.muted = true;
+            music.muted = true; // 초기에는 음소거
             music.play().catch(error => {
                 console.warn('음악 자동 재생 실패. 사용자 상호작용이 필요합니다.', error);
+                // 자동 재생이 실패하면 사용자 클릭 시 재생되도록 이벤트 리스너 추가
                 document.body.addEventListener('click', () => {
                     if (music.paused) music.play();
-                }, { once: true });
+                }, { once: true }); // 한 번만 실행되도록 설정
             });
         }
 
+        // 인트로 비디오 재생 시도
         function playIntroVideo() {
             const playPromise = introVideo.play();
             if (playPromise !== undefined) {
                 playPromise.then(() => {
-                    console.log("Intro video playback started, unmuting music.");
-                    music.muted = false;
-                    document.getElementById('music-toggle').textContent = '🔊';
+                    console.log("인트로 비디오 재생 시작, 음악 음소거 해제.");
+                    music.muted = false; // 비디오 재생 성공 시 음악 음소거 해제
+                    document.getElementById('music-toggle').textContent = '🔊'; // 음악 아이콘 변경
                 }).catch(error => {
                     console.warn("영상 자동 재생 실패. 사용자 상호작용이 필요합니다.", error);
+                    // 자동 재생 실패 시 스플래시 화면 클릭 시 재생되도록 이벤트 리스너 추가
                     splashScreen.addEventListener('click', () => {
                         introVideo.play();
                         music.muted = false;
@@ -425,58 +481,72 @@
             }
         }
         
+        // 메인 콘텐츠 표시 및 스플래시 화면 숨김
         function showMainContent() {
-            if (splashScreen.style.display === 'none') return;
-            splashScreen.style.opacity = '0';
+            if (splashScreen.style.display === 'none') return; // 이미 숨겨져 있으면 아무것도 안 함
+            splashScreen.style.opacity = '0'; // 스플래시 화면 투명하게
             setTimeout(() => {
-                splashScreen.style.display = 'none';
-                mainWrapper.classList.add('visible');
-            }, 1000);
+                splashScreen.style.display = 'none'; // 투명해진 후 숨김
+                mainWrapper.classList.add('visible'); // 메인 콘텐츠 표시
+            }, 1000); // 1초 후 실행 (CSS transition 시간과 일치)
         }
         
+        // 음악 재생/정지 토글
         function toggleMusic() {
-            music.muted = !music.muted;
-            document.getElementById('music-toggle').textContent = music.muted ? '🔇' : '🔊';
+            music.muted = !music.muted; // 음소거 상태 반전
+            document.getElementById('music-toggle').textContent = music.muted ? '🔇' : '🔊'; // 아이콘 변경
         }
 
         // --- 핵심 앱 로직 ---
+        // Firestore에서 프로그램 데이터를 로드하고 실시간 변경을 감지
         function loadAndListenPrograms() {
-            if (!db) return;
-            const programsCollectionRef = collection(db, "programs");
+            if (!db) return; // DB가 초기화되지 않았으면 함수 종료
+            // Firestore 컬렉션 참조 (public/data 경로 사용)
+            const programsCollectionRef = collection(db, `artifacts/${appId}/public/data/programs`);
             
+            // 기존 스냅샷 리스너가 있다면 해제
             if (unsubscribePrograms) unsubscribePrograms();
 
+            // 실시간 스냅샷 리스너 설정
             unsubscribePrograms = onSnapshot(query(programsCollectionRef), (querySnapshot) => {
-                programs = [];
+                programs = []; // 프로그램 배열 초기화
                 if (querySnapshot.empty) {
+                    // 프로그램이 없으면 메시지 표시
                     noProgramsEl.textContent = '프로그램이 없습니다. 관리자로 로그인하여 DB를 초기화해주세요.';
                 } else {
+                    // 스냅샷의 각 문서를 프로그램 배열에 추가
                     querySnapshot.forEach((doc) => {
                         programs.push({ id: doc.id, ...doc.data() });
                     });
+                    // 'order' 필드를 기준으로 프로그램 정렬
                     programs.sort((a, b) => (a.order || 0) - (b.order || 0));
                 }
-                renderPrograms();
-                updateResults();
+                renderPrograms(); // 프로그램 목록 렌더링
+                updateResults(); // 투표 결과 업데이트
             }, (error) => {
+                // 데이터 수신 중 오류 발생 시 처리
                 console.error("데이터 수신 오류:", error);
                 showAlert(`실시간 데이터 수신에 실패했습니다. <br><br>오류: ${error.message}`, "데이터 오류");
                 noProgramsEl.textContent = '데이터를 불러오는 중 오류가 발생했습니다.';
             });
         }
 
+        // 프로그램 카드 렌더링
         function renderPrograms() {
-            if (!programsGrid) return;
+            if (!programsGrid) return; // DOM 요소가 없으면 종료
             if (!programs || programs.length === 0) {
+                // 프로그램이 없으면 그리드 숨기고 메시지 표시
                 programsGrid.style.display = 'none';
                 noProgramsEl.style.display = 'block';
                 return;
             }
+            // 프로그램이 있으면 그리드 표시하고 메시지 숨김
             programsGrid.style.display = 'grid';
             noProgramsEl.style.display = 'none';
 
+            // 프로그램 데이터를 HTML 문자열로 변환하여 그리드에 삽입
             programsGrid.innerHTML = programs.map(p => {
-                // [수정됨] 비디오 URL 유무에 따라 이미지 또는 비디오 태그를 생성
+                // 비디오 URL이 있으면 비디오 태그, 없으면 이미지 태그 생성
                 const mediaElement = p.videoUrl
                     ? `<video class="program-media program-video" src="${p.videoUrl}" poster="${p.image}" muted loop playsinline></video>`
                     : `<img src="${p.image || 'https://placehold.co/400x200/png?text=이미지+없음'}" alt="${p.title}" class="program-media" onerror="this.onerror=null; this.src='https://placehold.co/400x200/png?text=이미지+오류';">`;
@@ -500,11 +570,11 @@
                 `;
             }).join('');
 
-            // [수정됨] 렌더링이 끝난 후 비디오 감시자 설정
+            // 렌더링이 끝난 후 비디오 감시자 설정 (새로 추가된 비디오 요소들을 감시)
             setupVideoObserver();
         }
 
-        // [수정됨] 화면에 보이는 비디오를 감지하고 재생/정지하는 함수
+        // 화면에 보이는 비디오를 감지하고 재생/정지하는 함수 (Intersection Observer 사용)
         function setupVideoObserver() {
             // 기존 감시자가 있다면 연결 해제
             if (videoObserver) {
@@ -512,12 +582,12 @@
             }
 
             const options = {
-                root: null, // 뷰포트를 기준으로
+                root: null, // 뷰포트를 기준으로 감시
                 rootMargin: '0px',
-                threshold: 0.75 // 75% 이상 보일 때 콜백 실행
+                threshold: 0.75 // 비디오의 75% 이상이 보일 때 콜백 실행
             };
 
-            const handleIntersection = (entries, observer) => {
+            const handleIntersection = (entries) => {
                 entries.forEach(entry => {
                     const video = entry.target;
                     if (entry.isIntersecting) {
@@ -537,9 +607,14 @@
             videos.forEach(video => videoObserver.observe(video));
         }
 
+        // 투표 결과 차트 업데이트
         function updateResults() {
             const resultsChart = document.getElementById('resultsChart');
-            if (!resultsChart) return;
+            if (!resultsChart) return; // DOM 요소가 없으면 종료
+            
+            // 이 함수는 이제 resultsSection의 display 속성을 직접 제어하지 않습니다.
+            // onAuthStateChanged에서 resultsSection의 표시 여부를 결정합니다.
+
             if (!programs || programs.length === 0) {
                 resultsChart.innerHTML = '<div class="no-programs">투표 결과가 여기에 표시됩니다.</div>';
                 return;
@@ -555,6 +630,7 @@
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                                 <div>
                                     <span style="font-weight: 600;">${p.title}</span>
+                                    <!-- 관리자 모드일 때만 투표자 보기 버튼 표시 -->
                                     ${isAdminMode ? `<button class="view-voters-btn" onclick="showVoters('${p.id}')">투표자 보기</button>` : ''}
                                 </div>
                                 <span style="color: #7f8c8d;">${p.votes || 0}표 (${percentage}%)</span>
@@ -565,24 +641,28 @@
                         </div>`;
                 }).join('')}
             `;
+            // 엑셀 다운로드 버튼은 onAuthStateChanged에서 제어되므로 여기서 직접 제어할 필요 없음
         }
 
         // --- 투표 로직 ---
+        // 투표 요청 시 투표자 정보 입력 모달 표시
         window.requestVote = (id) => {
             if (!db) return showAlert('데이터베이스가 준비되지 않았습니다. 잠시 후 다시 시도해주세요.');
-            votingForId = id;
-            showModal('voterAuthModal');
-            document.getElementById('voterEmployeeId').focus();
+            votingForId = id; // 투표하려는 프로그램 ID 저장
+            showModal('voterAuthModal'); // 투표자 인증 모달 표시
+            document.getElementById('voterEmployeeId').focus(); // 사번 입력 필드에 포커스
         };
 
+        // 투표 제출 처리
         async function submitVote() {
             if (!db) return showAlert('데이터베이스가 준비되지 않았습니다. 잠시 후 다시 시도해주세요.');
             const employeeId = document.getElementById('voterEmployeeId').value.trim();
             const name = document.getElementById('voterName').value.trim();
             if (!employeeId || !name) {
-                return showAlert('사번과 이름을 모두 입력해주세요.');
+                return showAlert('사번과 이름을 모두 입력해주세요.'); // 필수 필드 검증
             }
             
+            // 이미 투표했는지 확인 (모든 프로그램의 투표자 목록을 순회)
             const alreadyVoted = programs.some(p => p.voters?.some(v => v.id === employeeId));
             if (alreadyVoted) {
                 hideModal('voterAuthModal');
@@ -590,14 +670,15 @@
             }
             
             try {
-                const programRef = doc(db, "programs", votingForId);
+                const programRef = doc(db, `artifacts/${appId}/public/data/programs`, votingForId);
+                // 투표 수 증가 및 투표자 정보 추가 (arrayUnion으로 중복 방지)
                 await updateDoc(programRef, { 
                     votes: increment(1), 
                     voters: arrayUnion({ id: employeeId, name: name }) 
                 });
                 
-                hideModal('voterAuthModal');
-                document.getElementById('voterEmployeeId').value = '';
+                hideModal('voterAuthModal'); // 모달 숨김
+                document.getElementById('voterEmployeeId').value = ''; // 입력 필드 초기화
                 document.getElementById('voterName').value = '';
                 showAlert('투표가 성공적으로 완료되었습니다!', '투표 완료');
             } catch (error) {
@@ -607,6 +688,7 @@
         }
 
         // --- 관리자 로직 ---
+        // 관리자 비밀번호 확인 및 로그인
         async function checkAdminPassword() {
             if (!auth) return showAlert('Firebase 인증 서비스가 아직 준비되지 않았습니다. 잠시 후 다시 시도해주세요.', '초기화 중');
 
@@ -615,73 +697,82 @@
             if (!email || !password) return showAlert('이메일과 비밀번호를 모두 입력해주세요.');
             
             try {
+                // 이메일/비밀번호로 로그인 시도
                 await signInWithEmailAndPassword(auth, email, password);
-                hideModal('passwordModal');
+                hideModal('passwordModal'); // 로그인 성공 시 모달 숨김
                 showAlert('관리자 로그인 성공! 🔓');
             } catch (error) {
                 console.error("로그인 실패 상세 정보:", error);
                 let errorDetails = `<b>오류 코드:</b> ${error.code || '정의되지 않음'}<br><b>오류 메시지:</b> ${error.message || '메시지 없음'}`;
                 showAlert(`로그인에 실패했습니다. 아래 상세 정보를 확인하여 원인을 파악해주세요.<br><br>${errorDetails}`, '로그인 오류');
             } finally {
-                document.getElementById('adminPassword').value = '';
+                document.getElementById('adminPassword').value = ''; // 비밀번호 필드 초기화
             }
         }
 
+        // 프로그램 추가/수정 폼 제출 처리
         async function handleFormSubmit(e) {
-            e.preventDefault();
+            e.preventDefault(); // 폼 기본 제출 동작 방지
             if (!isAdminMode || !db) return showAlert('관리자만 사용 가능하거나, 데이터베이스가 준비되지 않았습니다.');
             
             const title = document.getElementById('programTitle').value.trim();
             const description = document.getElementById('programDescription').value.trim();
             const image = document.getElementById('programImage').value.trim();
-            const videoUrl = document.getElementById('programVideo').value.trim(); // [수정됨] 비디오 URL 값 읽기
+            const videoUrl = document.getElementById('programVideo').value.trim(); // 비디오 URL 값 읽기
             if (!title || !description || !image) return showAlert('프로그램 이름, 설명, 이미지 URL은 필수입니다.');
             
-            const programsCollectionRef = collection(db, "programs");
-            const data = { title, description, image, videoUrl }; // [수정됨] 데이터 객체에 비디오 URL 추가
+            const programsCollectionRef = collection(db, `artifacts/${appId}/public/data/programs`);
+            const data = { title, description, image, videoUrl }; // 데이터 객체에 비디오 URL 포함
 
             try {
                 if (editingId) {
+                    // 편집 모드일 경우 기존 문서 업데이트
                     await updateDoc(doc(programsCollectionRef, editingId), data);
                     showAlert('프로그램이 성공적으로 수정되었습니다.');
                 } else {
+                    // 새 프로그램 추가 모드일 경우
                     const maxOrder = programs.reduce((max, p) => Math.max(max, p.order || 0), 0);
-                    await addDoc(programsCollectionRef, { ...data, votes: 0, voters: [], order: maxOrder + 1 });
+                    // 새 문서 추가 (투표 수, 투표자 목록 초기화 및 순서 부여)
+                    await addDoc(programsCollectionRef, { ...data, votes: 0, voters: [] });
                     showAlert('새로운 프로그램이 성공적으로 추가되었습니다.');
                 }
-                clearForm();
+                clearForm(); // 폼 초기화
             } catch (error) {
                 console.error("프로그램 추가/수정 오류:", error);
                 showAlert(`오류가 발생했습니다. 다시 시도해주세요.<br>(오류 메시지: ${error.message})`);
             }
         }
         
+        // 폼 입력 필드 초기화
         function clearForm() {
-            programForm.reset();
-            editingId = null;
-            document.querySelector('#programForm button[type="submit"]').textContent = '프로그램 추가';
+            programForm.reset(); // 폼 리셋
+            editingId = null; // 편집 ID 초기화
+            document.querySelector('#programForm button[type="submit"]').textContent = '프로그램 추가'; // 버튼 텍스트 변경
         }
 
+        // 프로그램 편집 모드로 전환
         window.editProgram = (id) => {
-            if (!isAdminMode) return;
-            const p = programs.find(prog => prog.id === id);
+            if (!isAdminMode) return; // 관리자 모드가 아니면 종료
+            const p = programs.find(prog => prog.id === id); // 해당 ID의 프로그램 찾기
             if (p) {
+                // 폼 필드에 프로그램 데이터 채우기
                 document.getElementById('programTitle').value = p.title;
-                document.getElementById('programDescription').value = p.description.replace(/<br\s*\/?>/gi, '\n');
+                document.getElementById('programDescription').value = p.description.replace(/<br\s*\/?>/gi, '\n'); // 줄바꿈 처리
                 document.getElementById('programImage').value = p.image || '';
-                document.getElementById('programVideo').value = p.videoUrl || ''; // [수정됨] 수정 시 비디오 URL 필드 채우기
-                editingId = id;
-                document.querySelector('#programForm button[type="submit"]').textContent = '프로그램 수정';
-                document.getElementById('adminPanel').scrollIntoView({ behavior: 'smooth' });
+                document.getElementById('programVideo').value = p.videoUrl || '';
+                editingId = id; // 편집 ID 설정
+                document.querySelector('#programForm button[type="submit"]').textContent = '프로그램 수정'; // 버튼 텍스트 변경
+                document.getElementById('adminPanel').scrollIntoView({ behavior: 'smooth' }); // 관리자 패널로 스크롤
             }
         };
 
+        // 프로그램 삭제
         window.deleteProgram = async (id) => {
-            if (!isAdminMode || !db) return;
+            if (!isAdminMode || !db) return; // 관리자 모드가 아니거나 DB가 준비되지 않았으면 종료
             const confirmed = await showConfirm('정말로 이 프로그램을 삭제하시겠습니까? 투표 정보도 함께 삭제됩니다.', '삭제 확인');
             if (confirmed) {
                 try {
-                    await deleteDoc(doc(db, "programs", id));
+                    await deleteDoc(doc(db, `artifacts/${appId}/public/data/programs`, id)); // 문서 삭제
                     showAlert('프로그램이 삭제되었습니다.');
                 } catch (error) {
                     console.error("삭제 오류:", error);
@@ -690,42 +781,48 @@
             }
         };
         
+        // 특정 프로그램의 투표자 명단 표시
         window.showVoters = (id) => { 
-            if (!isAdminMode) return;
-            const p = programs.find(p => p.id === id); 
+            if (!isAdminMode) return; // 관리자 모드가 아니면 종료
+            const p = programs.find(p => p.id === id); // 해당 ID의 프로그램 찾기
             if (!p) return; 
             const voterListEl = document.getElementById('voterList'); 
             document.getElementById('voterListTitle').textContent = `[${p.title}] 투표자 명단`; 
-            const voters = p.voters || []; 
+            const voters = p.voters || []; // 투표자 목록 가져오기
+            // 투표자 목록을 HTML 리스트로 생성
             voterListEl.innerHTML = voters.length ? voters.map(v => `<li>${v.name} (${v.id})</li>`).join('') : '<li>아직 투표한 사람이 없습니다.</li>'; 
-            showModal('voterListModal'); 
+            showModal('voterListModal'); // 투표자 명단 모달 표시
         };
 
+        // DB 초기화 및 기본 프로그램 설정
         async function runInitialization() {
             if (!isAdminMode || !db) return showAlert('관리자로 로그인해야 하거나, 데이터베이스가 준비되지 않았습니다.');
             
+            // 사용자에게 초기화 확인 요청
             const confirmed = await showConfirm("🚨정말로 모든 투표 데이터를 삭제하고 기본 프로그램으로 덮어쓰시겠습니까?<br>이 작업은 되돌릴 수 없습니다!", "DB 초기화 확인");
             if (!confirmed) return showAlert('초기화가 취소되었습니다.');
 
             try {
                 showAlert('DB 초기화를 시작합니다. 잠시만 기다려주세요...');
-                const programsCollectionRef = collection(db, "programs");
+                const programsCollectionRef = collection(db, `artifacts/${appId}/public/data/programs`);
                 
+                // 기존 모든 문서 삭제
                 const oldDocsSnapshot = await getDocs(query(programsCollectionRef));
                 const deleteBatch = writeBatch(db);
                 oldDocsSnapshot.forEach(doc => deleteBatch.delete(doc.ref));
                 await deleteBatch.commit();
                 
-                // [수정됨] 기본 데이터에 videoUrl 필드 추가
+                // 기본 프로그램 데이터 정의 (videoUrl 필드 포함)
                 const defaultPrograms = [
-                    { order: 1, title: '🚣 우붓 + 래프팅', description: '아융강에서 스릴 넘치는 래프팅을 즐기고<br>우붓 왕궁과 전통시장, 마을을<br>둘러보는 코스입니다.', image: 'https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program1.mp4' },
-                    { order: 2, title: '🌿 우붓 + 스파', description: '우붓의 왕궁과 전통시장, 마을을 둘러보고<br>발리 전통 마사지를 받으며<br>심신의 피로를 푸는 힐링 코스입니다.', image: 'https://images.unsplash.com/photo-1708436137498-1b660e94c782?q=80&w=687&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: '' },
-                    { order: 3, title: '🏖️ 리조트 자유시간', description: '고급 리조트의 수영장과 부대시설을<br>마음껏 이용하며 누구의 방해도 받지 않는<br>완벽한 자유시간을 만끽합니다.', image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', videoUrl: '' },
-                    { order: 4, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸타 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>라운딩을 즐깁니다.', image: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: '' },
-                    { order: 5, title: '🚤 해양 스포츠', description: '제트스키, 도넛, 바나나보트,<br>스노클링을 즐기는<br>액티비티 패키지입니다.', image: 'https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format&fit&crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: '' },
-                    { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와<br>다양한 편의시설을 갖춰 즐기기 좋은 곳입니다.', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program5.mp4' }
+                    { order: 1, title: '🚣 우붓 + 래프팅', description: '아융강에서 스릴 넘치는 래프팅을 즐기고<br>우붓 왕궁과 전통시장, 마을을<br>둘러보는 코스입니다.', image: '[https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D](https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)', videoUrl: '[https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program1.mp4](https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program1.mp4)' },
+                    { order: 2, title: '🌿 우붓 + 스파', description: '우붓의 왕궁과 전통시장, 마을을 둘러보고<br>발리 전통 마사지를 받으며<br>심신의 피로를 푸는 힐링 코스입니다.', image: '[https://images.unsplash.com/photo-1708436137498-1b660e94c782?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D](https://images.unsplash.com/photo-1708436137498-1b660e94c782?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)', videoUrl: '' },
+                    { order: 3, title: '🏖️ 리조트 자유시간', description: '고급 리조트의 수영장과 부대시설을<br>마음껏 이용하며 누구의 방해도 받지 않는<br>완벽한 자유시간을 만끽합니다.', image: '[https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80](https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80)', videoUrl: '' },
+                    { order: 4, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸타 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>라운딩을 즐깁니다.', image: '[https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D](https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)', videoUrl: '' },
+                    { order: 5, title: '🚤 해양 스포츠', description: '제트스키, 도넛, 바나나보트,<br>스노클링을 즐기는<br>액티비티 패키지입니다.', image: '[https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format&fit&crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D](https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format&fit&crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)', videoUrl: '' },
+                    { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와<br>다양한 편의시설을 갖춰 즐기기 좋은 곳입니다.', image: '[https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D](https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)', videoUrl: '[https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program5.mp4](https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program5.mp4)' }
                 ];
                 
+                // 기본 프로그램들을 일괄 추가
                 const addBatch = writeBatch(db);
                 defaultPrograms.forEach(program => {
                     const newProgramRef = doc(programsCollectionRef);
@@ -740,6 +837,7 @@
             }
         }
 
+        // 기본 프로그램 추가 (기존 데이터 유지)
         async function addDefaultPrograms() {
             if (!isAdminMode || !db) return showAlert('관리자로 로그인해야 하거나, 데이터베이스가 준비되지 않았습니다.');
 
@@ -748,20 +846,23 @@
 
             try {
                 showAlert('기본 프로그램 추가를 시작합니다...');
-                const programsCollectionRef = collection(db, "programs");
+                const programsCollectionRef = collection(db, `artifacts/${appId}/public/data/programs`);
 
+                // 현재 DB에 있는 프로그램들의 order 값을 가져옴
                 const existingProgramsSnapshot = await getDocs(query(programsCollectionRef));
                 const existingOrders = new Set(existingProgramsSnapshot.docs.map(doc => doc.data().order));
 
+                // 기본 프로그램 데이터 정의 (videoUrl 필드 포함)
                 const defaultPrograms = [
-                    { order: 1, title: '🚣 우붓 + 래프팅', description: '아융강에서 스릴 넘치는 래프팅을 즐기고<br>우붓 왕궁과 전통시장, 마을을<br>둘러보는 코스입니다.', image: 'https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program1.mp4' },
-                    { order: 2, title: '🌿 우붓 + 스파', description: '우붓의 왕궁과 전통시장, 마을을 둘러보고<br>발리 전통 마사지를 받으며<br>심신의 피로를 푸는 힐링 코스입니다.', image: 'https://images.unsplash.com/photo-1708436137498-1b660e94c782?q=80&w=687&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: '' },
-                    { order: 3, title: '🏖️ 리조트 자유시간', description: '고급 리조트의 수영장과 부대시설을<br>마음껏 이용하며 누구의 방해도 받지 않는<br>완벽한 자유시간을 만끽합니다.', image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', videoUrl: '' },
-                    { order: 4, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸타 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>라운딩을 즐깁니다.', image: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: '' },
-                    { order: 5, title: '🚤 해양 스포츠', description: '제트스키, 도넛, 바나나보트,<br>스노클링을 즐기는<br>액티비티 패키지입니다.', image: 'https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format&fit&crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: '' },
-                    { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와<br>다양한 편의시설을 갖춰 즐기기 좋은 곳입니다.', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: '' }
+                    { order: 1, title: '🚣 우붓 + 래프팅', description: '아융강에서 스릴 넘치는 래프팅을 즐기고<br>우붓 왕궁과 전통시장, 마을을<br>둘러보는 코스입니다.', image: '[https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D](https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)', videoUrl: '[https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program1.mp4](https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program1.mp4)' },
+                    { order: 2, title: '🌿 우붓 + 스파', description: '우붓의 왕궁과 전통시장, 마을을 둘러보고<br>발리 전통 마사지를 받으며<br>심신의 피로를 푸는 힐링 코스입니다.', image: '[https://images.unsplash.com/photo-1708436137498-1b660e94c782?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D](https://images.unsplash.com/photo-1708436137498-1b660e94c782?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)', videoUrl: '' },
+                    { order: 3, title: '🏖️ 리조트 자유시간', description: '고급 리조트의 수영장과 부대시설을<br>마음껏 이용하며 누구의 방해도 받지 않는<br>완벽한 자유시간을 만끽합니다.', image: '[https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80](https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80)', videoUrl: '' },
+                    { order: 4, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸타 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>라운딩을 즐깁니다.', image: '[https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D](https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)', videoUrl: '' },
+                    { order: 5, title: '🚤 해양 스포츠', description: '제트스키, 도넛, 바나나보트,<br>스노클링을 즐기는<br>액티비티 패키지입니다.', image: '[https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format&fit&crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D](https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format&fit&crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)', videoUrl: '' },
+                    { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와<br>다양한 편의시설을 갖춰 즐기기 좋은 곳입니다.', image: '[https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D](https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)', videoUrl: '[https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program5.mp4](https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program5.mp4)' }
                 ];
 
+                // 기존 order 값과 중복되지 않는 프로그램만 필터링
                 const programsToAdd = defaultPrograms.filter(p => !existingOrders.has(p.order));
 
                 if (programsToAdd.length === 0) {
@@ -769,6 +870,7 @@
                     return;
                 }
 
+                // 필터링된 프로그램들을 일괄 추가
                 const addBatch = writeBatch(db);
                 programsToAdd.forEach(program => {
                     const newProgramRef = doc(programsCollectionRef);
@@ -783,12 +885,14 @@
             }
         }
 
+        // 투표 결과를 엑셀(CSV) 파일로 다운로드
         function exportToExcel() {
             if (!isAdminMode) return showAlert('관리자만 사용할 수 있는 기능입니다.');
             if (programs.length === 0) return showAlert('다운로드할 데이터가 없습니다.');
             
             showAlert('모든 투표자 정보를 준비합니다...'); 
             const allVoters = []; 
+            // 모든 프로그램의 투표자 정보를 수집
             programs.forEach(p => { 
                 if (p.voters?.length) { 
                     p.voters.forEach(v => allVoters.push({ program: p.title.replace(/,/g, ''), id: v.id, name: v.name })); 
@@ -797,14 +901,15 @@
             
             if (!allVoters.length) return showAlert('다운로드할 투표 데이터가 없습니다.'); 
             
+            // CSV 형식으로 데이터 생성 (UTF-8 BOM 포함하여 한글 깨짐 방지)
             const csv = `${"\uFEFF"}"프로그램","사번","이름"\n${allVoters.map(v => `"${v.program}","${v.id}","${v.name}"`).join('\n')}`; 
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); 
             const link = document.createElement("a"); 
             link.href = URL.createObjectURL(blob); 
             link.download = "bali_vote_results.csv"; 
             document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            link.click(); // 다운로드 트리거
+            document.body.removeChild(link); // 링크 제거
         }
 
     </script>
