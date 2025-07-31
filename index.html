@@ -115,7 +115,7 @@
             padding: 30px; 
             margin-top: 40px; 
             /* 기본적으로 숨김 */
-            /* display: none;  CSS에서 이미 정의되어 있으므로 중복 제거 */
+            /* display: none;  CSS에서 이미 정의되어 있으므로 중복 제거 */
         }
         .results-header { display: flex; justify-content: center; align-items: center; margin-bottom: 20px; position: relative; }
         .results-header h2 { color: #2c3e50; margin: 0; }
@@ -283,6 +283,7 @@
         let unsubscribePrograms = null; // Firestore 스냅샷 리스너 해제 함수
         let videoObserver = null; // Intersection Observer 인스턴스를 저장할 변수
         let isMainContentShown = false; // 메인 콘텐츠가 이미 표시되었는지 추적하는 플래그
+        let introSkipTimeoutId; // ✨ 추가: 인트로 자동 건너뛰기 타이머 ID를 저장할 변수
 
         // Canvas 환경에서 제공되는 전역 변수 (Firebase 설정 및 초기 인증 토큰)
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
@@ -431,14 +432,23 @@
 
         // --- 이벤트 리스너 설정 ---
         function setupEventListeners() {
-            // 인트로 건너뛰기 버튼 클릭 시 메인 콘텐츠 표시
-            document.getElementById('skip-intro').onclick = showMainContent;
+            // ✨ 수정: 인트로 건너뛰기 버튼 클릭 시 로직 변경
+            document.getElementById('skip-intro').onclick = () => {
+                if (introSkipTimeoutId) {
+                    clearTimeout(introSkipTimeoutId); // 자동 건너뛰기 타이머 취소
+                }
+                introVideo.pause(); // 비디오 재생 중지
+                showMainContent(); // 메인 콘텐츠 표시
+            };
             // 인트로 비디오 종료 시 메인 콘텐츠 표시
             introVideo.onended = showMainContent;
             
             // 비디오 로드 오류 시에도 메인 콘텐츠 표시
             introVideo.addEventListener('error', (e) => {
                 console.error("비디오 로드 오류:", e);
+                if (introSkipTimeoutId) {
+                    clearTimeout(introSkipTimeoutId); // 오류 발생 시 타이머 취소
+                }
                 showMainContent(); // 오류 발생 시 즉시 메인 화면으로 전환
             });
 
@@ -477,8 +487,13 @@
 
         // 인트로 비디오 재생 시도
         function playIntroVideo() {
+            // ✨ 수정: 기존 타이머가 있다면 먼저 취소
+            if (introSkipTimeoutId) {
+                clearTimeout(introSkipTimeoutId);
+            }
+
             // 비디오 자동 건너뛰기 타이머 설정 (5초 후)
-            const skipTimer = setTimeout(() => {
+            introSkipTimeoutId = setTimeout(() => {
                 console.warn("인트로 비디오 자동 재생 실패 또는 지연, 5초 후 메인 콘텐츠로 자동 전환.");
                 showMainContent();
             }, 5000); // 5초
@@ -486,24 +501,25 @@
             const playPromise = introVideo.play();
             if (playPromise !== undefined) {
                 playPromise.then(() => {
-                    clearTimeout(skipTimer); // 비디오 재생 성공 시 타이머 취소
+                    clearTimeout(introSkipTimeoutId); // 비디오 재생 성공 시 타이머 취소
                     console.log("인트로 비디오 재생 시작, 음악 음소거 해제.");
                     music.muted = false; // 비디오 재생 성공 시 음악 음소거 해제
                     document.getElementById('music-toggle').textContent = '🔊'; // 음악 아이콘 변경
                 }).catch(error => {
-                    clearTimeout(skipTimer); // 비디오 재생 실패 시 타이머 취소
+                    clearTimeout(introSkipTimeoutId); // ✨ 수정: 비디오 재생 실패 시에도 타이머 취소
                     console.warn("영상 자동 재생 실패. 사용자 상호작용이 필요합니다.", error);
-                    // 자동 재생 실패 시 스플래시 화면 클릭 시 재생되도록 이벤트 리스너 추가
+                    // ✨ 변경: 자동 재생 실패 시 showMainContent()를 직접 호출하지 않음.
+                    // 사용자가 '건너뛰기' 버튼을 클릭하거나, 비디오 자체를 클릭할 때까지 스플래시 화면 유지.
+                    // 5초 자동 전환 타이머는 여전히 작동하여 최종 폴백 역할을 함.
                     splashScreen.addEventListener('click', () => {
                         introVideo.play();
                         music.muted = false;
                         document.getElementById('music-toggle').textContent = '🔊';
                     }, { once: true });
-                    showMainContent(); // 비디오 재생 실패 시에도 메인 화면으로 전환
                 });
             } else {
                 // playPromise가 undefined인 경우 (구형 브라우저 등) 즉시 메인 콘텐츠로 전환
-                clearTimeout(skipTimer);
+                clearTimeout(introSkipTimeoutId);
                 showMainContent();
             }
         }
@@ -889,6 +905,7 @@
                     { order: 4, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸따 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>색다른 라운딩을 즐겨보세요.<br>이동시간 : 편도 약 1시간<br>이용시간 : 약 3시간', image: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program4.mp4' },
                     { order: 5, title: '🚤 울루와뚜 + 따나바락', description: '경이로운 자연과 힌두-자바 역사<br>독특한 건축물이 어우러진 울루와투와<br>인생샷 명소 따나바락 절벽을 찾아보세요.<br>이동시간 : 편도 약 1시간<br>이용시간 : 약 3시간', image: 'https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format&fit&crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: '' },
                     { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와 어트랙션<br>다양한 편의시설을 함께 즐겨보세요.<br>이동시간 : 편도 약 1시간<br>이용시간 : 약 3시간', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program5.mp4' }
+                ];
 
                 // 기존 order 값과 중복되지 않는 프로그램만 필터링
                 const programsToAdd = defaultPrograms.filter(p => !existingOrders.has(p.order));
@@ -918,23 +935,23 @@
             if (!isAdminMode) return showAlert('관리자만 사용할 수 있는 기능입니다.');
             if (programs.length === 0) return showAlert('다운로드할 데이터가 없습니다.');
             
-            showAlert('모든 투표자 정보를 준비합니다...'); 
-            const allVoters = []; 
+            showAlert('모든 투표자 정보를 준비합니다...');
+            const allVoters = [];
             // 모든 프로그램의 투표자 정보를 수집
-            programs.forEach(p => { 
-                if (p.voters?.length) { 
-                    p.voters.forEach(v => allVoters.push({ program: p.title.replace(/,/g, ''), id: v.id, name: v.name })); 
-                } 
-            }); 
+            programs.forEach(p => {
+                if (p.voters?.length) {
+                    p.voters.forEach(v => allVoters.push({ program: p.title.replace(/,/g, ''), id: v.id, name: v.name }));
+                }
+            });
             
-            if (!allVoters.length) return showAlert('다운로드할 투표 데이터가 없습니다.'); 
+            if (!allVoters.length) return showAlert('다운로드할 투표 데이터가 없습니다.');
             
             // CSV 형식으로 데이터 생성 (UTF-8 BOM 포함하여 한글 깨짐 방지)
-            const csv = `${"\uFEFF"}"프로그램","사번","이름"\n${allVoters.map(v => `"${v.program}","${v.id}","${v.name}"`).join('\n')}`; 
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); 
-            const link = document.createElement("a"); 
-            link.href = URL.createObjectURL(blob); 
-            link.download = "bali_vote_results.csv"; 
+            const csv = `${"\uFEFF"}"프로그램","사번","이름"\n${allVoters.map(v => `"${v.program}","${v.id}","${v.name}"`).join('\n')}`;
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "bali_vote_results.csv";
             document.body.appendChild(link);
             link.click(); // 다운로드 트리거
             document.body.removeChild(link); // 링크 제거
