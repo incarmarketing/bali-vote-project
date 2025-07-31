@@ -8,8 +8,8 @@
     <!-- 소셜 공유를 위한 Open Graph 메타 태그 -->
     <meta property="og:title" content="✨ 발리에서 생길 일 ✨">
     <meta property="og:description" content="★ 발리 여행 최고의 프로그램을 뽑아주세요 ★">
-    <meta property="og:image" content="[https://github.com/incarmarketing/bali-vote-project/blob/main/thumbnail.jpg?raw=true](https://github.com/incarmarketing/bali-vote-project/blob/main/thumbnail.jpg?raw=true)">
-    <meta property="og:url" content="[https://incarmarketing.github.io/bali-vote-project/](https://incarmarketing.github.io/bali-vote-project/)">
+    <meta property="og:image" content="https://github.com/incarmarketing/bali-vote-project/blob/main/thumbnail.jpg?raw=true">
+    <meta property="og:url" content="https://incarmarketing.github.io/bali-vote-project/">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
 
@@ -18,7 +18,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(0,0,0,0.3)), url('[https://images.unsplash.com/photo-1747235811701-c488682f5c7d?q=80&w=1150&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D](https://images.unsplash.com/photo-1747235811701-c488682f5c7d?q=80&w=1150&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)');
+            background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1747235811701-c488682f5c7d?q=80&w=1150&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
             background-size: cover; background-position: center; background-attachment: fixed;
             min-height: 100vh;
         }
@@ -64,7 +64,7 @@
 
         /* 핵심 레이아웃 */
         .container { max-width: 1200px; margin: 0 auto; background: rgba(255, 255, 255, 0.95); border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
-        .header { background: linear-gradient(135deg, rgba(255,107,107,0.8), rgba(255,167,38,0.8)), url('[https://images.unsplash.com/photo-1636619306699-2d27a100605e?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D](https://images.unsplash.com/photo-1636619306699-2d27a100605e?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)'); background-size: cover; background-position: center; color: white; padding: 40px; text-align: center; }
+        .header { background: linear-gradient(135deg, rgba(255,107,107,0.8), rgba(255,167,38,0.8)), url('https://images.unsplash.com/photo-1636619306699-2d27a100605e?q=80&w=1170&auto=format&fit=crop&ixlib-rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); background-size: cover; background-position: center; color: white; padding: 40px; text-align: center; }
         .header h1 { font-size: 2.5em; margin-bottom: 10px; }
         .header p { font-size: 1.2em; opacity: 0.9; }
         .main-content { padding: 40px; padding-bottom: 100px; }
@@ -115,7 +115,7 @@
             padding: 30px; 
             margin-top: 40px; 
             /* 기본적으로 숨김 */
-            display: none; 
+            /* display: none;  CSS에서 이미 정의되어 있으므로 중복 제거 */
         }
         .results-header { display: flex; justify-content: center; align-items: center; margin-bottom: 20px; position: relative; }
         .results-header h2 { color: #2c3e50; margin: 0; }
@@ -157,12 +157,12 @@
 <body>
     <!-- 스플래시 화면: 인트로 비디오와 건너뛰기 버튼을 포함 -->
     <div id="splash-screen">
-        <video id="intro-video" src="[https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/intro.mp4](https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/intro.mp4)" autoplay muted playsinline></video>
+        <video id="intro-video" src="https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/intro.mp4" autoplay muted playsinline></video>
         <button id="skip-intro">인트로 건너뛰기 &gt;</button>
     </div>
 
     <!-- 배경 음악: 자동 재생 및 반복 -->
-    <audio id="background-music" src="[https://cdn.pixabay.com/download/audio/2022/08/27/audio_2932470728.mp3](https://cdn.pixabay.com/download/audio/2022/08/27/audio_2932470728.mp3)" loop></audio>
+    <audio id="background-music" src="https://cdn.pixabay.com/download/audio/2022/08/27/audio_2932470728.mp3" loop></audio>
     <!-- 음악 토글 버튼 -->
     <button id="music-toggle">🔇</button>
 
@@ -170,7 +170,7 @@
     <div class="main-wrapper">
         <!-- 회사 로고 컨테이너 -->
         <div class="logo-container">
-            <img src="[https://github.com/incarmarketing/bali-vote-project/blob/main/logo.png?raw=true](https://github.com/incarmarketing/bali-vote-project/blob/main/logo.png?raw=true)" alt="회사 로고" class="company-logo" onerror="this.style.display='none'">
+            <img src="https://github.com/incarmarketing/bali-vote-project/blob/main/logo.png?raw=true" alt="회사 로고" class="company-logo" onerror="this.style.display='none'">
         </div>
 
         <div class="container">
@@ -186,8 +186,8 @@
                     <form id="programForm">
                         <div class="form-group"><label for="programTitle">프로그램 이름</label><input type="text" id="programTitle" placeholder="예: 우붓 라이스 테라스 투어" required></div>
                         <div class="form-group"><label for="programDescription">프로그램 설명</label><textarea id="programDescription" placeholder="프로그램에 대한 자세한 설명을 입력해주세요..." required></textarea></div>
-                        <div class="form-group"><label for="programImage">이미지 URL (필수)</label><input type="url" id="programImage" placeholder="[https://example.com/image.jpg](https://example.com/image.jpg)" required></div>
-                        <div class="form-group"><label for="programVideo">비디오 URL (선택사항)</label><input type="url" id="programVideo" placeholder="[https://example.com/video.mp4](https://example.com/video.mp4)"></div>
+                        <div class="form-group"><label for="programImage">이미지 URL (필수)</label><input type="url" id="programImage" placeholder="https://example.com/image.jpg" required></div>
+                        <div class="form-group"><label for="programVideo">비디오 URL (선택사항)</label><input type="url" id="programVideo" placeholder="https://example.com/video.mp4"></div>
                         <button type="submit" class="btn">프로그램 추가</button>
                         <button type="button" class="btn btn-danger" id="clearFormBtn">입력 초기화</button>
                     </form>
@@ -210,7 +210,7 @@
                 
                 <!-- 결과 섹션: 실시간 투표 결과 차트 및 엑셀 다운로드 버튼 -->
                 <!-- 이 섹션은 기본적으로 숨겨져 있으며, 관리자 로그인 시에만 표시됩니다. -->
-                <div class="results-section" id="resultsSection">
+                <div class="results-section" id="resultsSection" style="display: none;">
                     <div class="results-header">
                         <h2>📊 실시간 투표 결과</h2>
                         <button id="excelDownloadBtn" class="excel-download-btn">엑셀로 다운로드</button>
@@ -269,9 +269,9 @@
 
     <script type="module">
         // Firebase 모듈 가져오기
-        import { initializeApp } from "[https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js](https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js)";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "[https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js](https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js)";
-        import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, increment, arrayUnion, onSnapshot, writeBatch, query, getDocs } from "[https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js](https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js)";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, increment, arrayUnion, onSnapshot, writeBatch, query, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- 전역 변수 및 설정 ---
         let db; // Firestore 인스턴스
@@ -282,6 +282,7 @@
         let isAdminMode = false; // 관리자 모드 여부
         let unsubscribePrograms = null; // Firestore 스냅샷 리스너 해제 함수
         let videoObserver = null; // Intersection Observer 인스턴스를 저장할 변수
+        let isMainContentShown = false; // 메인 콘텐츠가 이미 표시되었는지 추적하는 플래그
 
         // Canvas 환경에서 제공되는 전역 변수 (Firebase 설정 및 초기 인증 토큰)
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
@@ -418,14 +419,15 @@
 
         // --- 이벤트 리스너 설정 ---
         function setupEventListeners() {
-            // 인트로 건너뛰기 버튼 및 비디오 종료 시 메인 콘텐츠 표시
+            // 인트로 건너뛰기 버튼 클릭 시 메인 콘텐츠 표시
             document.getElementById('skip-intro').onclick = showMainContent;
+            // 인트로 비디오 종료 시 메인 콘텐츠 표시
             introVideo.onended = showMainContent;
             
             // 비디오 로드 오류 시에도 메인 콘텐츠 표시
             introVideo.addEventListener('error', (e) => {
                 console.error("비디오 로드 오류:", e);
-                showMainContent();
+                showMainContent(); // 오류 발생 시 즉시 메인 화면으로 전환
             });
 
             // 음악 토글 버튼 클릭 이벤트
@@ -463,13 +465,21 @@
 
         // 인트로 비디오 재생 시도
         function playIntroVideo() {
+            // 비디오 자동 건너뛰기 타이머 설정 (5초 후)
+            const skipTimer = setTimeout(() => {
+                console.warn("인트로 비디오 자동 재생 실패 또는 지연, 5초 후 메인 콘텐츠로 자동 전환.");
+                showMainContent();
+            }, 5000); // 5초
+
             const playPromise = introVideo.play();
             if (playPromise !== undefined) {
                 playPromise.then(() => {
+                    clearTimeout(skipTimer); // 비디오 재생 성공 시 타이머 취소
                     console.log("인트로 비디오 재생 시작, 음악 음소거 해제.");
                     music.muted = false; // 비디오 재생 성공 시 음악 음소거 해제
                     document.getElementById('music-toggle').textContent = '🔊'; // 음악 아이콘 변경
                 }).catch(error => {
+                    clearTimeout(skipTimer); // 비디오 재생 실패 시 타이머 취소
                     console.warn("영상 자동 재생 실패. 사용자 상호작용이 필요합니다.", error);
                     // 자동 재생 실패 시 스플래시 화면 클릭 시 재생되도록 이벤트 리스너 추가
                     splashScreen.addEventListener('click', () => {
@@ -477,13 +487,20 @@
                         music.muted = false;
                         document.getElementById('music-toggle').textContent = '🔊';
                     }, { once: true });
+                    showMainContent(); // 비디오 재생 실패 시에도 메인 화면으로 전환
                 });
+            } else {
+                // playPromise가 undefined인 경우 (구형 브라우저 등) 즉시 메인 콘텐츠로 전환
+                clearTimeout(skipTimer);
+                showMainContent();
             }
         }
         
         // 메인 콘텐츠 표시 및 스플래시 화면 숨김
         function showMainContent() {
-            if (splashScreen.style.display === 'none') return; // 이미 숨겨져 있으면 아무것도 안 함
+            if (isMainContentShown) return; // 이미 메인 콘텐츠가 표시되었으면 중복 실행 방지
+            isMainContentShown = true; // 플래그 설정
+
             splashScreen.style.opacity = '0'; // 스플래시 화면 투명하게
             setTimeout(() => {
                 splashScreen.style.display = 'none'; // 투명해진 후 숨김
@@ -733,7 +750,7 @@
                     // 새 프로그램 추가 모드일 경우
                     const maxOrder = programs.reduce((max, p) => Math.max(max, p.order || 0), 0);
                     // 새 문서 추가 (투표 수, 투표자 목록 초기화 및 순서 부여)
-                    await addDoc(programsCollectionRef, { ...data, votes: 0, voters: [] });
+                    await addDoc(programsCollectionRef, { ...data, votes: 0, voters: [], order: maxOrder + 1 });
                     showAlert('새로운 프로그램이 성공적으로 추가되었습니다.');
                 }
                 clearForm(); // 폼 초기화
@@ -814,12 +831,12 @@
                 
                 // 기본 프로그램 데이터 정의 (videoUrl 필드 포함)
                 const defaultPrograms = [
-                    { order: 1, title: '🚣 우붓 + 래프팅', description: '아융강에서 스릴 넘치는 래프팅을 즐기고<br>우붓 왕궁과 전통시장, 마을을<br>둘러보는 코스입니다.', image: '[https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D](https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)', videoUrl: '[https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program1.mp4](https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program1.mp4)' },
-                    { order: 2, title: '🌿 우붓 + 스파', description: '우붓의 왕궁과 전통시장, 마을을 둘러보고<br>발리 전통 마사지를 받으며<br>심신의 피로를 푸는 힐링 코스입니다.', image: '[https://images.unsplash.com/photo-1708436137498-1b660e94c782?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D](https://images.unsplash.com/photo-1708436137498-1b660e94c782?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)', videoUrl: '' },
-                    { order: 3, title: '🏖️ 리조트 자유시간', description: '고급 리조트의 수영장과 부대시설을<br>마음껏 이용하며 누구의 방해도 받지 않는<br>완벽한 자유시간을 만끽합니다.', image: '[https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80](https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80)', videoUrl: '' },
-                    { order: 4, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸타 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>라운딩을 즐깁니다.', image: '[https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D](https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)', videoUrl: '' },
-                    { order: 5, title: '🚤 해양 스포츠', description: '제트스키, 도넛, 바나나보트,<br>스노클링을 즐기는<br>액티비티 패키지입니다.', image: '[https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format&fit&crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D](https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format&fit&crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)', videoUrl: '' },
-                    { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와<br>다양한 편의시설을 갖춰 즐기기 좋은 곳입니다.', image: '[https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D](https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)', videoUrl: '[https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program5.mp4](https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program5.mp4)' }
+                    { order: 1, title: '🚣 우붓 + 래프팅', description: '아융강에서 스릴 넘치는 래프팅을 즐기고<br>우붓 왕궁과 전통시장, 마을을<br>둘러보는 코스입니다.', image: 'https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program1.mp4' },
+                    { order: 2, title: '🌿 우붓 + 스파', description: '우붓의 왕궁과 전통시장, 마을을 둘러보고<br>발리 전통 마사지를 받으며<br>심신의 피로를 푸는 힐링 코스입니다.', image: 'https://images.unsplash.com/photo-1708436137498-1b660e94c782?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: '' },
+                    { order: 3, title: '🏖️ 리조트 자유시간', description: '고급 리조트의 수영장과 부대시설을<br>마음껏 이용하며 누구의 방해도 받지 않는<br>완벽한 자유시간을 만끽합니다.', image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', videoUrl: '' },
+                    { order: 4, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸따 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>라운딩을 즐깁니다.', image: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: '' },
+                    { order: 5, title: '🚤 해양 스포츠', description: '제트스키, 도넛, 바나나보트,<br>스노클링을 즐기는<br>액티비티 패키지입니다.', image: 'https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format&fit&crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: '' },
+                    { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와<br>다양한 편의시설을 갖춰 즐기기 좋은 곳입니다.', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program5.mp4' }
                 ];
                 
                 // 기본 프로그램들을 일괄 추가
@@ -854,12 +871,12 @@
 
                 // 기본 프로그램 데이터 정의 (videoUrl 필드 포함)
                 const defaultPrograms = [
-                    { order: 1, title: '🚣 우붓 + 래프팅', description: '아융강에서 스릴 넘치는 래프팅을 즐기고<br>우붓 왕궁과 전통시장, 마을을<br>둘러보는 코스입니다.', image: '[https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D](https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)', videoUrl: '[https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program1.mp4](https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program1.mp4)' },
-                    { order: 2, title: '🌿 우붓 + 스파', description: '우붓의 왕궁과 전통시장, 마을을 둘러보고<br>발리 전통 마사지를 받으며<br>심신의 피로를 푸는 힐링 코스입니다.', image: '[https://images.unsplash.com/photo-1708436137498-1b660e94c782?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D](https://images.unsplash.com/photo-1708436137498-1b660e94c782?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)', videoUrl: '' },
-                    { order: 3, title: '🏖️ 리조트 자유시간', description: '고급 리조트의 수영장과 부대시설을<br>마음껏 이용하며 누구의 방해도 받지 않는<br>완벽한 자유시간을 만끽합니다.', image: '[https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80](https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib-rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80)', videoUrl: '' },
-                    { order: 4, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸타 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>라운딩을 즐깁니다.', image: '[https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D](https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)', videoUrl: '' },
-                    { order: 5, title: '🚤 해양 스포츠', description: '제트스키, 도넛, 바나나보트,<br>스노클링을 즐기는<br>액티비티 패키지입니다.', image: '[https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format&fit&crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D](https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format&fit&crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)', videoUrl: '' },
-                    { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와<br>다양한 편의시설을 갖춰 즐기기 좋은 곳입니다.', image: '[https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D](https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)', videoUrl: '[https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program5.mp4](https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program5.mp4)' }
+                    { order: 1, title: '🚣 우붓 + 래프팅', description: '아융강에서 스릴 넘치는 래프팅을 즐기고<br>우붓 왕궁과 전통시장, 마을을<br>둘러보는 코스입니다.', image: 'https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program1.mp4' },
+                    { order: 2, title: '� 우붓 + 스파', description: '우붓의 왕궁과 전통시장, 마을을 둘러보고<br>발리 전통 마사지를 받으며<br>심신의 피로를 푸는 힐링 코스입니다.', image: 'https://images.unsplash.com/photo-1708436137498-1b660e94c782?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: '' },
+                    { order: 3, title: '🏖️ 리조트 자유시간', description: '고급 리조트의 수영장과 부대시설을<br>마음껏 이용하며 누구의 방해도 받지 않는<br>완벽한 자유시간을 만끽합니다.', image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', videoUrl: '' },
+                    { order: 4, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸따 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>라운딩을 즐깁니다.', image: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: '' },
+                    { order: 5, title: '🚤 해양 스포츠', description: '제트스키, 도넛, 바나나보트,<br>스노클링을 즐기는<br>액티비티 패키지입니다.', image: 'https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format&fit&crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: '' },
+                    { order: 6, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와<br>다양한 편의시설을 갖춰 즐기기 좋은 곳입니다.', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program5.mp4' }
                 ];
 
                 // 기존 order 값과 중복되지 않는 프로그램만 필터링
@@ -915,3 +932,4 @@
     </script>
 </body>
 </html>
+�
