@@ -286,7 +286,18 @@
 
         // Canvas 환경에서 제공되는 전역 변수 (Firebase 설정 및 초기 인증 토큰)
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        // --- 여기에 Firebase 프로젝트 설정을 직접 입력하세요 ---
+        // Firebase 콘솔 > 프로젝트 설정 > 일반 > 내 앱 섹션에서 웹 앱을 선택하면 구성 스니펫을 찾을 수 있습니다.
+       const firebaseConfig = {
+  apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
+  authDomain: "incarhigh-balihi.firebaseapp.com",
+  projectId: "incarhigh-balihi",
+  storageBucket: "incarhigh-balihi.firebasestorage.app",
+  messagingSenderId: "777053953777",
+  appId: "1:777053953777:web:bd21c80707306f54da9350",
+  measurementId: "G-T8BW822SLS"
+};
+        // ---------------------------------------------------
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         // --- DOM 요소 ---
@@ -360,8 +371,9 @@
         async function initializeFirebase() {
             try {
                 // Firebase 설정 객체가 유효한지 확인
-                if (!firebaseConfig || Object.keys(firebaseConfig).length === 0) {
-                    throw new Error("Firebase 설정이 필요합니다. Canvas 환경 변수를 확인해주세요.");
+                // 이제 사용자가 직접 입력한 firebaseConfig를 사용합니다.
+                if (!firebaseConfig || Object.keys(firebaseConfig).length === 0 || !firebaseConfig.apiKey) {
+                    throw new Error("Firebase 설정이 필요합니다. 스크립트 내 firebaseConfig를 확인하고 채워주세요.");
                 }
 
                 // Firebase 앱 초기화
@@ -872,7 +884,7 @@
                 // 기본 프로그램 데이터 정의 (videoUrl 필드 포함)
                 const defaultPrograms = [
                     { order: 1, title: '🚣 우붓 + 래프팅', description: '아융강에서 스릴 넘치는 래프팅을 즐기고<br>우붓 왕궁과 전통시장, 마을을<br>둘러보는 코스입니다.', image: 'https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program1.mp4' },
-                    { order: 2, title: '� 우붓 + 스파', description: '우붓의 왕궁과 전통시장, 마을을 둘러보고<br>발리 전통 마사지를 받으며<br>심신의 피로를 푸는 힐링 코스입니다.', image: 'https://images.unsplash.com/photo-1708436137498-1b660e94c782?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: '' },
+                    { order: 2, title: '🌿 우붓 + 스파', description: '우붓의 왕궁과 전통시장, 마을을 둘러보고<br>발리 전통 마사지를 받으며<br>심신의 피로를 푸는 힐링 코스입니다.', image: 'https://images.unsplash.com/photo-1708436137498-1b660e94c782?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: '' },
                     { order: 3, title: '🏖️ 리조트 자유시간', description: '고급 리조트의 수영장과 부대시설을<br>마음껏 이용하며 누구의 방해도 받지 않는<br>완벽한 자유시간을 만끽합니다.', image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', videoUrl: '' },
                     { order: 4, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸따 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>라운딩을 즐깁니다.', image: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: '' },
                     { order: 5, title: '🚤 해양 스포츠', description: '제트스키, 도넛, 바나나보트,<br>스노클링을 즐기는<br>액티비티 패키지입니다.', image: 'https://images.unsplash.com/photo-1664922114319-4700c0ef74b1?q=80&w=1074&auto=format&fit&crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: '' },
@@ -932,4 +944,3 @@
     </script>
 </body>
 </html>
-�
