@@ -82,8 +82,8 @@
                     <img src="https://github.com/incarmarketing/bali-vote-project/blob/main/logo.png?raw=true" alt="회사 로고" class="company-logo h-12 mx-auto" onerror="this.style.display='none'">
                 </div>
                 <h1 class="text-4xl md:text-6xl font-bold tracking-tight text-shadow">✨ 발리에서 생길 일 ✨</h1>
-                <p class="mt-4 text-lg md:text-xl text-gray-200 max-w-2xl mx-auto">
-                    함께 떠날 발리 여행, 최고의 프로그램을 선택해주세요!
+                <p class="mt-4 text-lg md:text-xl text-gray-200 max-w-2xl mx-auto px-4">
+                    함께 떠날 발리 여행, <br class="sm:hidden">최고의 프로그램을 선택해주세요!
                 </p>
             </header>
 
@@ -435,11 +435,11 @@
                     : `<img src="${p.image || 'https://placehold.co/600x400/png?text=이미지+없음'}" alt="${p.title}" class="w-full h-56 object-cover" onerror="this.onerror=null; this.src='https://placehold.co/600x400/png?text=이미지+오류';">`;
                 
                 return `
-                    <div class="program-card bg-white/80 backdrop-blur-md rounded-2xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 border border-white/20">
+                    <div class="program-card flex flex-col bg-white/80 backdrop-blur-md rounded-2xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 border border-white/20">
                         ${mediaElement}
-                        <div class="p-6">
+                        <div class="p-6 flex flex-col flex-grow">
                             <h3 class="text-xl font-bold text-gray-800 mb-2">${p.title}</h3>
-                            <p class="text-gray-600 text-sm leading-relaxed mb-4 h-24 overflow-y-auto">${p.description}</p>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-4 flex-grow">${p.description}</p>
                             <div class="flex justify-between items-center pt-4 border-t border-gray-200/80">
                                 <button class="vote-btn bg-green-500 text-white font-semibold py-2 px-5 rounded-full hover:bg-green-600 transition-all shadow hover:shadow-md flex items-center gap-2" onclick="requestVote('${p.id}')">
                                     <i class="fa-solid fa-check-to-slot"></i> 투표하기
