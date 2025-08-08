@@ -224,7 +224,7 @@
         
         // --- 여기에 Firebase 프로젝트 설정을 직접 입력하세요 ---
         // Firebase 콘솔 > 프로젝트 설정 > 일반 > 내 앱 섹션에서 웹 앱을 선택하면 구성 스니펫을 찾을 수 있습니다.
-        const firebaseConfig = {
+       const firebaseConfig = {
   apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
   authDomain: "incarhigh-balihi.firebaseapp.com",
   projectId: "incarhigh-balihi",
@@ -436,7 +436,7 @@
 
             programsGrid.innerHTML = programs.map(p => {
                 const mediaElement = p.videoUrl
-                    ? `<video class="program-media program-video w-full h-56 object-cover" src="${p.videoUrl}" poster="${p.image}" muted loop playsinline></video>`
+                    ? `<video class="program-media program-video w-full h-56 object-cover" src="${p.videoUrl}" poster="${p.image}" muted loop playsinline preload="metadata"></video>`
                     : `<img src="${p.image || 'https://placehold.co/600x400/png?text=이미지+없음'}" alt="${p.title}" class="w-full h-56 object-cover" onerror="this.onerror=null; this.src='https://placehold.co/600x400/png?text=이미지+오류';">`;
                 
                 return `
@@ -743,4 +743,5 @@
 
     </script>
 </body>
-</ht
+</html>
+" and the user query is "Can you make the video in the card a bit bigge
