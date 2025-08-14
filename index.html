@@ -8,10 +8,10 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Google Fonts: Noto Sans KR for Korean text -->
+    <!-- Google Fonts: Noto Sans KR, Monoton, and Fredoka One for Balloon Effect -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Monoton&family=Fredoka+One&display=swap" rel="stylesheet">
     
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -28,10 +28,10 @@
         /* Custom styles to complement Tailwind */
         body {
             font-family: 'Noto Sans KR', sans-serif;
-            background-color: #f0f2f5; /* A soft, neutral background */
+            background-color: #f0f2f5;
         }
         
-        /* Custom animation for modal pop-up */
+        /* Modal pop-up animation */
         @keyframes modal-appear {
             from { opacity: 0; transform: translateY(-20px) scale(0.95); }
             to { opacity: 1; transform: translateY(0) scale(1); }
@@ -40,31 +40,94 @@
             animation: modal-appear 0.3s ease-out forwards;
         }
 
-        /* Custom scrollbar for a cleaner look */
-        ::-webkit-scrollbar {
-            width: 8px;
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+        /* Neon Sign Effect Base */
+        .neon-text {
+            font-family: 'Monoton', cursive;
+            color: #fff;
+            line-height: 1.2;
         }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+
+        /* Blue Neon */
+        .neon-blue {
+            animation: flicker-blue 2.5s infinite alternate;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 10px;
+
+        /* Pink Neon */
+        .neon-pink {
+            animation: flicker-pink 2s infinite alternate;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555;
+
+        @keyframes flicker-blue {
+            0%, 18%, 22%, 25%, 53%, 57%, 100% {
+                text-shadow:
+                    0 0 4px #fff,
+                    0 0 11px #fff,
+                    0 0 19px #fff,
+                    0 0 40px #2272FF,
+                    0 0 80px #2272FF,
+                    0 0 90px #2272FF,
+                    0 0 100px #2272FF,
+                    0 0 150px #2272FF;
+            }
+            20%, 24%, 55% { text-shadow: none; }
         }
+        
+        @keyframes flicker-pink {
+            0%, 18%, 22%, 25%, 53%, 57%, 100% {
+                text-shadow:
+                    0 0 4px #fff,
+                    0 0 11px #fff,
+                    0 0 19px #fff,
+                    0 0 40px #F426F4,
+                    0 0 80px #F426F4,
+                    0 0 90px #F426F4,
+                    0 0 100px #F426F4,
+                    0 0 150px #F426F4;
+            }
+            20%, 24%, 55% { text-shadow: none; }
+        }
+
+        /* Balloon Text Effect */
+        .balloon-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .balloon-letter {
+            font-family: 'Fredoka One', cursive;
+            font-size: 3.5rem;
+            font-weight: normal;
+            background: linear-gradient(180deg, #FFFFFF 40%, #e74c3c 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            text-shadow: 2px 2px 0px #c0392b, 4px 4px 8px rgba(0,0,0,0.4);
+            animation: puff-and-float 5s ease-in-out infinite;
+            transform-origin: bottom center;
+        }
+
+        @keyframes puff-and-float {
+            0%, 100% { transform: scale(1) translateY(0px) rotate(0deg); }
+            10% { transform: scale(1.3) translateY(-5px) rotate(2deg); }
+            50% { transform: scale(1.1) translateY(-15px) rotate(-2deg); }
+        }
+
+        @media (max-width: 768px) {
+            .balloon-letter {
+                font-size: 2.5rem;
+            }
+        }
+
     </style>
 </head>
 <body class="bg-gray-100">
-    <!-- Splash Screen: Full-screen intro video -->
-    <div id="splash-screen" class="fixed inset-0 bg-black z-[100] flex justify-center items-center transition-opacity duration-1000 ease-out">
-        <video id="intro-video" class="w-full h-full object-cover" src="https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/intro.mp4" autoplay muted playsinline></video>
-        <button id="skip-intro" class="absolute bottom-8 right-8 bg-black/50 text-white px-6 py-2 rounded-full backdrop-blur-sm border border-white/30 hover:bg-white/20 transition-all">
-            인트로 건너뛰기 &gt;
-        </button>
-    </div>
-
     <!-- Background Music -->
     <audio id="background-music" src="https://cdn.pixabay.com/download/audio/2022/08/27/audio_2932470728.mp3" loop></audio>
     
@@ -74,15 +137,21 @@
     </button>
 
     <!-- Main Content Wrapper -->
-    <div class="main-wrapper opacity-0 transition-opacity duration-1000 ease-in min-h-screen" style="background-image: url('https://images.unsplash.com/photo-1596178065887-1198b6148b2b?auto=format&fit=crop&w=2070&q=80'); background-size: cover; background-position: center; background-attachment: fixed;">
+    <div class="main-wrapper min-h-screen" style="background-image: url('https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/background.jpg'); background-size: cover; background-position: center; background-attachment: fixed;">
         <div class="bg-black/40 min-h-screen">
             <!-- Header Section -->
             <header class="py-10 md:py-16 text-center text-white">
                 <div class="logo-container mb-4">
                     <img src="https://github.com/incarmarketing/bali-vote-project/blob/main/logo.png?raw=true" alt="회사 로고" class="company-logo h-12 mx-auto" onerror="this.style.display='none'">
                 </div>
-                <h1 class="text-4xl md:text-6xl font-bold tracking-tight text-shadow">✨ 발리에서 생길 일 ✨</h1>
-                <p class="mt-4 text-lg md:text-xl text-gray-200 max-w-2xl mx-auto px-4">
+                <h1 class="h-20 md:h-24 flex items-center justify-center text-4xl md:text-5xl lg:text-6xl space-x-8">
+                    <span class="neon-text neon-blue">incarhigh</span>
+                    <span class="neon-text neon-pink">balihi</span>
+                </h1>
+                <div class="mt-6">
+                    <div id="balloon-container" class="balloon-container"></div>
+                </div>
+                <p class="mt-8 text-lg md:text-xl text-gray-200 max-w-2xl mx-auto px-4">
                     함께 떠날 발리 여행, <br class="sm:hidden">최고의 프로그램을 선택해주세요!
                 </p>
             </header>
@@ -217,30 +286,25 @@
         let isAdminMode = false;
         let unsubscribePrograms = null;
         let videoObserver = null;
-        let isMainContentShown = false;
-        let introSkipTimeoutId;
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         
         // --- 여기에 Firebase 프로젝트 설정을 직접 입력하세요 ---
         // Firebase 콘솔 > 프로젝트 설정 > 일반 > 내 앱 섹션에서 웹 앱을 선택하면 구성 스니펫을 찾을 수 있습니다.
-       const firebaseConfig = {
-  apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
-  authDomain: "incarhigh-balihi.firebaseapp.com",
-  projectId: "incarhigh-balihi",
-  storageBucket: "incarhigh-balihi.firebasestorage.app",
-  messagingSenderId: "777053953777",
-  appId: "1:777053953777:web:bd21c80707306f54da9350",
-  measurementId: "G-T8BW822SLS"
-};
+        const firebaseConfig = {
+            // apiKey: "...",
+            // authDomain: "...",
+            // projectId: "...",
+            // storageBucket: "...",
+            // messagingSenderId: "...",
+            // appId: "...",
+            // measurementId: "..."
+        };
         // ---------------------------------------------------
 
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         // --- DOM Elements ---
-        const splashScreen = document.getElementById('splash-screen');
-        const introVideo = document.getElementById('intro-video');
-        const mainWrapper = document.querySelector('.main-wrapper');
         const music = document.getElementById('background-music');
         const programsGrid = document.getElementById('programsGrid');
         const noProgramsEl = document.getElementById('noPrograms');
@@ -285,10 +349,10 @@
 
         // --- Initialization ---
         document.addEventListener('DOMContentLoaded', () => {
-            initializeFirebase();
             setupEventListeners();
             playMusic();
-            playIntroVideo();
+            setupBalloonText();
+            initializeFirebase();
         });
 
         async function initializeFirebase() {
@@ -336,18 +400,6 @@
 
         // --- Event Listeners ---
         function setupEventListeners() {
-            document.getElementById('skip-intro').onclick = () => {
-                if (introSkipTimeoutId) clearTimeout(introSkipTimeoutId);
-                introVideo.pause();
-                showMainContent();
-            };
-            introVideo.onended = showMainContent;
-            introVideo.addEventListener('error', (e) => {
-                console.error("비디오 로드 오류:", e);
-                if (introSkipTimeoutId) clearTimeout(introSkipTimeoutId);
-                showMainContent();
-            });
-
             document.getElementById('music-toggle').addEventListener('click', toggleMusic);
             adminToggleBtn.onclick = () => showModal('passwordModal');
             document.getElementById('loginBtn').onclick = checkAdminPassword;
@@ -361,44 +413,43 @@
 
         // --- Intro & Music ---
         function playMusic() {
-            music.muted = true;
+            music.muted = true; // Start muted
             music.play().catch(error => {
-                console.warn('음악 자동 재생 실패.', error);
-                document.body.addEventListener('click', () => music.play(), { once: true });
+                console.warn('음악 자동 재생 실패. 사용자 상호작용이 필요합니다.', error);
+                document.body.addEventListener('click', () => {
+                    if (music.paused) {
+                        music.play();
+                    }
+                    if (music.muted) {
+                        music.muted = false;
+                        document.getElementById('music-toggle').textContent = '🔊';
+                    }
+                }, { once: true });
             });
-        }
-
-        function playIntroVideo() {
-            if (introSkipTimeoutId) clearTimeout(introSkipTimeoutId);
-            introSkipTimeoutId = setTimeout(() => {
-                console.warn("인트로 비디오 시간 초과, 메인 콘텐츠 표시.");
-                showMainContent();
-            }, 5000);
-
-            introVideo.play().then(() => {
-                clearTimeout(introSkipTimeoutId);
-                console.log("인트로 비디오 시작, 음악 음소거 해제.");
-                music.muted = false;
-                document.getElementById('music-toggle').textContent = '🔊';
-            }).catch(error => {
-                console.warn("비디오 자동 재생 실패.", error);
-            });
-        }
-        
-        function showMainContent() {
-            if (isMainContentShown) return;
-            isMainContentShown = true;
-
-            splashScreen.style.opacity = '0';
-            setTimeout(() => {
-                splashScreen.style.display = 'none';
-                mainWrapper.classList.remove('opacity-0');
-            }, 1000);
         }
         
         function toggleMusic() {
             music.muted = !music.muted;
             document.getElementById('music-toggle').textContent = music.muted ? '🔇' : '🔊';
+        }
+        
+        function setupBalloonText() {
+            const text = "발리에서 생길일";
+            const container = document.getElementById('balloon-container');
+            if (!container) return;
+
+            container.innerHTML = ''; // Clear previous content
+            text.split('').forEach((char, index) => {
+                if (char === ' ') { // Handle spaces
+                    container.innerHTML += '&nbsp;';
+                    return;
+                }
+                const span = document.createElement('span');
+                span.className = 'balloon-letter';
+                span.textContent = char;
+                span.style.animationDelay = `${index * 0.15}s`;
+                container.appendChild(span);
+            });
         }
 
         // --- Core App Logic ---
@@ -643,7 +694,7 @@
                 : '<li>아직 투표한 사람이 없습니다.</li>';
             showModal('voterListModal');
         };
-
+        
         // --- Default Data Functions ---
         const defaultProgramsData = [
             { order: 1, title: '🚣 래프팅', description: '열대우림, 멋진 폭포, 깎아지른 협곡<br>멋진 풍경이 펼쳐진 아융강에서<br>스릴 넘치는 래프팅을 즐겨보세요.<br>이동시간 : 편도 약 3시간<br>이용시간 : 약 2시간', image: 'https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program1.mp4' },
@@ -744,3 +795,4 @@
     </script>
 </body>
 </html>
+
