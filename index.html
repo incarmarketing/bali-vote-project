@@ -8,10 +8,10 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Google Fonts: Noto Sans KR, Monoton, and Fredoka One for Balloon Effect -->
+    <!-- Google Fonts: Noto Sans KR, Monoton -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Monoton&family=Fredoka+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Monoton&display=swap" rel="stylesheet">
     
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -53,76 +53,50 @@
             line-height: 1.2;
         }
 
-        /* Blue Neon */
+        /* Blue Neon - 깜빡임 없이 항상 켜져 있도록 수정 */
         .neon-blue {
-            animation: flicker-blue 2.5s infinite alternate;
+            text-shadow:
+                0 0 4px #fff,
+                0 0 10px #fff,
+                0 0 18px #fff,
+                0 0 38px #2272FF,
+                0 0 70px #2272FF,
+                0 0 80px #2272FF,
+                0 0 90px #2272FF,
+                0 0 140px #2272FF;
         }
 
         /* Pink Neon */
         .neon-pink {
             animation: flicker-pink 2s infinite alternate;
         }
-
-        @keyframes flicker-blue {
-            0%, 18%, 22%, 25%, 53%, 57%, 100% {
-                text-shadow:
-                    0 0 4px #fff,
-                    0 0 11px #fff,
-                    0 0 19px #fff,
-                    0 0 40px #2272FF,
-                    0 0 80px #2272FF,
-                    0 0 90px #2272FF,
-                    0 0 100px #2272FF,
-                    0 0 150px #2272FF;
-            }
-            20%, 24%, 55% { text-shadow: none; }
-        }
         
         @keyframes flicker-pink {
             0%, 18%, 22%, 25%, 53%, 57%, 100% {
+                /* text-shadow 범위를 더 줄여서 간섭을 완벽히 차단 */
                 text-shadow:
-                    0 0 4px #fff,
-                    0 0 11px #fff,
-                    0 0 19px #fff,
+                    0 0 2px #fff,
+                    0 0 5px #fff,
+                    0 0 10px #fff,
+                    0 0 20px #F426F4,
+                    0 0 35px #F426F4,
                     0 0 40px #F426F4,
-                    0 0 80px #F426F4,
-                    0 0 90px #F426F4,
-                    0 0 100px #F426F4,
-                    0 0 150px #F426F4;
+                    0 0 50px #F426F4,
+                    0 0 75px #F426F4;
             }
             20%, 24%, 55% { text-shadow: none; }
         }
 
-        /* Balloon Text Effect */
-        .balloon-container {
+        /* Responsive Neon Title */
+        .responsive-neon-title {
+            font-size: clamp(2.2rem, 8vw, 6rem);
             display: flex;
+            flex-wrap: wrap; 
             justify-content: center;
             align-items: center;
-        }
-
-        .balloon-letter {
-            font-family: 'Fredoka One', cursive;
-            font-size: 3.5rem;
-            font-weight: normal;
-            background: linear-gradient(180deg, #FFFFFF 40%, #e74c3c 80%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            position: relative;
-            text-shadow: 2px 2px 0px #c0392b, 4px 4px 8px rgba(0,0,0,0.4);
-            animation: puff-and-float 5s ease-in-out infinite;
-            transform-origin: bottom center;
-        }
-
-        @keyframes puff-and-float {
-            0%, 100% { transform: scale(1) translateY(0px) rotate(0deg); }
-            10% { transform: scale(1.3) translateY(-5px) rotate(2deg); }
-            50% { transform: scale(1.1) translateY(-15px) rotate(-2deg); }
-        }
-
-        @media (max-width: 768px) {
-            .balloon-letter {
-                font-size: 2.5rem;
-            }
+            /* 가로 간격을 2.5rem으로 늘려 물리적 공간 확보 */
+            gap: 0.5rem 2.5rem; 
+            padding: 0 1rem; 
         }
 
     </style>
@@ -144,13 +118,10 @@
                 <div class="logo-container mb-4">
                     <img src="https://github.com/incarmarketing/bali-vote-project/blob/main/logo.png?raw=true" alt="회사 로고" class="company-logo h-12 mx-auto" onerror="this.style.display='none'">
                 </div>
-                <h1 class="h-20 md:h-24 flex items-center justify-center text-4xl md:text-5xl lg:text-6xl space-x-8">
+                <h1 class="responsive-neon-title h-20 md:h-24">
                     <span class="neon-text neon-blue">incarhigh</span>
                     <span class="neon-text neon-pink">balihi</span>
                 </h1>
-                <div class="mt-6">
-                    <div id="balloon-container" class="balloon-container"></div>
-                </div>
                 <p class="mt-8 text-lg md:text-xl text-gray-200 max-w-2xl mx-auto px-4">
                     함께 떠날 발리 여행, <br class="sm:hidden">최고의 프로그램을 선택해주세요!
                 </p>
@@ -291,15 +262,15 @@
         
         // --- 여기에 Firebase 프로젝트 설정을 직접 입력하세요 ---
         // Firebase 콘솔 > 프로젝트 설정 > 일반 > 내 앱 섹션에서 웹 앱을 선택하면 구성 스니펫을 찾을 수 있습니다.
-       const firebaseConfig = {
-  apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
-  authDomain: "incarhigh-balihi.firebaseapp.com",
-  projectId: "incarhigh-balihi",
-  storageBucket: "incarhigh-balihi.firebasestorage.app",
-  messagingSenderId: "777053953777",
-  appId: "1:777053953777:web:bd21c80707306f54da9350",
-  measurementId: "G-T8BW822SLS"
-};
+        const firebaseConfig = {
+            // apiKey: "...",
+            // authDomain: "...",
+            // projectId: "...",
+            // storageBucket: "...",
+            // messagingSenderId: "...",
+            // appId: "...",
+            // measurementId: "..."
+        };
         // ---------------------------------------------------
 
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
@@ -351,7 +322,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             setupEventListeners();
             playMusic();
-            setupBalloonText();
             initializeFirebase();
         });
 
@@ -433,25 +403,6 @@
             document.getElementById('music-toggle').textContent = music.muted ? '🔇' : '🔊';
         }
         
-        function setupBalloonText() {
-            const text = "발리에서 생길일";
-            const container = document.getElementById('balloon-container');
-            if (!container) return;
-
-            container.innerHTML = ''; // Clear previous content
-            text.split('').forEach((char, index) => {
-                if (char === ' ') { // Handle spaces
-                    container.innerHTML += '&nbsp;';
-                    return;
-                }
-                const span = document.createElement('span');
-                span.className = 'balloon-letter';
-                span.textContent = char;
-                span.style.animationDelay = `${index * 0.15}s`;
-                container.appendChild(span);
-            });
-        }
-
         // --- Core App Logic ---
         function loadAndListenPrograms() {
             if (!db) return;
@@ -697,14 +648,16 @@
         
         // --- Default Data Functions ---
         const defaultProgramsData = [
-            { order: 1, title: '🚣 래프팅', description: '열대우림, 멋진 폭포, 깎아지른 협곡<br>멋진 풍경이 펼쳐진 아융강에서<br>스릴 넘치는 래프팅을 즐겨보세요.<br>이동시간 : 편도 약 3시간<br>이용시간 : 약 2시간', image: 'https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program1.mp4' },
-            { order: 2, title: '🌿 발리스윙', description: '발리의 환상적인 정글 속에서<br>유명한 스윙을 즐기며<br>이국적인 풍경과 인생 사진을 남겨보세요.<br>이동시간 : 편도 약 3시간<br>이용시간 : 약 2시간', image: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/baliswing.png', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program2.mp4' },
-            { order: 3, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와 어트랙션<br>다양한 편의시설을 함께 즐겨보세요.<br>이동시간 : 편도 약 1시간<br>이용시간 : 약 3시간', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program3.mp4' },
-            { order: 4, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸따 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>색다른 라운딩을 즐겨보세요.<br>이동시간 : 편도 약 1시간<br>이용시간 : 약 5시간', image: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program4.mp4' },
-            { order: 5, title: '🏖️ 리조트 자유시간', description: '고급 리조트의 수영장과 부대시설을<br>마음껏 이용하며 누구의 방해도 받지 않는<br>완벽한 자유시간을 만끽합니다.<br>이동시간 : 없음<br>이용시간 : 자유', image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', videoUrl: '' },
-            { order: 6, title: '🚤 울루와뚜 + 따나바락', description: '경이로운 자연과 힌두-자바 역사<br>독특한 건축물이 어우러진 울루와투와<br>인생샷 명소 따나바락 절벽을 찾아보세요.<br>이동시간 : 편도 약 1시간<br>이용시간 : 약 3시간', image: 'https://images.unsplash.com/photo-1445968813835-7c9479a87d8b?q=80&w=1172&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: '' },
-            { order: 7, title: '🛍️ 비치워크 쇼핑센터', description: '발리의 대표적인 해변<br>꾸따 해변 앞에 위치한<br>멋진 전경의 쇼핑센터<br>이동시간 : 편도 약 20분<br>이용시간 : 약 5시간', image: 'https://cms.beachwalkbali.com/uploads/SUB_PROMOTION_WEB_eba6e4a9dd.jpg', videoUrl: '' },
-            { order: 8, title: '🗿 가루다 공원', description: '발리 문화와 힌두교 문화를<br>한번에 볼 수 있는<br>발리 최대의 테마 파크<br>이동시간 : 편도 약 1시간<br>이용시간 : 약 3시간', image: 'https://images.pexels.com/photos/13334227/pexels-photo-13334227.jpeg', videoUrl: '' },
+            { order: 1, title: '🗿 가루다 파크', description: '발리 문화와 힌두교 문화를 한번에 보고<br>웅장한 바위벽과 아름다운 인공 연못 등 <br>발리 최대의 테마 파크를 즐겨보세요.<br>이동시간 : 편도 약 1시간<br>이용시간 : 약 3시간', image: 'https://images.pexels.com/photos/13334227/pexels-photo-13334227.jpeg', videoUrl: '' },
+            { order: 2, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와 다양한 어트랙션<br>다양한 편의시설을 마음껏 즐겨보세요.<br>이동시간 : 편도 약 1시간<br>이용시간 : 약 3시간', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program3.mp4' }, 
+            { order: 3, title: '🛍️ 꾸따비치 & 비치워크 쇼핑센터', description: '발리의 대표적인 해변 꾸따비치에서<br>아름다운 해변과 여유를 만끽하고<br>멋진 전경의 쇼핑센터에서 편안한 쇼핑을 즐겨보세요.<br>이동시간 : 편도 약 20분<br>이용시간 : 약 5시간', image: 'https://cms.beachwalkbali.com/uploads/SUB_PROMOTION_WEB_eba6e4a9dd.jpg', videoUrl: '' },
+            { order: 4, title: '🏖️ 리조트 자유일정', description: '5성급 고급 호텔의 수영장과 부대시설을<br>마음껏 이용하며 누구의 방해도 받지 않는<br>완벽한 자유시간을 만끽하세요.<br>이동시간 : 없음<br>이용시간 : 자유', image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', videoUrl: '' },
+            { order: 5, title: '🌴 울루와뚜 & 따나바락', description: '경이로운 자연과 힌두-자바 역사<br>독특한 건축물이 어우러진 울루와투와<br>인생샷 명소 따나바락 절벽을 찾아보세요.<br>이동시간 : 편도 약 1시간<br>이용시간 : 약 3시간', image: 'https://images.unsplash.com/photo-1445968813835-7c9479a87d8b?q=80&w=1172&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: '' },
+            { order: 6, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸따 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>색다른 라운딩을 즐겨보세요.<br>이동시간 : 편도 약 1시간<br>이용시간 : 약 5시간', image: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program4.mp4' },
+            { order: 7, title: '🚣 래프팅 & 우붓', description: '열대우림, 멋진 폭포, 깎아지른 협곡이 펼쳐진 아융강에서<br>스릴 넘치는 래프팅을 즐기고<br>발리의 예술과 문화, 영성이 조화롭게 어우러진 우붓을 둘러보세요.<br>이동시간 : 편도 약 2시간 30분<br>이용시간 : 약 2시간', image: 'https://images.unsplash.com/photo-1624646580989-9f059e25eb78?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program1.mp4' },
+            { order: 8, title: '🌿 발리스윙 & 우붓', description: '발리의 환상적인 정글 속에서 유명한 스윙을 즐기며<br>이국적인 풍경과 인생 사진을 남기고<br>발리의 예술과 문화, 영성이 조화롭게 어우러진 우붓을 둘러보세요.<br>이동시간 : 편도 약 2시간 30분<br>이용시간 : 약 2시간', image: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/baliswing.png', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program2.mp4' },
+            { order: 9, title: '🛕 우붓 자유관광', description: '발리의 예술과 문화 중심지, 우붓에서<br>고즈넉한 사원과 왕궁을 둘러보고, 푸르른 계단식 논 사이를 거닐며<br>당신만의 속도로 숨은 매력을 발견해보세요.<br>이동시간 : 편도 약 2시간 30분<br>이용시간 : 약 3시간', image: 'https://images.pexels.com/photos/13334227/pexels-photo-13334227.jpeg', videoUrl: '' },
+            { order: 10, title: '⛵ 인카 디너 선셋크루즈', description: '인도양의 붉은 노을을 배경으로<br>선상에서 펼쳐지는 다양한 공연을 즐기며<br>발리의 밤바다가 선사하는 낭만적인 추억을 만들어보세요.<br>이동시간 : 편도 약 1시간 30분<br>이용시간 : 약 3시간', image: 'https://images.pexels.com/photos/13334227/pexels-photo-13334227.jpeg', videoUrl: '' },
         ];
 
         async function runInitialization() {
@@ -795,5 +748,3 @@
     </script>
 </body>
 </html>
-
-
