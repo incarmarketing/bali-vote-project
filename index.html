@@ -262,6 +262,20 @@
         let isAdminMode = false;
         let unsubscribePrograms = null;
         let videoObserver = null;
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        
+        // --- 여기에 Firebase 프로젝트 설정을 직접 입력하세요 ---
+        // Firebase 콘솔 > 프로젝트 설정 > 일반 > 내 앱 섹션에서 웹 앱을 선택하면 구성 스니펫을 찾을 수 있습니다.
+      const firebaseConfig = {
+  apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
+  authDomain: "incarhigh-balihi.firebaseapp.com",
+  projectId: "incarhigh-balihi",
+  storageBucket: "incarhigh-balihi.firebasestorage.app",
+  messagingSenderId: "777053953777",
+  appId: "1:777053953777:web:bd21c80707306f54da9350",
+  measurementId: "G-T8BW822SLS"
+};
         // ---------------------------------------------------
 
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
@@ -639,7 +653,7 @@
         
         // --- Default Data Functions ---
         const defaultProgramsData = [
-             { order: 1, title: '🗿 가루다 파크', description: '발리 문화와 힌두교 문화를 한번에 보고<br>웅장한 바위벽과 아름다운 인공 연못 등 <br>발리 최대의 테마 파크를 즐겨보세요.<br>이동시간 : 편도 약 1시간<br>이용시간 : 약 3시간', image: 'https://images.pexels.com/photos/13334227/pexels-photo-13334227.jpeg', videoUrl: '' },
+            { order: 1, title: '🗿 가루다 파크', description: '발리 문화와 힌두교 문화를 한번에 보고<br>웅장한 바위벽과 아름다운 인공 연못 등 <br>발리 최대의 테마 파크를 즐겨보세요.<br>이동시간 : 편도 약 1시간<br>이용시간 : 약 3시간', image: 'https://images.pexels.com/photos/13334227/pexels-photo-13334227.jpeg', videoUrl: '' },
             { order: 2, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와 다양한 어트랙션<br>다양한 편의시설을 마음껏 즐겨보세요.<br>이동시간 : 편도 약 1시간<br>이용시간 : 약 3시간', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program3.mp4' }, 
             { order: 3, title: '🛍️ 꾸따비치 & 비치워크 쇼핑센터', description: '발리의 대표적인 해변 꾸따비치에서<br>아름다운 해변과 여유를 만끽하고<br>멋진 전경의 쇼핑센터에서 편안한 쇼핑을 즐겨보세요.<br>이동시간 : 편도 약 20분<br>이용시간 : 약 5시간', image: 'https://cms.beachwalkbali.com/uploads/SUB_PROMOTION_WEB_eba6e4a9dd.jpg', videoUrl: '' },
             { order: 4, title: '🏖️ 리조트 자유일정', description: '5성급 고급 호텔의 수영장과 부대시설을<br>마음껏 이용하며 누구의 방해도 받지 않는<br>완벽한 자유시간을 만끽하세요.<br>이동시간 : 없음<br>이용시간 : 자유', image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', videoUrl: '' },
@@ -739,5 +753,3 @@
     </script>
 </body>
 </html>
-
-
