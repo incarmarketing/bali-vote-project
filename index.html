@@ -53,7 +53,6 @@
             font-weight: 700;
             color: #fff;
             line-height: 1.2;
-            /* FIX: z-index를 적용하기 위해 position 속성 추가 */
             position: relative;
         }
 
@@ -63,14 +62,12 @@
                 0 0 4px #fff, 0 0 10px #fff, 0 0 18px #fff,
                 0 0 38px #2272FF, 0 0 70px #2272FF, 0 0 80px #2272FF,
                 0 0 90px #2272FF, 0 0 140px #2272FF;
-            /* FIX: 파란색 네온이 항상 위에 오도록 z-index 설정 */
             z-index: 2;
         }
 
         /* Pink Neon */
         .neon-pink {
             animation: flicker-pink 2s infinite alternate;
-            /* FIX: 분홍색 네온이 파란색보다 아래에 있도록 z-index 설정 */
             z-index: 1;
         }
         
@@ -91,37 +88,12 @@
             flex-wrap: wrap; 
             justify-content: center;
             align-items: center;
-            gap: 0.5rem 2.5rem; 
+            gap: 1.5rem 2.5rem; 
             padding: 0 1rem; 
         }
-
-        /* 모바일 화면에서 네온 효과가 겹치는 문제를 해결하기 위해 미디어 쿼리 추가 */
-        @media (max-width: 767px) {
-            .neon-blue {
-                text-shadow:
-                    0 0 2px #fff, 0 0 5px #fff, 0 0 8px #fff,
-                    0 0 15px #2272FF, 0 0 25px #2272FF;
-            }
-
-            @keyframes flicker-pink-mobile {
-                 0%, 18%, 22%, 25%, 53%, 57%, 100% {
-                    text-shadow:
-                        0 0 2px #fff, 0 0 4px #fff, 0 0 6px #fff,
-                        0 0 10px #F426F4, 0 0 20px #F426F4;
-                }
-                20%, 24%, 55% { text-shadow: none; }
-            }
-
-            .neon-pink {
-                animation-name: flicker-pink-mobile;
-            }
-        }
-
     </style>
 </head>
 <body class="bg-gray-100">
-    <!-- Background Music -->
-    <audio id="background-music" src="https://cdn.pixabay.com/download/audio/2022/08/27/audio_2932470728.mp3" loop></audio>
     
     <!-- Main Content Wrapper -->
     <div class="main-wrapper min-h-screen" style="background-image: url('https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/background.jpg'); background-size: cover; background-position: center; background-attachment: fixed;">
@@ -273,8 +245,10 @@
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         
-        const firebaseConfig = {
-           const firebaseConfig = {
+        // --- 여기에 Firebase 프로젝트 설정을 직접 입력하세요 ---
+        // 중요: apiKey부터 appId까지 모든 값을 정확하게 입력해야 관리자 버튼이 활성화됩니다.
+        // 하나라도 오타가 있거나 비어있으면 버튼은 안전을 위해 잠금 상태를 유지합니다.
+       const firebaseConfig = {
   apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
   authDomain: "incarhigh-balihi.firebaseapp.com",
   projectId: "incarhigh-balihi",
@@ -286,7 +260,6 @@
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         // --- DOM Elements ---
-        const music = document.getElementById('background-music');
         const programsGrid = document.getElementById('programsGrid');
         const noProgramsEl = document.getElementById('noPrograms');
         const programForm = document.getElementById('programForm');
@@ -379,12 +352,6 @@
 
         // --- Event Listeners ---
         function setupEventListeners() {
-            document.body.addEventListener('click', () => {
-                if (music.paused) {
-                    music.play().catch(e => console.warn("Music autoplay was prevented. Waiting for another interaction."));
-                }
-            }, { once: true });
-
             adminToggleBtn.onclick = () => showModal('passwordModal');
             document.getElementById('loginBtn').onclick = checkAdminPassword;
             document.getElementById('clearFormBtn').onclick = clearForm;
