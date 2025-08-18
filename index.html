@@ -119,11 +119,6 @@
     <!-- Background Music -->
     <audio id="background-music" src="https://cdn.pixabay.com/download/audio/2022/08/27/audio_2932470728.mp3" loop></audio>
     
-    <!-- Music button: mobile(bottom-right), desktop(bottom-left) -->
-    <button id="music-toggle" class="fixed bottom-4 right-4 md:left-4 w-10 h-10 md:w-12 md:h-12 bg-white/80 backdrop-blur-md text-gray-800 rounded-full shadow-lg flex items-center justify-center z-50 text-lg md:text-xl transition-transform hover:scale-110">
-        🔇
-    </button>
-
     <!-- Main Content Wrapper -->
     <div class="main-wrapper min-h-screen" style="background-image: url('https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/background.jpg'); background-size: cover; background-position: center; background-attachment: fixed;">
         <div class="bg-black/40 min-h-screen">
@@ -274,8 +269,19 @@
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         
-        // FIX: 사용자가 직접 키를 입력할 필요 없이, 환경 변수에서 Firebase 설정을 가져오도록 수정
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        // FIX: Firebase 설정을 원래의 플레이스홀더 방식으로 되돌림
+        // --- 여기에 Firebase 프로젝트 설정을 직접 입력하세요 ---
+        // Firebase 콘솔 > 프로젝트 설정 > 일반 > 내 앱 섹션에서 웹 앱을 선택하면 구성 스니펫을 찾을 수 있습니다.
+       const firebaseConfig = {
+  apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
+  authDomain: "incarhigh-balihi.firebaseapp.com",
+  projectId: "incarhigh-balihi",
+  storageBucket: "incarhigh-balihi.firebasestorage.app",
+  messagingSenderId: "777053953777",
+  appId: "1:777053953777:web:bd21c80707306f54da9350",
+  measurementId: "G-T8BW822SLS"
+};
+        // ---------------------------------------------------
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         // --- DOM Elements ---
@@ -329,17 +335,14 @@
 
         async function initializeFirebase() {
             try {
-                // FIX: Firebase 설정이 비어있는지 더 정확하게 확인
-                if (!firebaseConfig.apiKey) {
-                    throw new Error("Firebase 설정이 올바르지 않습니다. 이 환경에서는 앱을 실행할 수 없습니다.");
+                // FIX: Firebase 설정이 플레이스홀더 값인지 확인하는 로직으로 복원
+                if (!firebaseConfig.apiKey || firebaseConfig.apiKey === "YOUR_API_KEY") {
+                    throw new Error("Firebase 설정이 누락되었습니다. 스크립트 내 firebaseConfig 객체를 채워주세요.");
                 }
 
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
-                
-                // FIX: 페이지 로드 시 바로 음악 재생을 시도하지 않고, 첫 상호작용을 기다림
-                // playMusic() 함수를 여기서 제거하고, setupEventListeners 안에서 초기화
                 
                 if (initialAuthToken) {
                     await signInWithCustomToken(auth, initialAuthToken);
@@ -347,7 +350,6 @@
                     await signInAnonymously(auth);
                 }
 
-                // FIX: Firebase 초기화가 성공해야만 관리자 버튼이 활성화됨
                 adminToggleBtn.disabled = false;
                 adminToggleBtn.title = '관리자 모드';
                 adminToggleBtn.classList.replace('bg-gray-400', 'bg-orange-500');
@@ -377,9 +379,9 @@
 
         // --- Event Listeners ---
         function setupEventListeners() {
-            document.getElementById('music-toggle').addEventListener('click', toggleMusic);
+            // FIX: 음소거 버튼 관련 로직 제거
             
-            // FIX: 브라우저 정책으로 인한 자동재생 문제를 해결하기 위해, 첫 클릭 시 음악 재생을 시작하도록 유도
+            // 브라우저 정책으로 인한 자동재생 문제를 해결하기 위해, 첫 클릭 시 음악 재생을 시작하도록 유도
             document.body.addEventListener('click', () => {
                 if (music.paused) {
                     music.play().catch(e => console.warn("Music autoplay was prevented. Waiting for another interaction."));
@@ -396,17 +398,7 @@
             programForm.addEventListener('submit', handleFormSubmit);
         }
         
-        // FIX: 음소거 버튼 로직 수정
-        function toggleMusic() {
-            // 버튼을 눌렀을 때 음악이 멈춰있으면 재생을 시도 (자동재생 정책 해결)
-            if (music.paused) {
-                music.play().catch(e => console.error("Music play failed on toggle:", e));
-            }
-            
-            // 그 다음에 음소거 상태를 토글
-            music.muted = !music.muted;
-            document.getElementById('music-toggle').textContent = music.muted ? '🔇' : '🔊';
-        }
+        // FIX: 음소거 버튼이 없으므로 toggleMusic 함수 전체 제거
         
         // --- Core App Logic ---
         function loadAndListenPrograms() {
