@@ -48,7 +48,6 @@
 
         /* Neon Sign Effect Base */
         .neon-text {
-            /* 폰트를 'Playfair Display'로 변경하고 대문자, 굵기 적용 */
             font-family: 'Playfair Display', serif;
             text-transform: uppercase;
             font-weight: 700;
@@ -56,17 +55,12 @@
             line-height: 1.2;
         }
 
-        /* Blue Neon - 깜빡임 없이 항상 켜져 있도록 수정 */
+        /* Blue Neon */
         .neon-blue {
             text-shadow:
-                0 0 4px #fff,
-                0 0 10px #fff,
-                0 0 18px #fff,
-                0 0 38px #2272FF,
-                0 0 70px #2272FF,
-                0 0 80px #2272FF,
-                0 0 90px #2272FF,
-                0 0 140px #2272FF;
+                0 0 4px #fff, 0 0 10px #fff, 0 0 18px #fff,
+                0 0 38px #2272FF, 0 0 70px #2272FF, 0 0 80px #2272FF,
+                0 0 90px #2272FF, 0 0 140px #2272FF;
         }
 
         /* Pink Neon */
@@ -74,33 +68,49 @@
             animation: flicker-pink 2s infinite alternate;
         }
         
-        /* MODIFICATION: Reduced the text-shadow blur to prevent overlap on mobile */
         @keyframes flicker-pink {
             0%, 18%, 22%, 25%, 53%, 57%, 100% {
                 text-shadow:
-                    0 0 2px #fff,
-                    0 0 5px #fff,
-                    0 0 10px #fff,
-                    0 0 15px #F426F4,
-                    0 0 25px #F426F4,
-                    0 0 30px #F426F4,
-                    0 0 40px #F426F4,
-                    0 0 50px #F426F4;
+                    0 0 4px #fff, 0 0 10px #fff, 0 0 18px #fff,
+                    0 0 38px #F426F4, 0 0 70px #F426F4, 0 0 80px #F426F4,
+                    0 0 90px #F426F4, 0 0 140px #F426F4;
             }
             20%, 24%, 55% { text-shadow: none; }
         }
 
         /* Responsive Neon Title */
         .responsive-neon-title {
-            /* 폰트에 맞게 폰트 크기 재조정 */
             font-size: clamp(2.5rem, 9vw, 6.5rem);
             display: flex;
             flex-wrap: wrap; 
             justify-content: center;
             align-items: center;
-            /* 모바일에서 줄바꿈 시 상하 간격을 0.5rem으로 줄여 간섭 방지 */
             gap: 0.5rem 2.5rem; 
             padding: 0 1rem; 
+        }
+
+        /* FIX: 모바일 화면에서 네온 효과가 겹치는 문제를 해결하기 위해 미디어 쿼리 추가 */
+        @media (max-width: 767px) {
+            .neon-blue {
+                text-shadow:
+                    0 0 2px #fff, 0 0 5px #fff, 0 0 8px #fff,
+                    0 0 15px #2272FF, 0 0 25px #2272FF;
+            }
+
+            /* 모바일용으로 빛 번짐이 약한 새 애니메이션 정의 */
+            @keyframes flicker-pink-mobile {
+                 0%, 18%, 22%, 25%, 53%, 57%, 100% {
+                    text-shadow:
+                        0 0 2px #fff, 0 0 4px #fff, 0 0 6px #fff,
+                        0 0 10px #F426F4, 0 0 20px #F426F4;
+                }
+                20%, 24%, 55% { text-shadow: none; }
+            }
+
+            /* 모바일에서만 새 애니메이션을 적용 */
+            .neon-pink {
+                animation-name: flicker-pink-mobile;
+            }
         }
 
     </style>
@@ -109,7 +119,7 @@
     <!-- Background Music -->
     <audio id="background-music" src="https://cdn.pixabay.com/download/audio/2022/08/27/audio_2932470728.mp3" loop></audio>
     
-    <!-- MODIFICATION: Music button moved to bottom-right on mobile, and bottom-left on desktop -->
+    <!-- Music button: mobile(bottom-right), desktop(bottom-left) -->
     <button id="music-toggle" class="fixed bottom-4 right-4 md:left-4 w-10 h-10 md:w-12 md:h-12 bg-white/80 backdrop-blur-md text-gray-800 rounded-full shadow-lg flex items-center justify-center z-50 text-lg md:text-xl transition-transform hover:scale-110">
         🔇
     </button>
@@ -122,7 +132,6 @@
                 <div class="logo-container mb-4">
                     <img src="https://github.com/incarmarketing/bali-vote-project/blob/main/logo.png?raw=true" alt="회사 로고" class="company-logo h-12 mx-auto" onerror="this.style.display='none'">
                 </div>
-                <!-- h1에서 고정 높이(h-20 md:h-24)를 제거하여 유연하게 만듦 -->
                 <h1 class="responsive-neon-title">
                     <span class="neon-text neon-blue">incar high</span>
                     <span class="neon-text neon-pink">bali hi</span>
@@ -193,7 +202,7 @@
                 </div>
             </div>
             
-            <!-- MODIFICATION: Admin button is now hidden on mobile -->
+            <!-- Admin button: hidden on mobile, visible on desktop -->
             <button id="adminToggleBtn" title="초기화 중..." disabled class="fixed bottom-4 right-4 w-10 h-10 md:w-12 md:h-12 bg-gray-400 text-white rounded-full shadow-lg hidden md:flex items-center justify-center z-50 text-lg md:text-xl transition-all hover:scale-110 hover:rotate-12 disabled:cursor-not-allowed disabled:bg-gray-400">
                 <i class="fa-solid fa-screwdriver-wrench"></i>
             </button>
@@ -265,20 +274,8 @@
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         
-        // --- 여기에 Firebase 프로젝트 설정을 직접 입력하세요 ---
-        // Firebase 콘솔 > 프로젝트 설정 > 일반 > 내 앱 섹션에서 웹 앱을 선택하면 구성 스니펫을 찾을 수 있습니다.
-       const firebaseConfig = {
-         const firebaseConfig = {
-  apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
-  authDomain: "incarhigh-balihi.firebaseapp.com",
-  projectId: "incarhigh-balihi",
-  storageBucket: "incarhigh-balihi.firebasestorage.app",
-  messagingSenderId: "777053953777",
-  appId: "1:777053953777:web:bd21c80707306f54da9350",
-  measurementId: "G-T8BW822SLS"
-};
-        // ---------------------------------------------------
-
+        // FIX: 사용자가 직접 키를 입력할 필요 없이, 환경 변수에서 Firebase 설정을 가져오도록 수정
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         // --- DOM Elements ---
@@ -327,26 +324,30 @@
         // --- Initialization ---
         document.addEventListener('DOMContentLoaded', () => {
             setupEventListeners();
-            playMusic();
             initializeFirebase();
         });
 
         async function initializeFirebase() {
             try {
-                if (!firebaseConfig || !firebaseConfig.apiKey || firebaseConfig.apiKey === "YOUR_API_KEY") {
-                    throw new Error("Firebase 설정이 누락되었습니다. 스크립트 내 firebaseConfig 객체를 채워주세요.");
+                // FIX: Firebase 설정이 비어있는지 더 정확하게 확인
+                if (!firebaseConfig.apiKey) {
+                    throw new Error("Firebase 설정이 올바르지 않습니다. 이 환경에서는 앱을 실행할 수 없습니다.");
                 }
 
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
-
+                
+                // FIX: 페이지 로드 시 바로 음악 재생을 시도하지 않고, 첫 상호작용을 기다림
+                // playMusic() 함수를 여기서 제거하고, setupEventListeners 안에서 초기화
+                
                 if (initialAuthToken) {
                     await signInWithCustomToken(auth, initialAuthToken);
                 } else {
                     await signInAnonymously(auth);
                 }
 
+                // FIX: Firebase 초기화가 성공해야만 관리자 버튼이 활성화됨
                 adminToggleBtn.disabled = false;
                 adminToggleBtn.title = '관리자 모드';
                 adminToggleBtn.classList.replace('bg-gray-400', 'bg-orange-500');
@@ -377,6 +378,14 @@
         // --- Event Listeners ---
         function setupEventListeners() {
             document.getElementById('music-toggle').addEventListener('click', toggleMusic);
+            
+            // FIX: 브라우저 정책으로 인한 자동재생 문제를 해결하기 위해, 첫 클릭 시 음악 재생을 시작하도록 유도
+            document.body.addEventListener('click', () => {
+                if (music.paused) {
+                    music.play().catch(e => console.warn("Music autoplay was prevented. Waiting for another interaction."));
+                }
+            }, { once: true });
+
             adminToggleBtn.onclick = () => showModal('passwordModal');
             document.getElementById('loginBtn').onclick = checkAdminPassword;
             document.getElementById('clearFormBtn').onclick = clearForm;
@@ -386,25 +395,15 @@
             excelDownloadBtn.onclick = exportToExcel;
             programForm.addEventListener('submit', handleFormSubmit);
         }
-
-        // --- Intro & Music ---
-        function playMusic() {
-            music.muted = true; // Start muted
-            music.play().catch(error => {
-                console.warn('음악 자동 재생 실패. 사용자 상호작용이 필요합니다.', error);
-                document.body.addEventListener('click', () => {
-                    if (music.paused) {
-                        music.play();
-                    }
-                    if (music.muted) {
-                        music.muted = false;
-                        document.getElementById('music-toggle').textContent = '🔊';
-                    }
-                }, { once: true });
-            });
-        }
         
+        // FIX: 음소거 버튼 로직 수정
         function toggleMusic() {
+            // 버튼을 눌렀을 때 음악이 멈춰있으면 재생을 시도 (자동재생 정책 해결)
+            if (music.paused) {
+                music.play().catch(e => console.error("Music play failed on toggle:", e));
+            }
+            
+            // 그 다음에 음소거 상태를 토글
             music.muted = !music.muted;
             document.getElementById('music-toggle').textContent = music.muted ? '🔇' : '🔊';
         }
@@ -471,28 +470,22 @@
             setupVideoObserver();
         }
         
-        // --- Video Autoplay Stability Improvement ---
         function setupVideoObserver() {
             if (videoObserver) videoObserver.disconnect();
             
             const options = { root: null, rootMargin: '0px', threshold: 0.75 };
 
             videoObserver = new IntersectionObserver((entries) => {
-                entries.forEach(async (entry) => { // async 콜백으로 변경
+                entries.forEach(async (entry) => {
                     const video = entry.target;
                     if (entry.isIntersecting) {
-                        // 자동 재생을 위해 Muted 속성 보장
                         video.muted = true;
                         try {
-                            // play()는 Promise를 반환하므로 await으로 결과를 기다림
                             await video.play();
                         } catch (error) {
-                            // 브라우저 정책에 의해 자동 재생이 거부된 경우
-                            // 콘솔에만 경고를 표시하고 사용자에게는 아무것도 보여주지 않음
                             console.warn("Video autoplay was prevented by the browser.", video.src, error);
                         }
                     } else {
-                        // 화면 밖으로 나가면 비디오 정지
                         video.pause();
                     }
                 });
@@ -700,7 +693,6 @@
                 oldDocs.forEach(doc => deleteBatch.delete(doc.ref));
                 await deleteBatch.commit();
                 
-                // *** FIX: Use the global defaultProgramsData array ***
                 const addBatch = writeBatch(db);
                 defaultProgramsData.forEach(program => {
                     const newProgramRef = doc(programsCollectionRef);
