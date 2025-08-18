@@ -74,18 +74,18 @@
             animation: flicker-pink 2s infinite alternate;
         }
         
+        /* MODIFICATION: Reduced the text-shadow blur to prevent overlap on mobile */
         @keyframes flicker-pink {
             0%, 18%, 22%, 25%, 53%, 57%, 100% {
-                /* text-shadow 범위를 더 줄여서 간섭을 완벽히 차단 */
                 text-shadow:
                     0 0 2px #fff,
                     0 0 5px #fff,
                     0 0 10px #fff,
-                    0 0 20px #F426F4,
-                    0 0 35px #F426F4,
+                    0 0 15px #F426F4,
+                    0 0 25px #F426F4,
+                    0 0 30px #F426F4,
                     0 0 40px #F426F4,
-                    0 0 50px #F426F4,
-                    0 0 75px #F426F4;
+                    0 0 50px #F426F4;
             }
             20%, 24%, 55% { text-shadow: none; }
         }
@@ -109,8 +109,8 @@
     <!-- Background Music -->
     <audio id="background-music" src="https://cdn.pixabay.com/download/audio/2022/08/27/audio_2932470728.mp3" loop></audio>
     
-    <!-- Music Toggle Button -->
-    <button id="music-toggle" class="fixed bottom-4 left-4 w-10 h-10 md:w-12 md:h-12 bg-white/80 backdrop-blur-md text-gray-800 rounded-full shadow-lg flex items-center justify-center z-50 text-lg md:text-xl transition-transform hover:scale-110">
+    <!-- MODIFICATION: Music button moved to bottom-right on mobile, and bottom-left on desktop -->
+    <button id="music-toggle" class="fixed bottom-4 right-4 md:left-4 w-10 h-10 md:w-12 md:h-12 bg-white/80 backdrop-blur-md text-gray-800 rounded-full shadow-lg flex items-center justify-center z-50 text-lg md:text-xl transition-transform hover:scale-110">
         🔇
     </button>
 
@@ -128,7 +128,7 @@
                     <span class="neon-text neon-pink">bali hi</span>
                 </h1>
                 <p class="mt-8 text-lg md:text-xl text-gray-200 max-w-2xl mx-auto px-4">
-                    함께 떠날 발리 여행, <br class="sm:hidden">최고의 프로그램을 선택해주세요!
+                    발리에서 생길 일, <br class="sm:hidden">가장 기대하는  프로그램을 선택해주세요!
                 </p>
             </header>
 
@@ -193,8 +193,8 @@
                 </div>
             </div>
             
-            <!-- Admin Toggle Button -->
-            <button id="adminToggleBtn" title="초기화 중..." disabled class="fixed bottom-4 right-4 w-10 h-10 md:w-12 md:h-12 bg-gray-400 text-white rounded-full shadow-lg flex items-center justify-center z-50 text-lg md:text-xl transition-all hover:scale-110 hover:rotate-12 disabled:cursor-not-allowed disabled:bg-gray-400">
+            <!-- MODIFICATION: Admin button is now hidden on mobile -->
+            <button id="adminToggleBtn" title="초기화 중..." disabled class="fixed bottom-4 right-4 w-10 h-10 md:w-12 md:h-12 bg-gray-400 text-white rounded-full shadow-lg hidden md:flex items-center justify-center z-50 text-lg md:text-xl transition-all hover:scale-110 hover:rotate-12 disabled:cursor-not-allowed disabled:bg-gray-400">
                 <i class="fa-solid fa-screwdriver-wrench"></i>
             </button>
         </div>
@@ -268,6 +268,7 @@
         // --- 여기에 Firebase 프로젝트 설정을 직접 입력하세요 ---
         // Firebase 콘솔 > 프로젝트 설정 > 일반 > 내 앱 섹션에서 웹 앱을 선택하면 구성 스니펫을 찾을 수 있습니다.
        const firebaseConfig = {
+         const firebaseConfig = {
   apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
   authDomain: "incarhigh-balihi.firebaseapp.com",
   projectId: "incarhigh-balihi",
@@ -332,7 +333,7 @@
 
         async function initializeFirebase() {
             try {
-                if (!firebaseConfig || !firebaseConfig.apiKey) {
+                if (!firebaseConfig || !firebaseConfig.apiKey || firebaseConfig.apiKey === "YOUR_API_KEY") {
                     throw new Error("Firebase 설정이 누락되었습니다. 스크립트 내 firebaseConfig 객체를 채워주세요.");
                 }
 
@@ -773,5 +774,3 @@
     </script>
 </body>
 </html>
-
-
