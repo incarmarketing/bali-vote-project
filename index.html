@@ -110,7 +110,7 @@
     <audio id="background-music" src="https://cdn.pixabay.com/download/audio/2022/08/27/audio_2932470728.mp3" loop></audio>
     
     <!-- Music Toggle Button -->
-    <button id="music-toggle" class="fixed bottom-5 left-5 w-12 h-12 bg-white/80 backdrop-blur-md text-gray-800 rounded-full shadow-lg flex items-center justify-center z-50 text-xl transition-transform hover:scale-110">
+    <button id="music-toggle" class="fixed bottom-4 left-4 w-10 h-10 md:w-12 md:h-12 bg-white/80 backdrop-blur-md text-gray-800 rounded-full shadow-lg flex items-center justify-center z-50 text-lg md:text-xl transition-transform hover:scale-110">
         🔇
     </button>
 
@@ -124,8 +124,8 @@
                 </div>
                 <!-- h1에서 고정 높이(h-20 md:h-24)를 제거하여 유연하게 만듦 -->
                 <h1 class="responsive-neon-title">
-                    <span class="neon-text neon-blue">incarhigh</span>
-                    <span class="neon-text neon-pink">balihi</span>
+                    <span class="neon-text neon-blue">incar high</span>
+                    <span class="neon-text neon-pink">bali hi</span>
                 </h1>
                 <p class="mt-8 text-lg md:text-xl text-gray-200 max-w-2xl mx-auto px-4">
                     함께 떠날 발리 여행, <br class="sm:hidden">최고의 프로그램을 선택해주세요!
@@ -194,7 +194,7 @@
             </div>
             
             <!-- Admin Toggle Button -->
-            <button id="adminToggleBtn" title="초기화 중..." disabled class="fixed bottom-5 right-5 w-12 h-12 bg-gray-400 text-white rounded-full shadow-lg flex items-center justify-center z-50 text-xl transition-all hover:scale-110 hover:rotate-12 disabled:cursor-not-allowed disabled:bg-gray-400">
+            <button id="adminToggleBtn" title="초기화 중..." disabled class="fixed bottom-4 right-4 w-10 h-10 md:w-12 md:h-12 bg-gray-400 text-white rounded-full shadow-lg flex items-center justify-center z-50 text-lg md:text-xl transition-all hover:scale-110 hover:rotate-12 disabled:cursor-not-allowed disabled:bg-gray-400">
                 <i class="fa-solid fa-screwdriver-wrench"></i>
             </button>
         </div>
@@ -267,15 +267,15 @@
         
         // --- 여기에 Firebase 프로젝트 설정을 직접 입력하세요 ---
         // Firebase 콘솔 > 프로젝트 설정 > 일반 > 내 앱 섹션에서 웹 앱을 선택하면 구성 스니펫을 찾을 수 있습니다.
-      const firebaseConfig = {
-  apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
-  authDomain: "incarhigh-balihi.firebaseapp.com",
-  projectId: "incarhigh-balihi",
-  storageBucket: "incarhigh-balihi.firebasestorage.app",
-  messagingSenderId: "777053953777",
-  appId: "1:777053953777:web:bd21c80707306f54da9350",
-  measurementId: "G-T8BW822SLS"
-};
+        const firebaseConfig = {
+            // apiKey: "...",
+            // authDomain: "...",
+            // projectId: "...",
+            // storageBucket: "...",
+            // messagingSenderId: "...",
+            // appId: "...",
+            // measurementId: "..."
+        };
         // ---------------------------------------------------
 
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
@@ -470,18 +470,38 @@
             setupVideoObserver();
         }
         
+        // --- Video Autoplay Stability Improvement ---
         function setupVideoObserver() {
             if (videoObserver) videoObserver.disconnect();
+            
             const options = { root: null, rootMargin: '0px', threshold: 0.75 };
+
             videoObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
+                entries.forEach(async (entry) => { // async 콜백으로 변경
                     const video = entry.target;
-                    if (entry.isIntersecting) video.play().catch(e => {});
-                    else video.pause();
+                    if (entry.isIntersecting) {
+                        // 자동 재생을 위해 Muted 속성 보장
+                        video.muted = true;
+                        try {
+                            // play()는 Promise를 반환하므로 await으로 결과를 기다림
+                            await video.play();
+                        } catch (error) {
+                            // 브라우저 정책에 의해 자동 재생이 거부된 경우
+                            // 콘솔에만 경고를 표시하고 사용자에게는 아무것도 보여주지 않음
+                            console.warn("Video autoplay was prevented by the browser.", video.src, error);
+                        }
+                    } else {
+                        // 화면 밖으로 나가면 비디오 정지
+                        video.pause();
+                    }
                 });
             }, options);
-            document.querySelectorAll('.program-video').forEach(video => videoObserver.observe(video));
+
+            document.querySelectorAll('.program-video').forEach(video => {
+                videoObserver.observe(video);
+            });
         }
+
 
         function updateResults() {
             const resultsChart = document.getElementById('resultsChart');
@@ -753,6 +773,3 @@
     </script>
 </body>
 </html>
-
-
-
