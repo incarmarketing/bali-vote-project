@@ -10,7 +10,7 @@
 
     <!-- Google Fonts: Noto Sans KR, and Playfair Display for Neon Effect -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     
     <!-- Font Awesome for Icons -->
@@ -53,6 +53,8 @@
             font-weight: 700;
             color: #fff;
             line-height: 1.2;
+            /* FIX: z-index를 적용하기 위해 position 속성 추가 */
+            position: relative;
         }
 
         /* Blue Neon */
@@ -61,11 +63,15 @@
                 0 0 4px #fff, 0 0 10px #fff, 0 0 18px #fff,
                 0 0 38px #2272FF, 0 0 70px #2272FF, 0 0 80px #2272FF,
                 0 0 90px #2272FF, 0 0 140px #2272FF;
+            /* FIX: 파란색 네온이 항상 위에 오도록 z-index 설정 */
+            z-index: 2;
         }
 
         /* Pink Neon */
         .neon-pink {
             animation: flicker-pink 2s infinite alternate;
+            /* FIX: 분홍색 네온이 파란색보다 아래에 있도록 z-index 설정 */
+            z-index: 1;
         }
         
         @keyframes flicker-pink {
@@ -89,7 +95,7 @@
             padding: 0 1rem; 
         }
 
-        /* FIX: 모바일 화면에서 네온 효과가 겹치는 문제를 해결하기 위해 미디어 쿼리 추가 */
+        /* 모바일 화면에서 네온 효과가 겹치는 문제를 해결하기 위해 미디어 쿼리 추가 */
         @media (max-width: 767px) {
             .neon-blue {
                 text-shadow:
@@ -97,7 +103,6 @@
                     0 0 15px #2272FF, 0 0 25px #2272FF;
             }
 
-            /* 모바일용으로 빛 번짐이 약한 새 애니메이션 정의 */
             @keyframes flicker-pink-mobile {
                  0%, 18%, 22%, 25%, 53%, 57%, 100% {
                     text-shadow:
@@ -107,7 +112,6 @@
                 20%, 24%, 55% { text-shadow: none; }
             }
 
-            /* 모바일에서만 새 애니메이션을 적용 */
             .neon-pink {
                 animation-name: flicker-pink-mobile;
             }
@@ -269,10 +273,8 @@
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         
-        // FIX: Firebase 설정을 원래의 플레이스홀더 방식으로 되돌림
-        // --- 여기에 Firebase 프로젝트 설정을 직접 입력하세요 ---
-        // Firebase 콘솔 > 프로젝트 설정 > 일반 > 내 앱 섹션에서 웹 앱을 선택하면 구성 스니펫을 찾을 수 있습니다.
-       const firebaseConfig = {
+        const firebaseConfig = {
+           const firebaseConfig = {
   apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
   authDomain: "incarhigh-balihi.firebaseapp.com",
   projectId: "incarhigh-balihi",
@@ -281,7 +283,6 @@
   appId: "1:777053953777:web:bd21c80707306f54da9350",
   measurementId: "G-T8BW822SLS"
 };
-        // ---------------------------------------------------
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         // --- DOM Elements ---
@@ -335,7 +336,6 @@
 
         async function initializeFirebase() {
             try {
-                // FIX: Firebase 설정이 플레이스홀더 값인지 확인하는 로직으로 복원
                 if (!firebaseConfig.apiKey || firebaseConfig.apiKey === "YOUR_API_KEY") {
                     throw new Error("Firebase 설정이 누락되었습니다. 스크립트 내 firebaseConfig 객체를 채워주세요.");
                 }
@@ -379,9 +379,6 @@
 
         // --- Event Listeners ---
         function setupEventListeners() {
-            // FIX: 음소거 버튼 관련 로직 제거
-            
-            // 브라우저 정책으로 인한 자동재생 문제를 해결하기 위해, 첫 클릭 시 음악 재생을 시작하도록 유도
             document.body.addEventListener('click', () => {
                 if (music.paused) {
                     music.play().catch(e => console.warn("Music autoplay was prevented. Waiting for another interaction."));
@@ -397,8 +394,6 @@
             excelDownloadBtn.onclick = exportToExcel;
             programForm.addEventListener('submit', handleFormSubmit);
         }
-        
-        // FIX: 음소거 버튼이 없으므로 toggleMusic 함수 전체 제거
         
         // --- Core App Logic ---
         function loadAndListenPrograms() {
