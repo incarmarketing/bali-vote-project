@@ -92,22 +92,24 @@
             padding: 0 1rem; 
         }
 
-        /* FIX: 배경화면 스타일을 CSS로 이동하여 모바일 환경에 대응 */
         .main-wrapper {
             background-image: url('https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/background.jpg');
             background-size: cover;
             background-position: center;
-            background-attachment: fixed; /* PC 기본값: 배경 고정 */
+            background-attachment: fixed;
         }
 
         @media (max-width: 767px) {
             .main-wrapper {
-                background-attachment: scroll; /* 모바일: 배경이 스크롤되도록 변경 */
+                background-attachment: scroll;
             }
         }
     </style>
 </head>
 <body class="bg-gray-100">
+    
+    <!-- FIX: 배경음악 오디오 태그 추가 -->
+    <audio id="background-music" src="https://cdn.pixabay.com/download/audio/2022/08/27/audio_2932470728.mp3" loop></audio>
     
     <!-- Main Content Wrapper -->
     <div class="main-wrapper min-h-screen">
@@ -734,5 +736,6 @@
     </script>
 </body>
 </html>
+
 
 
