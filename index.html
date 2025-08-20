@@ -18,7 +18,6 @@
 
     <!-- Social sharing meta tags -->
     <meta property="og:title" content="✨ 발리에서 생길 일 ✨">
-    <!-- FIX: 공유 미리보기 문구 수정 -->
     <meta property="og:description" content="환상의 섬 발리, 우리를 위한 완벽한 하루">
     <meta property="og:image" content="https://github.com/incarmarketing/bali-vote-project/blob/main/thumbnail.jpg?raw=true">
     <meta property="og:url" content="https://incarmarketing.github.io/bali-vote-project/">
@@ -99,10 +98,18 @@
             background-position: center;
             background-attachment: fixed;
         }
+        
+        /* FIX: 모바일 배경 오버레이 밝기 조절 */
+        .bg-overlay {
+             background-color: rgba(0, 0, 0, 0.4);
+        }
 
         @media (max-width: 767px) {
             .main-wrapper {
                 background-attachment: scroll;
+            }
+            .bg-overlay {
+                background-color: rgba(0, 0, 0, 0.2); /* 모바일에서 더 밝게 */
             }
         }
     </style>
@@ -111,9 +118,20 @@
     
     <audio id="background-music" src="https://cdn.pixabay.com/download/audio/2022/08/27/audio_2932470728.mp3" loop></audio>
 
+    <!-- FIX: 입장 화면 추가 -->
+    <div id="entry-screen" class="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-black transition-opacity duration-1000">
+        <div class="text-center text-white">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4" style="font-family: 'Playfair Display', serif;">INCAR HIGH, BALI HI</h1>
+            <p class="text-lg md:text-xl mb-8">발리 최고의 프로그램을 직접 선택해주세요!</p>
+            <button id="entryBtn" class="bg-orange-500 text-white font-bold py-3 px-10 rounded-lg text-lg hover:bg-orange-600 transition-all shadow-lg">
+                입장하기
+            </button>
+        </div>
+    </div>
+
     <!-- Main Content Wrapper -->
-    <div class="main-wrapper min-h-screen">
-        <div class="bg-black/40 min-h-screen">
+    <div class="main-wrapper min-h-screen hidden">
+        <div class="bg-overlay min-h-screen">
             <!-- Header Section -->
             <header class="py-10 md:py-16 text-center text-white">
                 <div class="logo-container mb-4">
@@ -123,7 +141,6 @@
                     <span class="neon-text neon-blue">incar high</span>
                     <span class="neon-text neon-pink">bali hi</span>
                 </h1>
-                <!-- FIX: 페이지 내부 문구 원상 복구 -->
                 <p class="mt-8 text-lg md:text-xl text-gray-200 max-w-2xl mx-auto px-4">
                     발리에서 생길 일, <br class="sm:hidden">가장 기대하는 프로그램을 선택해주세요!
                 </p>
@@ -265,7 +282,7 @@
         // --- 여기에 Firebase 프로젝트 설정을 직접 입력하세요 ---
         // 중요: apiKey부터 appId까지 모든 값을 정확하게 입력해야 관리자 버튼이 활성화됩니다.
         // 하나라도 오타가 있거나 비어있으면 버튼은 안전을 위해 잠금 상태를 유지합니다.
-       const firebaseConfig = {
+        const firebaseConfig = {
   apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
   authDomain: "incarhigh-balihi.firebaseapp.com",
   projectId: "incarhigh-balihi",
@@ -284,6 +301,8 @@
         const resultsSection = document.getElementById('resultsSection');
         const adminPanel = document.getElementById('adminPanel');
         const excelDownloadBtn = document.getElementById('excelDownloadBtn');
+        const entryScreen = document.getElementById('entry-screen');
+        const mainWrapper = document.querySelector('.main-wrapper');
 
         // --- Modal Helpers ---
         window.showModal = (id) => document.getElementById(id).classList.replace('hidden', 'flex');
@@ -370,15 +389,16 @@
         // --- Event Listeners ---
         function setupEventListeners() {
             const music = document.getElementById('background-music');
-            
-            const playMusic = () => {
-                music.play().catch(error => {
-                    console.warn("음악 자동 재생 실패. 사용자 상호작용이 필요합니다.", error);
-                    document.body.addEventListener('click', playMusic, { once: true });
-                });
-            };
-            playMusic();
+            const entryBtn = document.getElementById('entryBtn');
 
+            entryBtn.addEventListener('click', () => {
+                music.play().catch(e => console.warn("음악 재생 실패:", e));
+                entryScreen.classList.add('opacity-0');
+                mainWrapper.classList.remove('hidden');
+                setTimeout(() => {
+                    entryScreen.classList.add('hidden');
+                }, 1000);
+            });
 
             adminToggleBtn.onclick = () => showModal('passwordModal');
             document.getElementById('loginBtn').onclick = checkAdminPassword;
