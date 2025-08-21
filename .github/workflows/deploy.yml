@@ -1,0 +1,25 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # 또는 사용하시는 주 브랜치 이름 (예: master)
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+
+      - name: Replace Firebase Config 🤫
+        run: |
+          # HTML 파일에서 플레이스홀더를 실제 Firebase 설정 값(Secret)으로 교체합니다.
+          # 만약 파일 이름이 index.html이 아니라면 해당 파일명으로 수정해주세요.
+          sed -i "s|'__FIREBASE_CONFIG_JSON__'|'${{ secrets.FIREBASE_CONFIG }}'|" index.html
+
+      - name: Deploy 🚀
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
