@@ -279,8 +279,8 @@
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         
-        // --- Securely get Firebase config ---
-        const firebaseConfigString = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
+        // --- This placeholder will be replaced by the GitHub Action ---
+        const firebaseConfigString = '__FIREBASE_CONFIG_JSON__';
 
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
@@ -336,8 +336,9 @@
 
         async function initializeFirebase() {
             try {
-                if (!firebaseConfigString) {
-                    throw new Error("Firebase 설정이 누락되었습니다. 플랫폼 환경 변수가 올바르게 주입되었는지 확인하세요.");
+                // Check if the placeholder has been replaced.
+                if (firebaseConfigString.startsWith('__')) {
+                    throw new Error("Firebase 설정이 로드되지 않았습니다. GitHub Action이 올바르게 실행되었는지 확인하세요.");
                 }
                 
                 const firebaseConfig = JSON.parse(firebaseConfigString);
