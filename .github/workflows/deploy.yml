@@ -5,6 +5,10 @@ on:
     branches:
       - main # 또는 사용하시는 주 브랜치 이름 (예: master)
 
+# 워크플로우에 쓰기 권한을 부여하는 부분입니다.
+permissions:
+  contents: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
