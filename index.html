@@ -10,7 +10,7 @@
 
     <!-- Google Fonts: Noto Sans KR, and Playfair Display for Neon Effect -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     
     <!-- Font Awesome for Icons -->
@@ -279,18 +279,9 @@
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         
-        // --- 여기에 Firebase 프로젝트 설정을 직접 입력하세요 ---
-        // 중요: apiKey부터 appId까지 모든 값을 정확하게 입력해야 관리자 버튼이 활성화됩니다.
-        // 하나라도 오타가 있거나 비어있으면 버튼은 안전을 위해 잠금 상태를 유지합니다.
-        const firebaseConfig = {
-  apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
-  authDomain: "incarhigh-balihi.firebaseapp.com",
-  projectId: "incarhigh-balihi",
-  storageBucket: "incarhigh-balihi.firebasestorage.app",
-  messagingSenderId: "777053953777",
-  appId: "1:777053953777:web:bd21c80707306f54da9350",
-  measurementId: "G-T8BW822SLS"
-};
+        // --- Securely get Firebase config ---
+        const firebaseConfigString = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
+
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         // --- DOM Elements ---
@@ -345,9 +336,11 @@
 
         async function initializeFirebase() {
             try {
-                if (!firebaseConfig.apiKey || firebaseConfig.apiKey === "YOUR_API_KEY") {
-                    throw new Error("Firebase 설정이 누락되었습니다. 스크립트 내 firebaseConfig 객체를 채워주세요.");
+                if (!firebaseConfigString) {
+                    throw new Error("Firebase 설정이 누락되었습니다. 플랫폼 환경 변수가 올바르게 주입되었는지 확인하세요.");
                 }
+                
+                const firebaseConfig = JSON.parse(firebaseConfigString);
 
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
@@ -787,9 +780,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
