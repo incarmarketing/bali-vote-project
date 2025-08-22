@@ -278,7 +278,7 @@
         // --- 파이어베이스 설정 정보를 여기에 직접 붙여넣으세요 ---
         // Firebase 콘솔 -> 프로젝트 설정 -> 일반 탭에서 '앱'을 선택하고 설정 스니펫을 복사합니다.
         // 이 코드를 통째로 삭제하고 붙여넣으면 됩니다. (예시: const firebaseConfig = { ... };)
-       const firebaseConfig = {
+        const firebaseConfig = {
   apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
   authDomain: "incarhigh-balihi.firebaseapp.com",
   projectId: "incarhigh-balihi",
@@ -441,9 +441,26 @@
             if (!hasPrograms) return;
 
             programsGrid.innerHTML = programs.map(p => {
-                const mediaElement = p.videoUrl
-                    ? `<video class="program-media program-video w-full h-56 object-cover" src="${p.videoUrl}" poster="${p.image}" muted loop playsinline preload="metadata"></video>`
-                    : `<img src="${p.image || 'https://placehold.co/600x400/png?text=이미지+없음'}" alt="${p.title}" class="w-full h-56 object-cover" onerror="this.onerror=null; this.src='https://placehold.co/600x400/png?text=이미지+오류';">`;
+                const isYouTubeVideo = p.videoUrl && (p.videoUrl.includes('youtube.com') || p.videoUrl.includes('youtu.be'));
+                let mediaElement;
+                
+                if (isYouTubeVideo) {
+                    // YouTube URL에서 동영상 ID 추출
+                    const youtubeId = p.videoUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([\w-]{11})/)?.[1];
+                    mediaElement = youtubeId 
+                        ? `<iframe class="program-media w-full h-56 object-cover rounded-t-xl" 
+                                src="https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&controls=0"
+                                frameborder="0"
+                                allow="autoplay; encrypted-media"
+                                allowfullscreen
+                                title="YouTube video player"
+                                loading="lazy"></iframe>`
+                        : `<img src="${p.image || 'https://placehold.co/600x400/png?text=이미지+없음'}" alt="${p.title}" class="w-full h-56 object-cover" onerror="this.onerror=null; this.src='https://placehold.co/600x400/png?text=이미지+오류';">`;
+                } else {
+                    mediaElement = p.videoUrl
+                        ? `<video class="program-media program-video w-full h-56 object-cover" src="${p.videoUrl}" poster="${p.image}" muted loop playsinline preload="metadata"></video>`
+                        : `<img src="${p.image || 'https://placehold.co/600x400/png?text=이미지+없음'}" alt="${p.title}" class="w-full h-56 object-cover" onerror="this.onerror=null; this.src='https://placehold.co/600x400/png?text=이미지+오류';">`;
+                }
                 
                 return `
                     <div class="program-card flex flex-col bg-white/80 backdrop-blur-md rounded-2xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 border border-white/20">
@@ -466,54 +483,30 @@
                 `;
             }).join('');
             
-            setupInteractiveMedia();
+            // Re-setup hover for non-YouTube videos if they exist
+            setupVideoHover();
         }
         
-        function setupInteractiveMedia() {
-            const isTouchDevice = () => ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-
-            if (isTouchDevice()) {
-                setupVideoObserver();
-            } else {
-                document.querySelectorAll('.program-card').forEach(card => {
-                    const video = card.querySelector('.program-video');
-                    if (video) {
-                        card.addEventListener('mouseenter', () => {
-                            video.play().catch(e => console.warn("비디오 재생 실패(호버):", e));
-                        });
-                        card.addEventListener('mouseleave', () => {
-                            video.pause();
-                        });
-                    }
-                });
-            }
-        }
-
-        function setupVideoObserver() {
-            if (videoObserver) videoObserver.disconnect();
-            
-            const options = { root: null, rootMargin: '0px', threshold: 0.5 };
-
-            videoObserver = new IntersectionObserver((entries) => {
-                entries.forEach(async (entry) => {
-                    const video = entry.target;
-                    if (entry.isIntersecting) {
-                        try {
-                            await video.play();
-                        } catch (error) {
-                            console.warn("비디오 자동 재생이 브라우저에 의해 차단되었습니다.", video.src, error);
-                        }
-                    } else {
+        // This function now specifically handles hover for non-YouTube videos
+        function setupVideoHover() {
+            document.querySelectorAll('.program-card').forEach(card => {
+                const video = card.querySelector('.program-video');
+                if (video) {
+                    card.addEventListener('mouseenter', () => {
+                        video.play().catch(e => console.warn("비디오 재생 실패(호버):", e));
+                    });
+                    card.addEventListener('mouseleave', () => {
                         video.pause();
-                    }
-                });
-            }, options);
-
-            document.querySelectorAll('.program-video').forEach(video => {
-                videoObserver.observe(video);
+                    });
+                }
             });
         }
+        
+        // The IntersectionObserver logic is no longer needed for iframes
+        // as YouTube's embed player handles playback.
 
+        // ... (rest of the code remains the same)
+        
 
         function updateResults() {
             const resultsChart = document.getElementById('resultsChart');
@@ -685,7 +678,7 @@
         
         // --- Default Data Functions ---
         const defaultProgramsData = [
-            { order: 1, title: '🗿 가루다 파크', description: '발리 문화와 힌두교 문화를 한번에 보고<br>웅장한 바위벽과 아름다운 인공 연못 등 <br>발리 최대의 테마 파크를 즐겨보세요.<br>이동시간 : 편도 약 20분<br>이용시간 : 약 3시간', image: 'https://images.pexels.com/photos/13334227/pexels-photo-13334227.jpeg', videoUrl: 'https://cdn.pixabay.com/video/2025/02/15/258526_large.mp4' },
+            { order: 1, title: '🗿 가루다 파크', description: '발리 문화와 힌두교 문화를 한번에 보고<br>웅장한 바위벽과 아름다운 인공 연못 등 <br>발리 최대의 테마 파크를 즐겨보세요.<br>이동시간 : 편도 약 20분<br>이용시간 : 약 3시간', image: 'https://images.pexels.com/photos/13334227/pexels-photo-13334227.jpeg', videoUrl: 'https://youtu.be/T2XteBBPEhA' },
             { order: 2, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와 다양한 어트랙션<br>다양한 편의시설을 마음껏 즐겨보세요.<br>이동시간 : 편도 약 40분<br>이용시간 : 약 5시간', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program3.mp4' }, 
             { order: 3, title: '🛍️ 꾸따비치 & 비치워크 쇼핑센터', description: '발리의 대표적인 해변 꾸따비치에서<br>아름다운 해변과 여유를 만끽하고<br>멋진 전경의 쇼핑센터에서 편안한 쇼핑을 즐겨보세요.<br>이동시간 : 편도 약 40분<br>이용시간 : 약 5시간', image: 'https://cms.beachwalkbali.com/uploads/SUB_PROMOTION_WEB_eba6e4a9dd.jpg', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/order3.mp4' },
             { order: 4, title: '🏖️ 리조트 자유일정', description: '5성급 고급 호텔의 수영장과 부대시설을<br>마음껏 이용하며 누구의 방해도 받지 않는<br>완벽한 자유시간을 만끽하세요.<br>이동시간 : 없음<br>이용시간 : 자유', image: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/background.jpg', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/order4.mp4' },
