@@ -600,81 +600,85 @@
             }
         }
         
-        async function handleFormSubmit(e) {
-            e.preventDefault();
-            if (!isAdminMode || !db) return showAlert('관리자만 사용 가능하거나, DB가 준비되지 않았습니다.');
-            
-            const title = document.getElementById('programTitle').value.trim();
-            const description = document.getElementById('programDescription').value.trim();
-            const image = document.getElementById('programImage').value.trim();
-            const videoUrl = document.getElementById('programVideo').value.trim();
-            if (!title || !description || !image) return showAlert('프로그램 이름, 설명, 이미지 URL은 필수입니다.');
-            
-            const programsCollectionRef = collection(db, `artifacts/${appId}/public/data/programs`);
-            const data = { title, description, image, videoUrl };
+      async function handleFormSubmit(e) {
+    e.preventDefault();
+    if (!isAdminMode || !db) return showAlert('관리자만 사용 가능하거나, DB가 준비되지 않았습니다.');
 
-            try {
-                if (editingId) {
-                    await updateDoc(doc(programsCollectionRef, editingId), data);
-                    showAlert('프로그램이 성공적으로 수정되었습니다.');
-                } else {
-                    const maxOrder = programs.reduce((max, p) => Math.max(max, p.order || 0), 0);
-                    await addDoc(programsCollectionRef, { ...data, votes: 0, voters: [] });
-                    showAlert('새로운 프로그램이 성공적으로 추가되었습니다.');
-                }
-                clearForm();
-            } catch (error) {
-                console.error("폼 제출 오류:", error);
-                showAlert(`오류가 발생했습니다: ${error.message}`);
-            }
-        }
+    const title = document.getElementById('programTitle').value.trim();
+    const description = document.getElementById('programDescription').value.trim();
+    const imageUrl = document.getElementById('programImage').value.trim();
+    const videoUrl = document.getElementById('programVideo').value.trim();
 
-        function clearForm() {
-            programForm.reset();
+    if (!title || !description || !imageUrl) return showAlert('프로그램 이름, 설명, 이미지 URL은 필수 입력입니다.');
+
+    try {
+        if (editingId) {
+            const docRef = doc(db, `artifacts/${appId}/public/data/programs`, editingId);
+            await updateDoc(docRef, { title, description, image: imageUrl, videoUrl });
+            showAlert('프로그램이 수정되었습니다!');
             editingId = null;
-            document.querySelector('#programForm button[type="submit"]').textContent = '프로그램 추가';
+        } else {
+            await addDoc(collection(db, `artifacts/${appId}/public/data/programs`), {
+                title,
+                description,
+                image: imageUrl,
+                videoUrl,
+                votes: 0,
+                voters: [],
+                order: programs.length
+            });
+            showAlert('새 프로그램이 추가되었습니다!');
         }
+        clearForm();
+    } catch (error) {
+        console.error("프로그램 추가/수정 오류:", error);
+        showAlert(`오류가 발생했습니다.<br>오류: ${error.message}`);
+    }
+}
 
-        window.editProgram = (id) => {
-            if (!isAdminMode) return;
-            const p = programs.find(prog => prog.id === id);
-            if (p) {
-                document.getElementById('programTitle').value = p.title;
-                document.getElementById('programDescription').value = p.description.replace(/<br\s*\/?>/gi, '\n');
-                document.getElementById('programImage').value = p.image || '';
-                document.getElementById('programVideo').value = p.videoUrl || '';
-                editingId = id;
-                document.querySelector('#programForm button[type="submit"]').textContent = '프로그램 수정';
-                adminPanel.scrollIntoView({ behavior: 'smooth' });
-            }
-        };
+function clearForm() {
+    document.getElementById('programTitle').value = '';
+    document.getElementById('programDescription').value = '';
+    document.getElementById('programImage').value = '';
+    document.getElementById('programVideo').value = '';
+    editingId = null;
+}
 
-        window.deleteProgram = async (id) => {
-            if (!isAdminMode || !db) return;
-            const confirmed = await showConfirm('정말로 이 프로그램을 삭제하시겠습니까? 모든 투표 정보가 함께 삭제됩니다.', '삭제 확인');
-            if (confirmed) {
-                try {
-                    await deleteDoc(doc(db, `artifacts/${appId}/public/data/programs`, id));
-                    showAlert('프로그램이 삭제되었습니다.');
-                } catch (error) {
-                    console.error("삭제 오류:", error);
-                    showAlert(`삭제 중 오류가 발생했습니다: ${error.message}`);
-                }
-            }
-        };
-        
-        window.showVoters = (id) => {
-            if (!isAdminMode) return;
-            const p = programs.find(prog => prog.id === id);
-            if (!p) return;
-            const voterListEl = document.getElementById('voterList');
-            document.getElementById('voterListTitle').textContent = `[${p.title}] 투표자 명단`;
-            const voters = p.voters || [];
-            voterListEl.innerHTML = voters.length 
-                ? voters.map(v => `<li class="py-2 border-b last:border-b-0">${v.name} (${v.id})</li>`).join('') 
-                : '<li>아직 투표한 사람이 없습니다.</li>';
-            showModal('voterListModal');
-        };
+// 프로그램 수정 버튼 클릭 시
+window.editProgram = (id) => {
+    const program = programs.find(p => p.id === id);
+    if (!program) return;
+    document.getElementById('programTitle').value = program.title;
+    document.getElementById('programDescription').value = program.description;
+    document.getElementById('programImage').value = program.image || '';
+    document.getElementById('programVideo').value = program.videoUrl || '';
+    editingId = id;
+};
+
+// 프로그램 삭제
+window.deleteProgram = async (id) => {
+    if (!isAdminMode) return;
+    const confirmDelete = await showConfirm('정말로 이 프로그램을 삭제하시겠습니까?');
+    if (!confirmDelete) return;
+    try {
+        await deleteDoc(doc(db, `artifacts/${appId}/public/data/programs`, id));
+        showAlert('프로그램이 삭제되었습니다!');
+    } catch (error) {
+        console.error("삭제 오류:", error);
+        showAlert(`프로그램 삭제 중 오류가 발생했습니다.<br>오류: ${error.message}`);
+    }
+};
+
+// 투표자 보기
+window.showVoters = (id) => {
+    const program = programs.find(p => p.id === id);
+    if (!program || !program.voters) return showAlert('투표자가 없습니다.');
+    const voterListEl = document.getElementById('voterList');
+    voterListEl.innerHTML = program.voters.map(v => `<li>${v.id} - ${v.name}</li>`).join('');
+    document.getElementById('voterListTitle').textContent = `${program.title} 투표자 명단`;
+    showModal('voterListModal');
+};
+
         
         // --- Default Data Functions ---
         const defaultProgramsData = [
@@ -777,3 +781,4 @@
     </script>
 </body>
 </html>
+
