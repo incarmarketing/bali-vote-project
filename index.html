@@ -277,7 +277,7 @@
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         
         // --- This placeholder will be replaced by the GitHub Action ---
-        const firebaseConfigString = '{apiKey:AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0,authDomain:incarhigh-balihi.firebaseapp.com,projectId:incarhigh-balihi,storageBucket:incarhigh-balihi.firebasestorage.app,messagingSenderId:777053953777,appId:1:777053953777:web:bd21c80707306f54da9350,measurementId:G-T8BW822SLS}';
+        const firebaseConfig = __FIREBASE_CONFIG_JSON__;
 
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
@@ -778,4 +778,5 @@
     </script>
 </body>
 </html>
+
 
