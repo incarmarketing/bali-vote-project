@@ -5,7 +5,7 @@ on:
     branches:
       - main # 또는 사용하시는 주 브랜치 이름 (예: master)
 
-# 워크플로우에 쓰기 권한을 부여하는 부분입니다.
+# 워크플로우에 쓰기 권한을 부여합니다.
 permissions:
   contents: write
 
@@ -18,8 +18,9 @@ jobs:
 
       - name: Replace Firebase Config 🤫
         run: |
+          # HTML 파일의 플레이스홀더를 따옴표 없이 Secret 값으로 교체합니다.
           sed -i "s|__FIREBASE_CONFIG_JSON__|${{ secrets.FIREBASE_CONFIG }}|" index.html
-
+          
       - name: Deploy 🚀
         uses: peaceiris/actions-gh-pages@v3
         with:
