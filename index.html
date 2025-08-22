@@ -275,8 +275,10 @@
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         
-        // --- This placeholder is now an object, not a string ---
-        const firebaseConfig = {apiKey:AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0,authDomain:incarhigh-balihi.firebaseapp.com,projectId:incarhigh-balihi,storageBucket:incarhigh-balihi.firebasestorage.app,messagingSenderId:777053953777,appId:1:777053953777:web:bd21c80707306f54da9350,measurementId:G-T8BW822SLS};
+        // --- FIX: Safely parse the injected Firebase config ---
+        // The placeholder __firebase_config is injected as a JSON string and needs to be parsed.
+        // Default to an empty object '{}' if it's not available to prevent script-halting errors.
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
 
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
@@ -332,12 +334,11 @@
 
         async function initializeFirebase() {
             try {
-                // Check if the placeholder is still a placeholder
-                if (typeof firebaseConfig !== 'object' || firebaseConfig === null) {
-                    throw new Error("Firebase 설정이 로드되지 않았습니다. GitHub Action이 올바르게 실행되었는지, Secret 값이 올바른 JSON 형식인지 확인하세요.");
+                // A valid config must have an apiKey. If not, the config is considered invalid.
+                if (!firebaseConfig.apiKey) {
+                    throw new Error("Firebase 설정이 로드되지 않았습니다. 올바른 설정값이 제공되었는지 확인하세요.");
                 }
                 
-                // No more JSON.parse needed
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
