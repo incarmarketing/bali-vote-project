@@ -271,7 +271,6 @@
         let editingId = null, votingForId = null;
         let isAdminMode = false;
         let unsubscribePrograms = null;
-        let videoObserver = null;
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         
@@ -396,6 +395,8 @@
                 mainWrapper.classList.remove('hidden');
                 setTimeout(() => {
                     entryScreen.classList.add('hidden');
+                    // Start all videos after the entry screen fades out
+                    startAllVideos();
                 }, 1000);
             });
 
@@ -484,23 +485,13 @@
                     </div>
                 `;
             }).join('');
-            
-            // Re-setup hover for non-YouTube videos if they exist
-            setupVideoHover();
         }
         
-        // This function now specifically handles hover for non-YouTube videos
-        function setupVideoHover() {
-            document.querySelectorAll('.program-card').forEach(card => {
-                const video = card.querySelector('.program-video');
-                if (video) {
-                    card.addEventListener('mouseenter', () => {
-                        video.play().catch(e => console.warn("비디오 재생 실패(호버):", e));
-                    });
-                    card.addEventListener('mouseleave', () => {
-                        video.pause();
-                    });
-                }
+        // This function will find and play all videos on the page.
+        function startAllVideos() {
+            const videos = document.querySelectorAll('.program-video');
+            videos.forEach(video => {
+                video.play().catch(e => console.warn("비디오 재생 실패:", e));
             });
         }
         
