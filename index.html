@@ -100,7 +100,7 @@
         }
         
         .bg-overlay {
-             background-color: rgba(0, 0, 0, 0.4);
+              background-color: rgba(0, 0, 0, 0.4);
         }
 
         @media (max-width: 767px) {
@@ -275,23 +275,18 @@
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         
-        // --- ROBUST FIX: Safely load and parse the injected Firebase config ---
-        let firebaseConfig = {}; // Default to an empty object
-        try {
-            // Check if the global variable exists and is a non-empty string
-            if (typeof __firebase_config === 'string' && __firebase_config.trim() !== '' && __firebase_config.startsWith('{')) {
-                firebaseConfig = JSON.parse(__firebase_config);
-            } 
-            // Check if it's already a valid object
-            else if (typeof __firebase_config === 'object' && __firebase_config !== null && __firebase_config.apiKey) {
-                firebaseConfig = __firebase_config;
-            }
-        } catch (e) {
-            console.error("Firebase config string could not be parsed:", e);
-            // firebaseConfig remains an empty object, which will trigger the error below
-        }
-
-
+        // --- 파이어베이스 설정 정보를 여기에 직접 붙여넣으세요 ---
+        // Firebase 콘솔 -> 프로젝트 설정 -> 일반 탭에서 '앱'을 선택하고 설정 스니펫을 복사합니다.
+        // 이 코드를 통째로 삭제하고 붙여넣으면 됩니다. (예시: const firebaseConfig = { ... };)
+       const firebaseConfig = {
+  apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
+  authDomain: "incarhigh-balihi.firebaseapp.com",
+  projectId: "incarhigh-balihi",
+  storageBucket: "incarhigh-balihi.firebasestorage.app",
+  messagingSenderId: "777053953777",
+  appId: "1:777053953777:web:bd21c80707306f54da9350",
+  measurementId: "G-T8BW822SLS"
+};
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         // --- DOM Elements ---
@@ -631,7 +626,7 @@
                     showAlert('프로그램이 성공적으로 수정되었습니다.');
                 } else {
                     const maxOrder = programs.reduce((max, p) => Math.max(max, p.order || 0), 0);
-                    await addDoc(programsCollectionRef, { ...data, votes: 0, voters: [], order: maxOrder + 1 });
+                    await addDoc(programsCollectionRef, { ...data, votes: 0, voters: [] });
                     showAlert('새로운 프로그램이 성공적으로 추가되었습니다.');
                 }
                 clearForm();
