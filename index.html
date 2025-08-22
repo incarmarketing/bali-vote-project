@@ -11,7 +11,7 @@
     <!-- Google Fonts: Noto Sans KR, and Playfair Display for Neon Effect -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Playfair+Display:wght=700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -100,13 +100,14 @@
         }
         
         .bg-overlay {
-              background-color: rgba(0, 0, 0, 0.4);
+             background-color: rgba(0, 0, 0, 0.4);
         }
 
         @media (max-width: 767px) {
             .main-wrapper {
                 background-attachment: scroll;
             }
+            /* This section is removed to make mobile overlay same as desktop */
         }
     </style>
 </head>
@@ -275,18 +276,9 @@
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         
-        // --- 파이어베이스 설정 정보를 여기에 직접 붙여넣으세요 ---
-        // Firebase 콘솔 -> 프로젝트 설정 -> 일반 탭에서 '앱'을 선택하고 설정 스니펫을 복사합니다.
-        // 이 코드를 통째로 삭제하고 붙여넣으면 됩니다. (예시: const firebaseConfig = { ... };)
-        const firebaseConfig = {
-  apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
-  authDomain: "incarhigh-balihi.firebaseapp.com",
-  projectId: "incarhigh-balihi",
-  storageBucket: "incarhigh-balihi.firebasestorage.app",
-  messagingSenderId: "777053953777",
-  appId: "1:777053953777:web:bd21c80707306f54da9350",
-  measurementId: "G-T8BW822SLS"
-};
+        // --- This placeholder will be replaced by the GitHub Action ---
+        const firebaseConfigString = '__FIREBASE_CONFIG_JSON__';
+
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         // --- DOM Elements ---
@@ -341,11 +333,13 @@
 
         async function initializeFirebase() {
             try {
-                // A valid config must have an apiKey. If not, the config is considered invalid.
-                if (!firebaseConfig || !firebaseConfig.apiKey) {
-                    throw new Error("Firebase 설정이 로드되지 않았습니다. 올바른 설정값이 제공되었는지 확인하세요.");
+                // Check if the placeholder has been replaced.
+                if (firebaseConfigString.startsWith('__')) {
+                    throw new Error("Firebase 설정이 로드되지 않았습니다. GitHub Action이 올바르게 실행되었는지 확인하세요.");
                 }
                 
+                const firebaseConfig = JSON.parse(firebaseConfigString);
+
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
@@ -441,26 +435,9 @@
             if (!hasPrograms) return;
 
             programsGrid.innerHTML = programs.map(p => {
-                const isYouTubeVideo = p.videoUrl && (p.videoUrl.includes('youtube.com') || p.videoUrl.includes('youtu.be'));
-                let mediaElement;
-                
-                if (isYouTubeVideo) {
-                    // YouTube URL에서 동영상 ID 추출
-                    const youtubeId = p.videoUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([\w-]{11})/)?.[1];
-                    mediaElement = youtubeId 
-                        ? `<iframe class="program-media w-full h-56 object-cover rounded-t-xl" 
-                                src="https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&controls=0"
-                                frameborder="0"
-                                allow="autoplay; encrypted-media"
-                                allowfullscreen
-                                title="YouTube video player"
-                                loading="lazy"></iframe>`
-                        : `<img src="${p.image || 'https://placehold.co/600x400/png?text=이미지+없음'}" alt="${p.title}" class="w-full h-56 object-cover" onerror="this.onerror=null; this.src='https://placehold.co/600x400/png?text=이미지+오류';">`;
-                } else {
-                    mediaElement = p.videoUrl
-                        ? `<video class="program-media program-video w-full h-56 object-cover" src="${p.videoUrl}" poster="${p.image}" muted loop playsinline preload="metadata"></video>`
-                        : `<img src="${p.image || 'https://placehold.co/600x400/png?text=이미지+없음'}" alt="${p.title}" class="w-full h-56 object-cover" onerror="this.onerror=null; this.src='https://placehold.co/600x400/png?text=이미지+오류';">`;
-                }
+                const mediaElement = p.videoUrl
+                    ? `<video class="program-media program-video w-full h-56 object-cover" src="${p.videoUrl}" poster="${p.image}" muted loop playsinline preload="metadata"></video>`
+                    : `<img src="${p.image || 'https://placehold.co/600x400/png?text=이미지+없음'}" alt="${p.title}" class="w-full h-56 object-cover" onerror="this.onerror=null; this.src='https://placehold.co/600x400/png?text=이미지+오류';">`;
                 
                 return `
                     <div class="program-card flex flex-col bg-white/80 backdrop-blur-md rounded-2xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 border border-white/20">
@@ -483,30 +460,54 @@
                 `;
             }).join('');
             
-            // Re-setup hover for non-YouTube videos if they exist
-            setupVideoHover();
+            setupInteractiveMedia();
         }
         
-        // This function now specifically handles hover for non-YouTube videos
-        function setupVideoHover() {
-            document.querySelectorAll('.program-card').forEach(card => {
-                const video = card.querySelector('.program-video');
-                if (video) {
-                    card.addEventListener('mouseenter', () => {
-                        video.play().catch(e => console.warn("비디오 재생 실패(호버):", e));
-                    });
-                    card.addEventListener('mouseleave', () => {
+        function setupInteractiveMedia() {
+            const isTouchDevice = () => ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+            if (isTouchDevice()) {
+                setupVideoObserver();
+            } else {
+                document.querySelectorAll('.program-card').forEach(card => {
+                    const video = card.querySelector('.program-video');
+                    if (video) {
+                        card.addEventListener('mouseenter', () => {
+                            video.play().catch(e => console.warn("비디오 재생 실패(호버):", e));
+                        });
+                        card.addEventListener('mouseleave', () => {
+                            video.pause();
+                        });
+                    }
+                });
+            }
+        }
+
+        function setupVideoObserver() {
+            if (videoObserver) videoObserver.disconnect();
+            
+            const options = { root: null, rootMargin: '0px', threshold: 0.5 };
+
+            videoObserver = new IntersectionObserver((entries) => {
+                entries.forEach(async (entry) => {
+                    const video = entry.target;
+                    if (entry.isIntersecting) {
+                        try {
+                            await video.play();
+                        } catch (error) {
+                            console.warn("비디오 자동 재생이 브라우저에 의해 차단되었습니다.", video.src, error);
+                        }
+                    } else {
                         video.pause();
-                    });
-                }
+                    }
+                });
+            }, options);
+
+            document.querySelectorAll('.program-video').forEach(video => {
+                videoObserver.observe(video);
             });
         }
-        
-        // The IntersectionObserver logic is no longer needed for iframes
-        // as YouTube's embed player handles playback.
 
-        // ... (rest of the code remains the same)
-        
 
         function updateResults() {
             const resultsChart = document.getElementById('resultsChart');
@@ -600,85 +601,81 @@
             }
         }
         
-      async function handleFormSubmit(e) {
-    e.preventDefault();
-    if (!isAdminMode || !db) return showAlert('관리자만 사용 가능하거나, DB가 준비되지 않았습니다.');
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            if (!isAdminMode || !db) return showAlert('관리자만 사용 가능하거나, DB가 준비되지 않았습니다.');
+            
+            const title = document.getElementById('programTitle').value.trim();
+            const description = document.getElementById('programDescription').value.trim();
+            const image = document.getElementById('programImage').value.trim();
+            const videoUrl = document.getElementById('programVideo').value.trim();
+            if (!title || !description || !image) return showAlert('프로그램 이름, 설명, 이미지 URL은 필수입니다.');
+            
+            const programsCollectionRef = collection(db, `artifacts/${appId}/public/data/programs`);
+            const data = { title, description, image, videoUrl };
 
-    const title = document.getElementById('programTitle').value.trim();
-    const description = document.getElementById('programDescription').value.trim();
-    const imageUrl = document.getElementById('programImage').value.trim();
-    const videoUrl = document.getElementById('programVideo').value.trim();
-
-    if (!title || !description || !imageUrl) return showAlert('프로그램 이름, 설명, 이미지 URL은 필수 입력입니다.');
-
-    try {
-        if (editingId) {
-            const docRef = doc(db, `artifacts/${appId}/public/data/programs`, editingId);
-            await updateDoc(docRef, { title, description, image: imageUrl, videoUrl });
-            showAlert('프로그램이 수정되었습니다!');
-            editingId = null;
-        } else {
-            await addDoc(collection(db, `artifacts/${appId}/public/data/programs`), {
-                title,
-                description,
-                image: imageUrl,
-                videoUrl,
-                votes: 0,
-                voters: [],
-                order: programs.length
-            });
-            showAlert('새 프로그램이 추가되었습니다!');
+            try {
+                if (editingId) {
+                    await updateDoc(doc(programsCollectionRef, editingId), data);
+                    showAlert('프로그램이 성공적으로 수정되었습니다.');
+                } else {
+                    const maxOrder = programs.reduce((max, p) => Math.max(max, p.order || 0), 0);
+                    await addDoc(programsCollectionRef, { ...data, votes: 0, voters: [], order: maxOrder + 1 });
+                    showAlert('새로운 프로그램이 성공적으로 추가되었습니다.');
+                }
+                clearForm();
+            } catch (error) {
+                console.error("폼 제출 오류:", error);
+                showAlert(`오류가 발생했습니다: ${error.message}`);
+            }
         }
-        clearForm();
-    } catch (error) {
-        console.error("프로그램 추가/수정 오류:", error);
-        showAlert(`오류가 발생했습니다.<br>오류: ${error.message}`);
-    }
-}
 
-function clearForm() {
-    document.getElementById('programTitle').value = '';
-    document.getElementById('programDescription').value = '';
-    document.getElementById('programImage').value = '';
-    document.getElementById('programVideo').value = '';
-    editingId = null;
-}
+        function clearForm() {
+            programForm.reset();
+            editingId = null;
+            document.querySelector('#programForm button[type="submit"]').textContent = '프로그램 추가';
+        }
 
-// 프로그램 수정 버튼 클릭 시
-window.editProgram = (id) => {
-    const program = programs.find(p => p.id === id);
-    if (!program) return;
-    document.getElementById('programTitle').value = program.title;
-    document.getElementById('programDescription').value = program.description;
-    document.getElementById('programImage').value = program.image || '';
-    document.getElementById('programVideo').value = program.videoUrl || '';
-    editingId = id;
-};
+        window.editProgram = (id) => {
+            if (!isAdminMode) return;
+            const p = programs.find(prog => prog.id === id);
+            if (p) {
+                document.getElementById('programTitle').value = p.title;
+                document.getElementById('programDescription').value = p.description.replace(/<br\s*\/?>/gi, '\n');
+                document.getElementById('programImage').value = p.image || '';
+                document.getElementById('programVideo').value = p.videoUrl || '';
+                editingId = id;
+                document.querySelector('#programForm button[type="submit"]').textContent = '프로그램 수정';
+                adminPanel.scrollIntoView({ behavior: 'smooth' });
+            }
+        };
 
-// 프로그램 삭제
-window.deleteProgram = async (id) => {
-    if (!isAdminMode) return;
-    const confirmDelete = await showConfirm('정말로 이 프로그램을 삭제하시겠습니까?');
-    if (!confirmDelete) return;
-    try {
-        await deleteDoc(doc(db, `artifacts/${appId}/public/data/programs`, id));
-        showAlert('프로그램이 삭제되었습니다!');
-    } catch (error) {
-        console.error("삭제 오류:", error);
-        showAlert(`프로그램 삭제 중 오류가 발생했습니다.<br>오류: ${error.message}`);
-    }
-};
-
-// 투표자 보기
-window.showVoters = (id) => {
-    const program = programs.find(p => p.id === id);
-    if (!program || !program.voters) return showAlert('투표자가 없습니다.');
-    const voterListEl = document.getElementById('voterList');
-    voterListEl.innerHTML = program.voters.map(v => `<li>${v.id} - ${v.name}</li>`).join('');
-    document.getElementById('voterListTitle').textContent = `${program.title} 투표자 명단`;
-    showModal('voterListModal');
-};
-
+        window.deleteProgram = async (id) => {
+            if (!isAdminMode || !db) return;
+            const confirmed = await showConfirm('정말로 이 프로그램을 삭제하시겠습니까? 모든 투표 정보가 함께 삭제됩니다.', '삭제 확인');
+            if (confirmed) {
+                try {
+                    await deleteDoc(doc(db, `artifacts/${appId}/public/data/programs`, id));
+                    showAlert('프로그램이 삭제되었습니다.');
+                } catch (error) {
+                    console.error("삭제 오류:", error);
+                    showAlert(`삭제 중 오류가 발생했습니다: ${error.message}`);
+                }
+            }
+        };
+        
+        window.showVoters = (id) => {
+            if (!isAdminMode) return;
+            const p = programs.find(prog => prog.id === id);
+            if (!p) return;
+            const voterListEl = document.getElementById('voterList');
+            document.getElementById('voterListTitle').textContent = `[${p.title}] 투표자 명단`;
+            const voters = p.voters || [];
+            voterListEl.innerHTML = voters.length 
+                ? voters.map(v => `<li class="py-2 border-b last:border-b-0">${v.name} (${v.id})</li>`).join('') 
+                : '<li>아직 투표한 사람이 없습니다.</li>';
+            showModal('voterListModal');
+        };
         
         // --- Default Data Functions ---
         const defaultProgramsData = [
@@ -690,7 +687,7 @@ window.showVoters = (id) => {
             { order: 6, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸따 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>색다른 라운딩을 즐겨보세요.<br>이동시간 : 편도 약 40분<br>이용시간 : 약 5시간', image: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program4.mp4' },
             { order: 7, title: '🚣 래프팅 & 우붓', description: '열대우림, 멋진 폭포, 깎아지른 협곡이 펼쳐진 아융강에서<br>스릴 넘치는 래프팅을 즐기고<br>발리의 예술과 문화, 영성이 조화롭게 어우러진 우붓을 둘러보세요.<br>이동시간 : 편도 약 2시간 30분<br>이용시간 : 약 5시간', image: 'https://cdn.pixabay.com/photo/2015/03/18/17/48/rafting-679719_1280.jpg', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program1.mp4' },
             { order: 8, title: '🌴 발리스윙 & 우붓', description: '발리의 환상적인 정글 속에서 유명한 스윙을 즐기며<br>이국적인 풍경과 인생 사진을 남기고<br>발리의 예술과 문화, 영성이 조화롭게 어우러진 우붓을 둘러보세요.<br>이동시간 : 편도 약 2시간 30분<br>이용시간 : 약 5시간', image: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/order8.png', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program2.mp4' },
-            { order: 9, title: '� 우붓 자유관광', description: '발리의 예술과 문화 중심지, 우붓에서<br>고즈넉한 사원과 왕궁을 둘러보고, 푸르른 계단식 논 사이를 거닐며<br>당신만의 속도로 숨은 매력을 발견해보세요.<br>이동시간 : 편도 약 2시간 30분<br>이용시간 : 약 5시간', image: 'https://images.unsplash.com/photo-1644027621944-1aface1ae9f3?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program9.mp4' },
+            { order: 9, title: '🛕 우붓 자유관광', description: '발리의 예술과 문화 중심지, 우붓에서<br>고즈넉한 사원과 왕궁을 둘러보고, 푸르른 계단식 논 사이를 거닐며<br>당신만의 속도로 숨은 매력을 발견해보세요.<br>이동시간 : 편도 약 2시간 30분<br>이용시간 : 약 5시간', image: 'https://images.unsplash.com/photo-1644027621944-1aface1ae9f3?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program9.mp4' },
             { order: 10, title: '⛵ 인카 디너 선셋크루즈', description: '인도양의 붉은 노을을 배경으로<br>선상에서 펼쳐지는 다양한 공연을 즐기며<br>발리의 밤바다가 선사하는 낭만적인 추억을 만들어보세요.<br>이동시간 : 편도 약 1시간 30분<br>이용시간 : 약 2시간', image: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/order10.png', videoUrl: '' },
         ];
 
@@ -781,5 +778,3 @@ window.showVoters = (id) => {
     </script>
 </body>
 </html>
-
-
