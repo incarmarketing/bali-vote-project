@@ -107,7 +107,6 @@
             .main-wrapper {
                 background-attachment: scroll;
             }
-            /* This section is removed to make mobile overlay same as desktop */
         }
     </style>
 </head>
@@ -276,7 +275,7 @@
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         
-        // --- This placeholder will be replaced by the GitHub Action ---
+        // --- This placeholder is now an object, not a string ---
         const firebaseConfig = __FIREBASE_CONFIG_JSON__;
 
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
@@ -333,13 +332,12 @@
 
         async function initializeFirebase() {
             try {
-                // Check if the placeholder has been replaced.
-                if (firebaseConfigString.startsWith('__')) {
-                    throw new Error("Firebase 설정이 로드되지 않았습니다. GitHub Action이 올바르게 실행되었는지 확인하세요.");
+                // Check if the placeholder is still a placeholder
+                if (typeof firebaseConfig !== 'object' || firebaseConfig === null) {
+                    throw new Error("Firebase 설정이 로드되지 않았습니다. GitHub Action이 올바르게 실행되었는지, Secret 값이 올바른 JSON 형식인지 확인하세요.");
                 }
                 
-                const firebaseConfig = JSON.parse(firebaseConfigString);
-
+                // No more JSON.parse needed
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
@@ -778,5 +776,3 @@
     </script>
 </body>
 </html>
-
-
