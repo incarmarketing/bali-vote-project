@@ -1,1 +1,1 @@
-# bali-vote-project(test)
+# bali-vote-project
