@@ -1,783 +1,782 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>발리 여행 프로그램 선호도 조사</title>
-
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Google Fonts: Noto Sans KR, and Playfair Display for Neon Effect -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-    <!-- Social sharing meta tags -->
-    <meta property="og:title" content="✨ 발리에서 생길 일 ✨">
-    <meta property="og:description" content="환상의 섬 발리, 우리를 위한 완벽한 하루">
-    <meta property="og:image" content="https://github.com/incarmarketing/bali-vote-project/blob/main/thumbnail.jpg?raw=true">
-    <meta property="og:url" content="https://incarmarketing.github.io/bali-vote-project/">
-    <meta property="og:type" content="website">
-    <meta name="twitter:card" content="summary_large_image">
-
-    <style>
-        /* Custom styles to complement Tailwind */
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
-            background-color: #f0f2f5;
-        }
-        
-        /* Modal pop-up animation */
-        @keyframes modal-appear {
-            from { opacity: 0; transform: translateY(-20px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        .modal-appear {
-            animation: modal-appear 0.3s ease-out forwards;
-        }
-
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #555; }
-
-        /* Neon Sign Effect Base */
-        .neon-text {
-            font-family: 'Playfair Display', serif;
-            text-transform: uppercase;
-            font-weight: 700;
-            color: #fff;
-            line-height: 1.2;
-            position: relative;
-        }
-
-        /* Blue Neon */
-        .neon-blue {
-            text-shadow:
-                0 0 4px #fff, 0 0 10px #fff, 0 0 18px #fff,
-                0 0 38px #2272FF, 0 0 70px #2272FF, 0 0 80px #2272FF,
-                0 0 90px #2272FF, 0 0 140px #2272FF;
-            z-index: 2;
-        }
-
-        /* Pink Neon */
-        .neon-pink {
-            animation: flicker-pink 2s infinite alternate;
-            z-index: 1;
-        }
-        
-        @keyframes flicker-pink {
-            0%, 18%, 22%, 25%, 53%, 57%, 100% {
-                text-shadow:
-                    0 0 4px #fff, 0 0 10px #fff, 0 0 18px #fff,
-                    0 0 38px #F426F4, 0 0 70px #F426F4, 0 0 80px #F426F4,
-                    0 0 90px #F426F4, 0 0 140px #F426F4;
-            }
-            20%, 24%, 55% { text-shadow: none; }
-        }
-
-        /* Responsive Neon Title */
-        .responsive-neon-title {
-            font-size: clamp(2.5rem, 9vw, 6.5rem);
-            display: flex;
-            flex-wrap: wrap; 
-            justify-content: center;
-            align-items: center;
-            gap: 1.5rem 2.5rem; 
-            padding: 0 1rem; 
-        }
-
-        .main-wrapper {
-            background-image: url('https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/background.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
-        
-        .bg-overlay {
-              background-color: rgba(0, 0, 0, 0.4);
-        }
-
-        @media (max-width: 767px) {
-            .main-wrapper {
-                background-attachment: scroll;
-            }
-        }
-    </style>
-</head>
-<body class="bg-gray-100">
-    
-    <audio id="background-music" src="https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/titlemusic.wav" loop></audio>
-
-    <!-- FIX: 입장 화면 추가 -->
-    <div id="entry-screen" class="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-black transition-opacity duration-1000">
-        <div class="text-center text-white">
-            <h1 class="text-4xl md:text-6xl font-bold mb-4" style="font-family: 'Playfair Display', serif;">INCAR HIGH, BALI HI</h1>
-            <p class="text-lg md:text-xl mb-8">발리 최고의 프로그램을 직접 선택해주세요!</p>
-            <button id="entryBtn" class="bg-orange-500 text-white font-bold py-3 px-10 rounded-lg text-lg hover:bg-orange-600 transition-all shadow-lg">
-                입장하기
-            </button>
-        </div>
-    </div>
-
-    <!-- Main Content Wrapper -->
-    <div class="main-wrapper min-h-screen hidden">
-        <div class="bg-overlay min-h-screen">
-            <!-- Header Section -->
-            <header class="py-10 md:py-16 text-center text-white">
-                <div class="logo-container mb-4">
-                    <img src="https://github.com/incarmarketing/bali-vote-project/blob/main/logo.png?raw=true" alt="회사 로고" class="company-logo h-12 mx-auto" onerror="this.style.display='none'">
-                </div>
-                <h1 class="responsive-neon-title">
-                    <span class="neon-text neon-blue">incar high</span>
-                    <span class="neon-text neon-pink">bali hi</span>
-                </h1>
-                <p class="mt-8 text-lg md:text-xl text-gray-200 max-w-2xl mx-auto px-4">
-                    발리에서 생길 일, <br class="sm:hidden">가장 기대하는 프로그램을 선택해주세요!
-                </p>
-            </header>
-
-            <!-- Main Container -->
-            <div class="container mx-auto px-4 pb-20">
-                
-                <!-- Admin Panel (hidden by default) -->
-                <div id="adminPanel" class="hidden bg-white/80 backdrop-blur-lg p-6 md:p-8 rounded-2xl shadow-xl mb-12 border border-white/20">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-6">🔧 관리자 대시보드</h2>
-                    <form id="programForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="md:col-span-2">
-                            <label for="programTitle" class="block text-sm font-medium text-gray-700 mb-1">프로그램 이름</label>
-                            <input type="text" id="programTitle" class="w-full p-3 bg-white/70 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="예: 우붓 라이스 테라스 투어" required>
-                        </div>
-                        <div class="md:col-span-2">
-                            <label for="programDescription" class="block text-sm font-medium text-gray-700 mb-1">프로그램 설명</label>
-                            <textarea id="programDescription" rows="4" class="w-full p-3 bg-white/70 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="프로그램에 대한 자세한 설명을 입력해주세요..." required></textarea>
-                        </div>
-                        <div>
-                            <label for="programImage" class="block text-sm font-medium text-gray-700 mb-1">이미지 URL (필수)</label>
-                            <input type="url" id="programImage" class="w-full p-3 bg-white/70 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="https://example.com/image.jpg" required>
-                        </div>
-                        <div>
-                            <label for="programVideo" class="block text-sm font-medium text-gray-700 mb-1">비디오 URL (선택)</label>
-                            <input type="url" id="programVideo" class="w-full p-3 bg-white/70 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="https://example.com/video.mp4">
-                        </div>
-                        <div class="md:col-span-2 flex items-center gap-4 mt-4">
-                            <button type="submit" id="submitBtn" class="bg-orange-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-orange-600 transition-all shadow-md hover:shadow-lg">프로그램 추가</button>
-                            <button type="button" id="clearFormBtn" class="bg-gray-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-600 transition-all shadow-md hover:shadow-lg">입력 초기화</button>
-                        </div>
-                    </form>
-                    <hr class="my-8 border-gray-300/50">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div>
-                            <h3 class="text-xl font-bold text-gray-800 mb-2">데이터 관리</h3>
-                            <p class="text-sm text-gray-600 mb-4">현재 목록에 없는 기본 프로그램을 추가합니다. 기존 데이터는 삭제되지 않습니다.</p>
-                            <button type="button" id="addDefaultsBtn" class="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition-all shadow-md">기본값 추가</button>
-                        </div>
-                        <div class="bg-red-100/50 border border-red-500/30 p-4 rounded-lg">
-                            <h3 class="text-xl font-bold text-red-700 mb-2">🚨 위험 구역</h3>
-                            <p class="text-sm text-red-600 mb-4">DB의 모든 프로그램 및 투표 데이터가 삭제되고 기본값으로 덮어씁니다. 이 작업은 되돌릴 수 없습니다.</p>
-                            <button type="button" id="initDbBtn" class="bg-red-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition-all shadow-md">DB 초기화</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Results Section (hidden by default) -->
-                <div id="resultsSection" class="hidden bg-white/80 backdrop-blur-lg p-6 md:p-8 rounded-2xl shadow-xl mb-12 border border-white/20">
-                    <div class="flex flex-col md:flex-row justify-between items-center mb-6">
-                        <h2 class="text-2xl font-bold text-gray-800">📊 실시간 투표 결과</h2>
-                        <button id="excelDownloadBtn" class="hidden mt-4 md:mt-0 bg-green-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-green-700 transition-all shadow-md flex items-center gap-2">
-                            <i class="fa-solid fa-file-excel"></i> 엑셀로 다운로드
-                        </button>
-                    </div>
-                    <div id="resultsChart" class="space-y-5"></div>
-                </div>
-
-                <!-- Program Cards Grid -->
-                <div id="programsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-                <div id="noPrograms" class="text-center text-white bg-black/30 p-10 rounded-2xl">
-                    프로그램을 불러오는 중입니다...
-                </div>
-            </div>
-            
-            <!-- Admin button: hidden on mobile, visible on desktop -->
-            <button id="adminToggleBtn" title="초기화 중..." disabled class="fixed bottom-4 right-4 w-10 h-10 md:w-12 md:h-12 bg-gray-400 text-white rounded-full shadow-lg hidden md:flex items-center justify-center z-50 text-lg md:text-xl transition-all hover:scale-110 hover:rotate-12 disabled:cursor-not-allowed disabled:bg-gray-400">
-                <i class="fa-solid fa-screwdriver-wrench"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- Modals -->
-    <div id="passwordModal" class="modal fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
-        <div class="modal-content bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md modal-appear">
-            <h3 class="text-2xl font-bold text-gray-800 text-center mb-2">🔐 관리자 로그인</h3>
-            <p class="text-center text-gray-500 mb-6">프로그램을 관리하려면 관리자 계정으로 로그인하세요.</p>
-            <input type="email" id="adminEmail" placeholder="관리자 이메일" class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
-            <input type="password" id="adminPassword" placeholder="관리자 비밀번호" class="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
-            <div class="flex gap-4">
-                <button id="loginBtn" class="w-full bg-orange-500 text-white font-bold py-3 rounded-lg hover:bg-orange-600 transition-all">로그인</button>
-                <button onclick="hideModal('passwordModal')" class="w-full bg-gray-300 text-gray-800 font-bold py-3 rounded-lg hover:bg-gray-400 transition-all">취소</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="voterAuthModal" class="modal fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
-        <div class="modal-content bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md modal-appear">
-            <h3 class="text-2xl font-bold text-gray-800 text-center mb-2">🗳️ 투표자 정보 입력</h3>
-            <p class="text-center text-gray-500 mb-6">투표는 한 사람당 한 번만 가능합니다. 정보를 입력해주세요.</p>
-            <input type="text" id="voterEmployeeId" placeholder="사번" class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
-            <input type="text" id="voterName" placeholder="이름" class="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
-            <div class="flex gap-4">
-                <button id="submitVoteBtn" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600 transition-all">투표하기</button>
-                <button onclick="hideModal('voterAuthModal')" class="w-full bg-gray-300 text-gray-800 font-bold py-3 rounded-lg hover:bg-gray-400 transition-all">취소</button>
-            </div>
-        </div>
-    </div>
-    
-    <div id="voterListModal" class="modal fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
-        <div class="modal-content bg-white rounded-2xl shadow-2xl p-8 w-full max-w-lg modal-appear">
-            <h3 id="voterListTitle" class="text-2xl font-bold text-gray-800 text-center mb-6">투표자 명단</h3>
-            <ul id="voterList" class="h-64 overflow-y-auto bg-gray-50 p-4 rounded-lg border"></ul>
-            <div class="mt-6 text-center">
-                <button onclick="hideModal('voterListModal')" class="bg-gray-500 text-white font-bold py-2 px-8 rounded-lg hover:bg-gray-600 transition-all">닫기</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="alertModal" class="modal fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
-        <div class="modal-content bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md modal-appear text-center">
-            <h3 id="alertTitle" class="text-2xl font-bold text-gray-800 mb-4">알림</h3>
-            <p id="alertMessage" class="text-gray-600 mb-6"></p>
-            <div id="alertButtons" class="flex gap-4 justify-center">
-                <button id="alertOkBtn" class="bg-orange-500 text-white font-bold py-2 px-8 rounded-lg hover:bg-orange-600 transition-all">확인</button>
-                <button id="alertCancelBtn" class="bg-gray-300 text-gray-800 font-bold py-2 px-8 rounded-lg hover:bg-gray-400 transition-all" style="display:none;">취소</button>
-            </div>
-        </div>
-    </div>
-
-
-    <script type="module">
-        // Firebase modules
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, increment, arrayUnion, onSnapshot, writeBatch, query, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // --- Global Variables & Config ---
-        let db, auth;
-        let programs = [];
-        let editingId = null, votingForId = null;
-        let isAdminMode = false;
-        let unsubscribePrograms = null;
-
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        
-        // --- 파이어베이스 설정 정보를 여기에 직접 붙여넣으세요 ---
-        // Firebase 콘솔 -> 프로젝트 설정 -> 일반 탭에서 '앱'을 선택하고 설정 스니펫을 복사합니다.
-        // 이 코드를 통째로 삭제하고 붙여넣으면 됩니다. (예시: const firebaseConfig = { ... };)
-        const firebaseConfig = {
-            apiKey: "AIzaSyDEcWo6Zf0R_0GtE51DryWNphkK1OjNzx0",
-            authDomain: "incarhigh-balihi.firebaseapp.com",
-            projectId: "incarhigh-balihi",
-            storageBucket: "incarhigh-balihi.firebasestorage.app",
-            messagingSenderId: "777053953777",
-            appId: "1:777053953777:web:bd21c80707306f54da9350",
-            measurementId: "G-T8BW822SLS"
-        };
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-        // --- DOM Elements ---
-        const programsGrid = document.getElementById('programsGrid');
-        const noProgramsEl = document.getElementById('noPrograms');
-        const programForm = document.getElementById('programForm');
-        const adminToggleBtn = document.getElementById('adminToggleBtn');
-        const resultsSection = document.getElementById('resultsSection');
-        const adminPanel = document.getElementById('adminPanel');
-        const excelDownloadBtn = document.getElementById('excelDownloadBtn');
-        const entryScreen = document.getElementById('entry-screen');
-        const mainWrapper = document.querySelector('.main-wrapper');
-        const submitBtn = document.getElementById('submitBtn');
-        const clearFormBtn = document.getElementById('clearFormBtn');
-
-        // --- Modal Helpers ---
-        window.showModal = (id) => document.getElementById(id).classList.replace('hidden', 'flex');
-        window.hideModal = (id) => document.getElementById(id).classList.replace('flex', 'hidden');
-
-        // --- Custom Alert/Confirm ---
-        const showAlert = (message, title = '알림', onOk) => {
-            document.getElementById('alertTitle').textContent = title;
-            document.getElementById('alertMessage').innerHTML = message;
-            const okBtn = document.getElementById('alertOkBtn');
-            const cancelBtn = document.getElementById('alertCancelBtn');
-            cancelBtn.style.display = 'none';
-            
-            okBtn.onclick = () => {
-                hideModal('alertModal');
-                if (onOk) onOk();
-            };
-            showModal('alertModal');
-        };
-
-        const showConfirm = (message, title = '확인 필요') => {
-            return new Promise((resolve) => {
-                document.getElementById('alertTitle').textContent = title;
-                document.getElementById('alertMessage').innerHTML = message;
-                const okBtn = document.getElementById('alertOkBtn');
-                const cancelBtn = document.getElementById('alertCancelBtn');
-                cancelBtn.style.display = 'inline-block';
-
-                okBtn.onclick = () => { hideModal('alertModal'); resolve(true); };
-                cancelBtn.onclick = () => { hideModal('alertModal'); resolve(false); };
-                showModal('alertModal');
-            });
-        };
-
-        // --- Initialization ---
-        document.addEventListener('DOMContentLoaded', () => {
-            setupEventListeners();
-            initializeFirebase();
-        });
-
-        async function initializeFirebase() {
-            try {
-                // A valid config must have an apiKey. If not, the config is considered invalid.
-                if (!firebaseConfig || !firebaseConfig.apiKey) {
-                    throw new Error("Firebase 설정이 로드되지 않았습니다. 올바른 설정값이 제공되었는지 확인하세요.");
-                }
-                
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-                
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
-
-                adminToggleBtn.disabled = false;
-                adminToggleBtn.title = '관리자 모드';
-                adminToggleBtn.classList.replace('bg-gray-400', 'bg-orange-500');
-                console.log("Firebase가 준비되었습니다. 관리자 기능을 사용할 수 있습니다.");
-
-                onAuthStateChanged(auth, user => {
-                    isAdminMode = user && !user.isAnonymous;
-                    adminPanel.classList.toggle('hidden', !isAdminMode);
-                    resultsSection.classList.toggle('hidden', !isAdminMode);
-                    excelDownloadBtn.classList.toggle('hidden', !isAdminMode);
-                    renderPrograms();
-                    updateResults();
-                });
-                
-                loadAndListenPrograms();
-
-            } catch (error) {
-                console.error("Firebase 초기화 오류:", error);
-                showAlert(`Firebase 초기화에 실패했습니다. <br><br><b>오류: ${error.message}</b><br><br>페이지를 새로고침 하시거나 관리자에게 문의하세요.`, "치명적 오류");
-                
-                adminToggleBtn.disabled = true;
-                adminToggleBtn.title = '초기화 실패!';
-                adminToggleBtn.classList.add('bg-red-600');
-                adminToggleBtn.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
-            }
-        }
-
-        // --- Event Listeners ---
-        function setupEventListeners() {
-            const music = document.getElementById('background-music');
-            const entryBtn = document.getElementById('entryBtn');
-
-            entryBtn.addEventListener('click', () => {
-                music.play().catch(e => console.warn("음악 재생 실패:", e));
-                entryScreen.classList.add('opacity-0');
-                mainWrapper.classList.remove('hidden');
-                setTimeout(() => {
-                    entryScreen.classList.add('hidden');
-                    // Start all videos after the entry screen fades out
-                    startAllVideos();
-                }, 1000);
-            });
-
-            adminToggleBtn.onclick = () => showModal('passwordModal');
-            document.getElementById('loginBtn').onclick = checkAdminPassword;
-            clearFormBtn.onclick = clearForm;
-            document.getElementById('initDbBtn').onclick = runInitialization;
-            document.getElementById('addDefaultsBtn').onclick = addDefaultPrograms;
-            document.getElementById('submitVoteBtn').onclick = submitVote;
-            excelDownloadBtn.onclick = exportToExcel;
-            programForm.addEventListener('submit', handleFormSubmit);
-        }
-        
-        // --- Core App Logic ---
-        function loadAndListenPrograms() {
-            if (!db) return;
-            const programsCollectionRef = collection(db, `artifacts/${appId}/public/data/programs`);
-            
-            if (unsubscribePrograms) unsubscribePrograms();
-
-            unsubscribePrograms = onSnapshot(query(programsCollectionRef), (snapshot) => {
-                programs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                programs.sort((a, b) => (a.order || 0) - (b.order || 0));
-                
-                if (programs.length === 0) {
-                    noProgramsEl.textContent = '프로그램이 없습니다. 관리자로 로그인하여 DB를 초기화해주세요.';
-                }
-                
-                renderPrograms();
-                updateResults();
-            }, (error) => {
-                console.error("데이터 수신 오류:", error);
-                showAlert(`실시간 데이터 수신에 실패했습니다. <br>오류: ${error.message}`, "데이터 오류");
-                noProgramsEl.textContent = '데이터를 불러오는 중 오류가 발생했습니다.';
-            });
-        }
-
-        function renderPrograms() {
-            if (!programsGrid) return;
-            
-            const hasPrograms = programs && programs.length > 0;
-            programsGrid.classList.toggle('hidden', !hasPrograms);
-            noProgramsEl.classList.toggle('hidden', hasPrograms);
-
-            if (!hasPrograms) return;
-
-            programsGrid.innerHTML = programs.map(p => {
-                const isYouTubeVideo = p.videoUrl && (p.videoUrl.includes('youtube.com') || p.videoUrl.includes('youtu.be'));
-                let mediaElement;
-                
-                if (isYouTubeVideo) {
-                    // YouTube URL에서 동영상 ID 추출
-                    const youtubeId = p.videoUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([\w-]{11})/)?.[1];
-                    mediaElement = youtubeId 
-                        ? `<iframe class="program-media w-full h-56 object-cover rounded-t-xl" 
-                                src="https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&controls=0&modestbranding=1&fs=0"
-                                frameborder="0"
-                                allow="autoplay; encrypted-media"
-                                allowfullscreen
-                                title="YouTube video player"
-                                loading="lazy"></iframe>`
-                        : `<img src="${p.image || 'https://placehold.co/600x400/png?text=이미지+없음'}" alt="${p.title}" class="w-full h-56 object-cover" onerror="this.onerror=null; this.src='https://placehold.co/600x400/png?text=이미지+오류';">`;
-                } else {
-                    mediaElement = p.videoUrl
-                        ? `<video class="program-media program-video w-full h-56 object-cover" src="${p.videoUrl}" poster="${p.image}" muted loop playsinline preload="metadata"></video>`
-                        : `<img src="${p.image || 'https://placehold.co/600x400/png?text=이미지+없음'}" alt="${p.title}" class="w-full h-56 object-cover" onerror="this.onerror=null; this.src='https://placehold.co/600x400/png?text=이미지+오류';">`;
-                }
-                
-                return `
-                    <div class="program-card flex flex-col bg-white/80 backdrop-blur-md rounded-2xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 border border-white/20">
-                        ${mediaElement}
-                        <div class="p-6 flex flex-col flex-grow">
-                            <h3 class="text-xl font-bold text-gray-800 mb-2">${p.title}</h3>
-                            <p class="text-gray-600 text-sm leading-relaxed mb-4 flex-grow">${p.description}</p>
-                            <div class="flex justify-between items-center pt-4 border-t border-gray-200/80">
-                                <button class="vote-btn bg-green-500 text-white font-semibold py-2 px-5 rounded-full hover:bg-green-600 transition-all shadow hover:shadow-md flex items-center gap-2" onclick="requestVote('${p.id}')">
-                                    <i class="fa-solid fa-check-to-slot"></i> 투표하기
-                                </button>
-                                <span class="vote-count text-lg font-bold text-gray-700">${p.votes || 0}표</span>
-                            </div>
-                            <div class="admin-controls ${isAdminMode ? 'flex' : 'hidden'} gap-2 mt-4 pt-4 border-t border-dashed border-gray-400">
-                                <button class="bg-blue-500 text-white text-xs font-bold py-1 px-3 rounded-md hover:bg-blue-600 transition" onclick="editProgram('${p.id}')">수정</button>
-                                <button class="bg-red-500 text-white text-xs font-bold py-1 px-3 rounded-md hover:bg-red-600 transition" onclick="deleteProgram('${p.id}')">삭제</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        // This function will find and play all videos on the page.
-        function startAllVideos() {
-            const videos = document.querySelectorAll('.program-video');
-            videos.forEach(video => {
-                video.play().catch(e => console.warn("비디오 재생 실패:", e));
-            });
-        }
-        
-        // ... (rest of the code remains the same)
-        
-
-        function updateResults() {
-            const resultsChart = document.getElementById('resultsChart');
-            if (!resultsChart || !isAdminMode) return;
-
-            if (!programs || programs.length === 0) {
-                resultsChart.innerHTML = '<p class="text-center text-gray-500">표시할 투표 데이터가 없습니다.</p>';
-                return;
-            }
-            const totalVotes = programs.reduce((sum, p) => sum + (p.votes || 0), 0);
-
-            resultsChart.innerHTML = `
-                <div class="text-center mb-6">
-                    <strong class="text-xl text-gray-700">총 투표 수: ${totalVotes}표</strong>
-                </div>
-                <div class="space-y-5">
-                ${programs.map(p => {
-                    const percentage = totalVotes > 0 ? ((p.votes || 0) / totalVotes * 100).toFixed(1) : 0;
-                    return `
-                        <div>
-                            <div class="flex justify-between items-center mb-1">
-                                <div class="flex items-center gap-2">
-                                    <span class="font-semibold text-gray-800">${p.title}</span>
-                                    <button class="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded-md hover:bg-gray-300" onclick="showVoters('${p.id}')">투표자 보기</button>
-                                </div>
-                                <span class="text-sm font-medium text-gray-600">${p.votes || 0}표 (${percentage}%)</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-4">
-                                <div class="bg-gradient-to-r from-yellow-400 to-orange-500 h-4 rounded-full transition-all duration-500" style="width: ${percentage}%"></div>
-                            </div>
-                        </div>
-                    `;
-                }).join('')}
-                </div>
-            `;
-        }
-
-        // --- Vote Logic ---
-        window.requestVote = (id) => {
-            if (!db) return showAlert('데이터베이스가 준비되지 않았습니다. 잠시 후 다시 시도해주세요.');
-            votingForId = id;
-            showModal('voterAuthModal');
-            document.getElementById('voterEmployeeId').focus();
-        };
-
-        async function submitVote() {
-            if (!db) return showAlert('데이터베이스가 준비되지 않았습니다. 잠시 후 다시 시도해주세요.');
-            const employeeId = document.getElementById('voterEmployeeId').value.trim();
-            const name = document.getElementById('voterName').value.trim();
-            if (!employeeId || !name) return showAlert('사번과 이름을 모두 입력해주세요.');
-
-            const alreadyVoted = programs.some(p => p.voters?.some(v => v.id === employeeId));
-            if (alreadyVoted) {
-                hideModal('voterAuthModal');
-                return showAlert('이미 다른 프로그램에 투표하셨습니다. 한 사람당 한 번만 투표할 수 있습니다.');
-            }
-            
-            try {
-                const programRef = doc(db, `artifacts/${appId}/public/data/programs`, votingForId);
-                await updateDoc(programRef, { 
-                    votes: increment(1), 
-                    voters: arrayUnion({ id: employeeId, name: name }) 
-                });
-                
-                hideModal('voterAuthModal');
-                document.getElementById('voterEmployeeId').value = '';
-                document.getElementById('voterName').value = '';
-                showAlert('투표가 성공적으로 완료되었습니다!', '투표 완료');
-            } catch (error) {
-                console.error("투표 제출 오류:", error);
-                showAlert(`투표 중 오류가 발생했습니다. <br>오류: ${error.message}`, "오류");
-            }
-        }
-
-        // --- Admin Logic ---
-        async function checkAdminPassword() {
-            if (!auth) return showAlert('인증 서비스가 준비되지 않았습니다.', '초기화 중');
-            const email = document.getElementById('adminEmail').value.trim();
-            const password = document.getElementById('adminPassword').value;
-            if (!email || !password) return showAlert('이메일과 비밀번호를 모두 입력해주세요.');
-            
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                hideModal('passwordModal');
-                showAlert('관리자 로그인 성공! 🔓');
-            } catch (error) {
-                console.error("로그인 실패:", error);
-                showAlert(`로그인에 실패했습니다. 정보를 확인해주세요.<br><br><b>오류:</b> ${error.code}`, '로그인 오류');
-            } finally {
-                document.getElementById('adminPassword').value = '';
-            }
-        }
-        
-        async function handleFormSubmit(e) {
-            e.preventDefault();
-            if (!isAdminMode || !db) return showAlert('관리자만 사용 가능하거나, DB가 준비되지 않았습니다.');
-
-            const title = document.getElementById('programTitle').value.trim();
-            const description = document.getElementById('programDescription').value.trim();
-            const imageUrl = document.getElementById('programImage').value.trim();
-            const videoUrl = document.getElementById('programVideo').value.trim();
-
-            if (!title || !description || !imageUrl) return showAlert('프로그램 이름, 설명, 이미지 URL은 필수 입력입니다.');
-
-            try {
-                if (editingId) {
-                    const docRef = doc(db, `artifacts/${appId}/public/data/programs`, editingId);
-                    await updateDoc(docRef, { title, description, image: imageUrl, videoUrl });
-                    showAlert('프로그램이 수정되었습니다!');
-                    editingId = null;
-                } else {
-                    await addDoc(collection(db, `artifacts/${appId}/public/data/programs`), {
-                        title,
-                        description,
-                        image: imageUrl,
-                        videoUrl,
-                        votes: 0,
-                        voters: [],
-                        order: programs.length
-                    });
-                    showAlert('새 프로그램이 추가되었습니다!');
-                }
-                clearForm();
-            } catch (error) {
-                console.error("프로그램 추가/수정 오류:", error);
-                showAlert(`오류가 발생했습니다.<br>오류: ${error.message}`);
-            }
-        }
-
-        function clearForm() {
-            document.getElementById('programTitle').value = '';
-            document.getElementById('programDescription').value = '';
-            document.getElementById('programImage').value = '';
-            document.getElementById('programVideo').value = '';
-            editingId = null;
-            // Add this line to reset the button text
-            submitBtn.textContent = '프로그램 추가';
-            clearFormBtn.textContent = '입력 초기화';
-        }
-
-        // 프로그램 수정 버튼 클릭 시
-        window.editProgram = (id) => {
-            const program = programs.find(p => p.id === id);
-            if (!program) return;
-            document.getElementById('programTitle').value = program.title;
-            document.getElementById('programDescription').value = program.description;
-            document.getElementById('programImage').value = program.image || '';
-            document.getElementById('programVideo').value = program.videoUrl || '';
-            editingId = id;
-            // Change the button text
-            submitBtn.textContent = '프로그램 수정';
-            clearFormBtn.textContent = '수정 취소';
-        };
-
-        // 프로그램 삭제
-        window.deleteProgram = async (id) => {
-            if (!isAdminMode) return;
-            const confirmDelete = await showConfirm('정말로 이 프로그램을 삭제하시겠습니까?');
-            if (!confirmDelete) return;
-            try {
-                await deleteDoc(doc(db, `artifacts/${appId}/public/data/programs`, id));
-                showAlert('프로그램이 삭제되었습니다!');
-            } catch (error) {
-                console.error("삭제 오류:", error);
-                showAlert(`프로그램 삭제 중 오류가 발생했습니다.<br>오류: ${error.message}`);
-            }
-        };
-
-        // 투표자 보기
-        window.showVoters = (id) => {
-            const program = programs.find(p => p.id === id);
-            if (!program || !program.voters) return showAlert('투표자가 없습니다.');
-            const voterListEl = document.getElementById('voterList');
-            voterListEl.innerHTML = program.voters.map(v => `<li>${v.id} - ${v.name}</li>`).join('');
-            document.getElementById('voterListTitle').textContent = `${program.title} 투표자 명단`;
-            showModal('voterListModal');
-        };
-
-        
-        // --- Default Data Functions ---
-        const defaultProgramsData = [
-            { order: 1, title: '🗿 가루다 파크', description: '발리 문화와 힌두교 문화를 한번에 보고<br>웅장한 바위벽과 아름다운 인공 연못 등 <br>발리 최대의 테마 파크를 즐겨보세요.<br>이동시간 : 편도 약 20분<br>이용시간 : 약 3시간', image: 'https://images.pexels.com/photos/13334227/pexels-photo-13334227.jpeg', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program1.mp4' },
-            { order: 2, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와 다양한 어트랙션<br>다양한 편의시설을 마음껏 즐겨보세요.<br>이동시간 : 편도 약 40분<br>이용시간 : 약 5시간', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program2.mp4' }, 
-            { order: 3, title: '🛍️ 꾸따비치 & 비치워크 쇼핑센터', description: '발리의 대표적인 해변 꾸따비치에서<br>아름다운 해변과 여유를 만끽하고<br>멋진 전경의 쇼핑센터에서 편안한 쇼핑을 즐겨보세요.<br>이동시간 : 편도 약 40분<br>이용시간 : 약 5시간', image: 'https://cms.beachwalkbali.com/uploads/SUB_PROMOTION_WEB_eba6e4a9dd.jpg', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program3.mp4' },
-            { order: 4, title: '🏖️ 리조트 자유일정', description: '5성급 고급 호텔의 수영장과 부대시설을<br>마음껏 이용하며 누구의 방해도 받지 않는<br>완벽한 자유시간을 만끽하세요.<br>이동시간 : 없음<br>이용시간 : 자유', image: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/background.jpg', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program4.mp4' },
-            { order: 5, title: '🌊 울루와뚜 & 따나바락', description: '경이로운 자연과 힌두-자바 역사<br>독특한 건축물이 어우러진 울루와투와<br>인생샷 명소 따나바락 절벽을 찾아보세요.<br>이동시간 : 편도 약 1시간<br>이용시간 : 약 3시간', image: 'https://images.unsplash.com/photo-1445968813835-7c9479a87d8b?q=80&w=1172&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program5.mp4' },
-            { order: 6, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸따 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>색다른 라운딩을 즐겨보세요.<br>이동시간 : 편도 약 40분<br>이용시간 : 약 5시간', image: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program6.mp4' },
-            { order: 7, title: '🚣 래프팅 & 우붓', description: '열대우림, 멋진 폭포, 깎아지른 협곡이 펼쳐진 아융강에서<br>스릴 넘치는 래프팅을 즐기고<br>발리의 예술과 문화, 영성이 조화롭게 어우러진 우붓을 둘러보세요.<br>이동시간 : 편도 약 2시간 30분<br>이용시간 : 약 5시간', image: 'https://cdn.pixabay.com/photo/2015/03/18/17/48/rafting-679719_1280.jpg', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program7.mp4' },
-            { order: 8, title: '🌴 발리스윙 & 우붓', description: '발리의 환상적인 정글 속에서 유명한 스윙을 즐기며<br>이국적인 풍경과 인생 사진을 남기고<br>발리의 예술과 문화, 영성이 조화롭게 어우러진 우붓을 둘러보세요.<br>이동시간 : 편도 약 2시간 30분<br>이용시간 : 약 5시간', image: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program8.png', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program8.mp4' },
-            { order: 9, title: ' 우붓 자유관광', description: '발리의 예술과 문화 중심지, 우붓에서<br>고즈넉한 사원과 왕궁을 둘러보고, 푸르른 계단식 논 사이를 거닐며<br>당신만의 속도로 숨은 매력을 발견해보세요.<br>이동시간 : 편도 약 2시간 30분<br>이용시간 : 약 5시간', image: 'https://images.unsplash.com/photo-1644027621944-1aface1ae9f3?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program9.mp4' },
-            { order: 10, title: '⛵ 인카 디너 선셋크루즈', description: '인도양의 붉은 노을을 배경으로<br>선상에서 펼쳐지는 다양한 공연을 즐기며<br>발리의 밤바다가 선사하는 낭만적인 추억을 만들어보세요.<br>이동시간 : 편도 약 1시간 30분<br>이용시간 : 약 2시간', image: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program10.png', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program10.mp4' },
-        ];
-
-        async function runInitialization() {
-            if (!isAdminMode || !db) return showAlert('관리자만 사용 가능하거나, DB가 준비되지 않았습니다.');
-            const confirmed = await showConfirm("🚨 정말로 모든 투표 데이터를 삭제하고 기본 프로그램으로 덮어쓰시겠습니까?<br>이 작업은 되돌릴 수 없습니다!", "DB 초기화 확인");
-            if (!confirmed) return showAlert('초기화가 취소되었습니다.');
-
-            try {
-                showAlert('DB 초기화를 시작합니다. 잠시만 기다려주세요...');
-                const programsCollectionRef = collection(db, `artifacts/${appId}/public/data/programs`);
-                
-                const oldDocs = await getDocs(query(programsCollectionRef));
-                const deleteBatch = writeBatch(db);
-                oldDocs.forEach(doc => deleteBatch.delete(doc.ref));
-                await deleteBatch.commit();
-                
-                const addBatch = writeBatch(db);
-                defaultProgramsData.forEach(program => {
-                    const newProgramRef = doc(programsCollectionRef);
-                    addBatch.set(newProgramRef, { ...program, votes: 0, voters: [] });
-                });
-                await addBatch.commit();
-                
-                showAlert('초기 데이터 설정이 완료되었습니다.', '초기화 완료');
-            } catch (error) {
-                console.error("DB 초기화 오류:", error);
-                showAlert(`DB 초기화에 실패했습니다. Firebase 권한을 확인해주세요.<br>오류: ${error.message}`);
-            }
-        }
-
-        async function addDefaultPrograms() {
-            if (!isAdminMode || !db) return showAlert('관리자만 사용 가능하거나, DB가 준비되지 않았습니다.');
-            const confirmed = await showConfirm("기본 프로그램을 추가하시겠습니까? <br>이미 목록에 있는 프로그램은 중복으로 추가되지 않습니다.", "기본 프로그램 추가");
-            if (!confirmed) return;
-
-            try {
-                showAlert('기본 프로그램을 추가합니다...');
-                const programsCollectionRef = collection(db, `artifacts/${appId}/public/data/programs`);
-                const existingDocs = await getDocs(query(programsCollectionRef));
-                const existingTitles = new Set(existingDocs.docs.map(doc => doc.data().title));
-
-                const programsToAdd = defaultProgramsData.filter(p => !existingTitles.has(p.title));
-
-                if (programsToAdd.length === 0) {
-                    return showAlert('모든 기본 프로그램이 이미 목록에 있습니다.', '알림');
-                }
-
-                const addBatch = writeBatch(db);
-                programsToAdd.forEach(program => {
-                    const newProgramRef = doc(programsCollectionRef);
-                    addBatch.set(newProgramRef, { ...program, votes: 0, voters: [] });
-                });
-                await addBatch.commit();
-
-                showAlert(`${programsToAdd.length}개의 새로운 기본 프로그램이 추가되었습니다.`, '추가 완료');
-            } catch (error) {
-                console.error("기본 프로그램 추가 오류:", error);
-                showAlert(`기본 프로그램 추가에 실패했습니다.<br>오류: ${error.message}`);
-            }
-        }
-
-        // --- Excel Export ---
-        function exportToExcel() {
-            if (!isAdminMode) return showAlert('관리자만 사용할 수 있는 기능입니다.');
-            if (programs.length === 0) return showAlert('다운로드할 데이터가 없습니다.');
-            
-            showAlert('투표자 데이터를 다운로드용으로 준비 중입니다...');
-            const allVoters = [];
-            programs.forEach(p => {
-                if (p.voters?.length) {
-                    p.voters.forEach(v => allVoters.push({ program: p.title.replace(/,/g, ''), id: v.id, name: v.name }));
-                }
-            });
-            
-            if (!allVoters.length) return showAlert('다운로드할 투표 데이터가 없습니다.');
-            
-            const csv = `${"\uFEFF"}"프로그램","사번","이름"\n${allVoters.map(v => `"${v.program}","${v.id}","${v.name}"`).join('\n')}`;
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = "bali_vote_results.csv";
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-    </script>
-</body>
-</html>
-
-
-
-
+<!DOCTYPE html> 
+ <html lang="ko"> 
+ <head> 
+     <meta charset="UTF-8"> 
+     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+     <title>발리 여행 프로그램 선호도 조사</title> 
+
+     <!-- Tailwind CSS --> 
+     <script src="https://cdn.tailwindcss.com"></script> 
+
+     <!-- Google Fonts: Noto Sans KR, and Playfair Display for Neon Effect --> 
+     <link rel="preconnect" href="https://fonts.googleapis.com"> 
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet"> 
+      
+     <!-- Font Awesome for Icons --> 
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"> 
+
+     <!-- Social sharing meta tags --> 
+     <meta property="og:title" content="✨ 발리에서 생길 일 ✨"> 
+     <meta property="og:description" content="환상의 섬 발리, 우리를 위한 완벽한 하루"> 
+     <meta property="og:image" content="https://github.com/incarmarketing/bali-vote-project/blob/main/thumbnail.jpg?raw=true"> 
+     <meta property="og:url" content="https://incarmarketing.github.io/bali-vote-project/"> 
+     <meta property="og:type" content="website"> 
+     <meta name="twitter:card" content="summary_large_image"> 
+
+     <style> 
+         /* Custom styles to complement Tailwind */ 
+         body { 
+             font-family: 'Noto Sans KR', sans-serif; 
+             background-color: #f0f2f5; 
+         } 
+          
+         /* Modal pop-up animation */ 
+         @keyframes modal-appear { 
+             from { opacity: 0; transform: translateY(-20px) scale(0.95); } 
+             to { opacity: 1; transform: translateY(0) scale(1); } 
+         } 
+         .modal-appear { 
+             animation: modal-appear 0.3s ease-out forwards; 
+         } 
+
+         /* Custom scrollbar */ 
+         ::-webkit-scrollbar { width: 8px; } 
+         ::-webkit-scrollbar-track { background: #f1f1f1; } 
+         ::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; } 
+         ::-webkit-scrollbar-thumb:hover { background: #555; } 
+
+         /* Neon Sign Effect Base */ 
+         .neon-text { 
+             font-family: 'Playfair Display', serif; 
+             text-transform: uppercase; 
+             font-weight: 700; 
+             color: #fff; 
+             line-height: 1.2; 
+             position: relative; 
+         } 
+
+         /* Blue Neon */ 
+         .neon-blue { 
+             text-shadow: 
+                 0 0 4px #fff, 0 0 10px #fff, 0 0 18px #fff, 
+                 0 0 38px #2272FF, 0 0 70px #2272FF, 0 0 80px #2272FF, 
+                 0 0 90px #2272FF, 0 0 140px #2272FF; 
+             z-index: 2; 
+         } 
+
+         /* Pink Neon */ 
+         .neon-pink { 
+             animation: flicker-pink 2s infinite alternate; 
+             z-index: 1; 
+         } 
+          
+         @keyframes flicker-pink { 
+             0%, 18%, 22%, 25%, 53%, 57%, 100% { 
+                 text-shadow: 
+                     0 0 4px #fff, 0 0 10px #fff, 0 0 18px #fff, 
+                     0 0 38px #F426F4, 0 0 70px #F426F4, 0 0 80px #F426F4, 
+                     0 0 90px #F426F4, 0 0 140px #F426F4; 
+             } 
+             20%, 24%, 55% { text-shadow: none; } 
+         } 
+
+         /* Responsive Neon Title */ 
+         .responsive-neon-title { 
+             font-size: clamp(2.5rem, 9vw, 6.5rem); 
+             display: flex; 
+             flex-wrap: wrap;  
+             justify-content: center; 
+             align-items: center; 
+             gap: 1.5rem 2.5rem;  
+             padding: 0 1rem;  
+         } 
+
+         .main-wrapper { 
+             background-image: url('https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/background.jpg'); 
+             background-size: cover; 
+             background-position: center; 
+             background-attachment: fixed; 
+         } 
+          
+         .bg-overlay { 
+               background-color: rgba(0, 0, 0, 0.4); 
+         } 
+
+         @media (max-width: 767px) { 
+             .main-wrapper { 
+                 background-attachment: scroll; 
+             } 
+         } 
+     </style> 
+ </head> 
+ <body class="bg-gray-100"> 
+      
+     <audio id="background-music" src="https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/titlemusic.wav" loop></audio> 
+
+     <!-- FIX: 입장 화면 추가 --> 
+     <div id="entry-screen" class="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-black transition-opacity duration-1000"> 
+         <div class="text-center text-white"> 
+             <h1 class="text-4xl md:text-6xl font-bold mb-4" style="font-family: 'Playfair Display', serif;">INCAR HIGH, BALI HI</h1> 
+             <p class="text-lg md:text-xl mb-8">발리 최고의 프로그램을 직접 선택해주세요!</p> 
+             <button id="entryBtn" class="bg-orange-500 text-white font-bold py-3 px-10 rounded-lg text-lg hover:bg-orange-600 transition-all shadow-lg"> 
+                 입장하기 
+             </button> 
+         </div> 
+     </div> 
+
+     <!-- Main Content Wrapper --> 
+     <div class="main-wrapper min-h-screen hidden"> 
+         <div class="bg-overlay min-h-screen"> 
+             <!-- Header Section --> 
+             <header class="py-10 md:py-16 text-center text-white"> 
+                 <div class="logo-container mb-4"> 
+                     <img src="https://github.com/incarmarketing/bali-vote-project/blob/main/logo.png?raw=true" alt="회사 로고" class="company-logo h-12 mx-auto" onerror="this.style.display='none'"> 
+                 </div> 
+                 <h1 class="responsive-neon-title"> 
+                     <span class="neon-text neon-blue">incar high</span> 
+                     <span class="neon-text neon-pink">bali hi</span> 
+                 </h1> 
+                 <p class="mt-8 text-lg md:text-xl text-gray-200 max-w-2xl mx-auto px-4"> 
+                     발리에서 생길 일, <br class="sm:hidden">가장 기대하는 프로그램을 선택해주세요! 
+                 </p> 
+             </header> 
+
+             <!-- Main Container --> 
+             <div class="container mx-auto px-4 pb-20"> 
+                  
+                 <!-- Admin Panel (hidden by default) --> 
+                 <div id="adminPanel" class="hidden bg-white/80 backdrop-blur-lg p-6 md:p-8 rounded-2xl shadow-xl mb-12 border border-white/20"> 
+                     <h2 class="text-2xl font-bold text-gray-800 mb-6">🔧 관리자 대시보드</h2> 
+                     <form id="programForm" class="grid grid-cols-1 md:grid-cols-2 gap-6"> 
+                         <div class="md:col-span-2"> 
+                             <label for="programTitle" class="block text-sm font-medium text-gray-700 mb-1">프로그램 이름</label> 
+                             <input type="text" id="programTitle" class="w-full p-3 bg-white/70 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="예: 우붓 라이스 테라스 투어" required> 
+                         </div> 
+                         <div class="md:col-span-2"> 
+                             <label for="programDescription" class="block text-sm font-medium text-gray-700 mb-1">프로그램 설명</label> 
+                             <textarea id="programDescription" rows="4" class="w-full p-3 bg-white/70 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="프로그램에 대한 자세한 설명을 입력해주세요..." required></textarea> 
+                         </div> 
+                         <div> 
+                             <label for="programImage" class="block text-sm font-medium text-gray-700 mb-1">이미지 URL (필수)</label> 
+                             <input type="url" id="programImage" class="w-full p-3 bg-white/70 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="https://example.com/image.jpg" required> 
+                         </div> 
+                         <div> 
+                             <label for="programVideo" class="block text-sm font-medium text-gray-700 mb-1">비디오 URL (선택)</label> 
+                             <input type="url" id="programVideo" class="w-full p-3 bg-white/70 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition" placeholder="https://example.com/video.mp4"> 
+                         </div> 
+                         <div class="md:col-span-2 flex items-center gap-4 mt-4"> 
+                             <button type="submit" id="submitBtn" class="bg-orange-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-orange-600 transition-all shadow-md hover:shadow-lg">프로그램 추가</button> 
+                             <button type="button" id="clearFormBtn" class="bg-gray-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-600 transition-all shadow-md hover:shadow-lg">입력 초기화</button> 
+                         </div> 
+                     </form> 
+                     <hr class="my-8 border-gray-300/50"> 
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8"> 
+                         <div> 
+                             <h3 class="text-xl font-bold text-gray-800 mb-2">데이터 관리</h3> 
+                             <p class="text-sm text-gray-600 mb-4">현재 목록에 없는 기본 프로그램을 추가합니다. 기존 데이터는 삭제되지 않습니다.</p> 
+                             <button type="button" id="addDefaultsBtn" class="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition-all shadow-md">기본값 추가</button> 
+                         </div> 
+                         <div class="bg-red-100/50 border border-red-500/30 p-4 rounded-lg"> 
+                             <h3 class="text-xl font-bold text-red-700 mb-2">🚨 위험 구역</h3> 
+                             <p class="text-sm text-red-600 mb-4">DB의 모든 프로그램 및 투표 데이터가 삭제되고 기본값으로 덮어씁니다. 이 작업은 되돌릴 수 없습니다.</p> 
+                             <button type="button" id="initDbBtn" class="bg-red-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-700 transition-all shadow-md">DB 초기화</button> 
+                         </div> 
+                     </div> 
+                 </div> 
+
+                 <!-- Results Section (hidden by default) --> 
+                 <div id="resultsSection" class="hidden bg-white/80 backdrop-blur-lg p-6 md:p-8 rounded-2xl shadow-xl mb-12 border border-white/20"> 
+                     <div class="flex flex-col md:flex-row justify-between items-center mb-6"> 
+                         <h2 class="text-2xl font-bold text-gray-800">📊 실시간 투표 결과</h2> 
+                         <button id="excelDownloadBtn" class="hidden mt-4 md:mt-0 bg-green-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-green-700 transition-all shadow-md flex items-center gap-2"> 
+                             <i class="fa-solid fa-file-excel"></i> 엑셀로 다운로드 
+                         </button> 
+                     </div> 
+                     <div id="resultsChart" class="space-y-5"></div> 
+                 </div> 
+
+                 <!-- Program Cards Grid --> 
+                 <div id="programsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div> 
+                 <div id="noPrograms" class="text-center text-white bg-black/30 p-10 rounded-2xl"> 
+                     프로그램을 불러오는 중입니다... 
+                 </div> 
+             </div> 
+              
+             <!-- Admin button: hidden on mobile, visible on desktop --> 
+             <button id="adminToggleBtn" title="초기화 중..." disabled class="fixed bottom-4 right-4 w-10 h-10 md:w-12 md:h-12 bg-gray-400 text-white rounded-full shadow-lg hidden md:flex items-center justify-center z-50 text-lg md:text-xl transition-all hover:scale-110 hover:rotate-12 disabled:cursor-not-allowed disabled:bg-gray-400"> 
+                 <i class="fa-solid fa-screwdriver-wrench"></i> 
+             </button> 
+         </div> 
+     </div> 
+
+     <!-- Modals --> 
+     <div id="passwordModal" class="modal fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden items-center justify-center p-4"> 
+         <div class="modal-content bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md modal-appear"> 
+             <h3 class="text-2xl font-bold text-gray-800 text-center mb-2">🔐 관리자 로그인</h3> 
+             <p class="text-center text-gray-500 mb-6">프로그램을 관리하려면 관리자 계정으로 로그인하세요.</p> 
+             <input type="email" id="adminEmail" placeholder="관리자 이메일" class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"> 
+             <input type="password" id="adminPassword" placeholder="관리자 비밀번호" class="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"> 
+             <div class="flex gap-4"> 
+                 <button id="loginBtn" class="w-full bg-orange-500 text-white font-bold py-3 rounded-lg hover:bg-orange-600 transition-all">로그인</button> 
+                 <button onclick="hideModal('passwordModal')" class="w-full bg-gray-300 text-gray-800 font-bold py-3 rounded-lg hover:bg-gray-400 transition-all">취소</button> 
+             </div> 
+         </div> 
+     </div> 
+
+     <div id="voterAuthModal" class="modal fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden items-center justify-center p-4"> 
+         <div class="modal-content bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md modal-appear"> 
+             <h3 class="text-2xl font-bold text-gray-800 text-center mb-2">🗳️ 투표자 정보 입력</h3> 
+             <p class="text-center text-gray-500 mb-6">투표는 한 사람당 한 번만 가능합니다. 정보를 입력해주세요.</p> 
+             <input type="text" id="voterEmployeeId" placeholder="사번" class="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"> 
+             <input type="text" id="voterName" placeholder="이름" class="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"> 
+             <div class="flex gap-4"> 
+                 <button id="submitVoteBtn" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600 transition-all">투표하기</button> 
+                 <button onclick="hideModal('voterAuthModal')" class="w-full bg-gray-300 text-gray-800 font-bold py-3 rounded-lg hover:bg-gray-400 transition-all">취소</button> 
+             </div> 
+         </div> 
+     </div> 
+      
+     <div id="voterListModal" class="modal fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden items-center justify-center p-4"> 
+         <div class="modal-content bg-white rounded-2xl shadow-2xl p-8 w-full max-w-lg modal-appear"> 
+             <h3 id="voterListTitle" class="text-2xl font-bold text-gray-800 text-center mb-6">투표자 명단</h3> 
+             <ul id="voterList" class="h-64 overflow-y-auto bg-gray-50 p-4 rounded-lg border"></ul> 
+             <div class="mt-6 text-center"> 
+                 <button onclick="hideModal('voterListModal')" class="bg-gray-500 text-white font-bold py-2 px-8 rounded-lg hover:bg-gray-600 transition-all">닫기</button> 
+             </div> 
+         </div> 
+     </div> 
+
+     <div id="alertModal" class="modal fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden items-center justify-center p-4"> 
+         <div class="modal-content bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md modal-appear text-center"> 
+             <h3 id="alertTitle" class="text-2xl font-bold text-gray-800 mb-4">알림</h3> 
+             <p id="alertMessage" class="text-gray-600 mb-6"></p> 
+             <div id="alertButtons" class="flex gap-4 justify-center"> 
+                 <button id="alertOkBtn" class="bg-orange-500 text-white font-bold py-2 px-8 rounded-lg hover:bg-orange-600 transition-all">확인</button> 
+                 <button id="alertCancelBtn" class="bg-gray-300 text-gray-800 font-bold py-2 px-8 rounded-lg hover:bg-gray-400 transition-all" style="display:none;">취소</button> 
+             </div> 
+         </div> 
+     </div> 
+
+
+     <script type="module"> 
+         // Firebase modules 
+         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js"; 
+         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js"; 
+         import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, increment, arrayUnion, onSnapshot, writeBatch, query, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"; 
+
+         // --- Global Variables & Config --- 
+         let db, auth; 
+         let programs = []; 
+         let editingId = null, votingForId = null; 
+         let isAdminMode = false; 
+         let unsubscribePrograms = null; 
+
+         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id'; 
+          
+         // --- 파이어베이스 설정 정보를 여기에 직접 붙여넣으세요 --- 
+         // Firebase 콘솔 -> 프로젝트 설정 -> 일반 탭에서 '앱'을 선택하고 설정 스니펫을 복사합니다. 
+         // 이 코드를 통째로 삭제하고 붙여넣으면 됩니다. (예시: const firebaseConfig = { ... };) 
+         const firebaseConfig = {}; // 여기에 실제 Firebase 설정을 붙여넣으세요.
+
+         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null; 
+
+         // --- DOM Elements --- 
+         const programsGrid = document.getElementById('programsGrid'); 
+         const noProgramsEl = document.getElementById('noPrograms'); 
+         const programForm = document.getElementById('programForm'); 
+         const adminToggleBtn = document.getElementById('adminToggleBtn'); 
+         const resultsSection = document.getElementById('resultsSection'); 
+         const adminPanel = document.getElementById('adminPanel'); 
+         const excelDownloadBtn = document.getElementById('excelDownloadBtn'); 
+         const entryScreen = document.getElementById('entry-screen'); 
+         const mainWrapper = document.querySelector('.main-wrapper'); 
+         const submitBtn = document.getElementById('submitBtn'); 
+         const clearFormBtn = document.getElementById('clearFormBtn'); 
+
+         // --- Modal Helpers --- 
+         window.showModal = (id) => document.getElementById(id).classList.replace('hidden', 'flex'); 
+         window.hideModal = (id) => document.getElementById(id).classList.replace('flex', 'hidden'); 
+
+         // --- Custom Alert/Confirm --- 
+         const showAlert = (message, title = '알림', onOk) => { 
+             document.getElementById('alertTitle').textContent = title; 
+             document.getElementById('alertMessage').innerHTML = message; 
+             const okBtn = document.getElementById('alertOkBtn'); 
+             const cancelBtn = document.getElementById('alertCancelBtn'); 
+             cancelBtn.style.display = 'none'; 
+              
+             okBtn.onclick = () => { 
+                 hideModal('alertModal'); 
+                 if (onOk) onOk(); 
+             }; 
+             showModal('alertModal'); 
+         }; 
+
+         const showConfirm = (message, title = '확인 필요') => { 
+             return new Promise((resolve) => { 
+                 document.getElementById('alertTitle').textContent = title; 
+                 document.getElementById('alertMessage').innerHTML = message; 
+                 const okBtn = document.getElementById('alertOkBtn'); 
+                 const cancelBtn = document.getElementById('alertCancelBtn'); 
+                 cancelBtn.style.display = 'inline-block'; 
+
+                 okBtn.onclick = () => { hideModal('alertModal'); resolve(true); }; 
+                 cancelBtn.onclick = () => { hideModal('alertModal'); resolve(false); }; 
+                 showModal('alertModal'); 
+             }); 
+         }; 
+
+         // --- Initialization --- 
+         document.addEventListener('DOMContentLoaded', () => { 
+             setupEventListeners(); 
+             initializeFirebase(); 
+         }); 
+
+         async function initializeFirebase() { 
+             try { 
+                 // A valid config must have an apiKey. If not, the config is considered invalid. 
+                 if (!firebaseConfig || !firebaseConfig.apiKey) { 
+                     throw new Error("Firebase 설정이 로드되지 않았습니다. 올바른 설정값이 제공되었는지 확인하세요."); 
+                 } 
+                  
+                 const app = initializeApp(firebaseConfig); 
+                 db = getFirestore(app); 
+                 auth = getAuth(app); 
+                  
+                 if (initialAuthToken) { 
+                     await signInWithCustomToken(auth, initialAuthToken); 
+                 } else { 
+                     await signInAnonymously(auth); 
+                 } 
+
+                 adminToggleBtn.disabled = false; 
+                 adminToggleBtn.title = '관리자 모드'; 
+                 adminToggleBtn.classList.replace('bg-gray-400', 'bg-orange-500'); 
+                 console.log("Firebase가 준비되었습니다. 관리자 기능을 사용할 수 있습니다."); 
+
+                 onAuthStateChanged(auth, user => { 
+                     isAdminMode = user && !user.isAnonymous; 
+                     adminPanel.classList.toggle('hidden', !isAdminMode); 
+                     resultsSection.classList.toggle('hidden', !isAdminMode); 
+                     excelDownloadBtn.classList.toggle('hidden', !isAdminMode); 
+                     renderPrograms(); 
+                     updateResults(); 
+                 }); 
+                  
+                 loadAndListenPrograms(); 
+
+             } catch (error) { 
+                 console.error("Firebase 초기화 오류:", error); 
+                 showAlert(`Firebase 초기화에 실패했습니다. <br><br><b>오류: ${error.message}</b><br><br>페이지를 새로고침 하시거나 관리자에게 문의하세요.`, "치명적 오류"); 
+                  
+                 adminToggleBtn.disabled = true; 
+                 adminToggleBtn.title = '초기화 실패!'; 
+                 adminToggleBtn.classList.add('bg-red-600'); 
+                 adminToggleBtn.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>'; 
+             } 
+         } 
+
+         // --- Event Listeners --- 
+         function setupEventListeners() { 
+             const music = document.getElementById('background-music'); 
+             const entryBtn = document.getElementById('entryBtn'); 
+
+             entryBtn.addEventListener('click', () => { 
+                 music.play().catch(e => console.warn("음악 재생 실패:", e)); 
+                 entryScreen.classList.add('opacity-0'); 
+                 mainWrapper.classList.remove('hidden'); 
+                 setTimeout(() => { 
+                     entryScreen.classList.add('hidden'); 
+                     // Start all videos after the entry screen fades out 
+                     startAllVideos(); 
+                 }, 1000); 
+             }); 
+             
+             // --- FIX: Add visibility change listener to control music ---
+             document.addEventListener('visibilitychange', () => {
+                 // If the page is hidden, pause the music
+                 if (document.hidden) {
+                     music.pause();
+                 } else {
+                     // If the user has already passed the entry screen, resume music
+                     if (entryScreen.classList.contains('hidden')) {
+                         music.play().catch(e => console.warn("음악 자동 재개 실패:", e));
+                     }
+                 }
+             });
+
+             adminToggleBtn.onclick = () => showModal('passwordModal'); 
+             document.getElementById('loginBtn').onclick = checkAdminPassword; 
+             clearFormBtn.onclick = clearForm; 
+             document.getElementById('initDbBtn').onclick = runInitialization; 
+             document.getElementById('addDefaultsBtn').onclick = addDefaultPrograms; 
+             document.getElementById('submitVoteBtn').onclick = submitVote; 
+             excelDownloadBtn.onclick = exportToExcel; 
+             programForm.addEventListener('submit', handleFormSubmit); 
+         } 
+          
+         // --- Core App Logic --- 
+         function loadAndListenPrograms() { 
+             if (!db) return; 
+             const programsCollectionRef = collection(db, `artifacts/${appId}/public/data/programs`); 
+              
+             if (unsubscribePrograms) unsubscribePrograms(); 
+
+             unsubscribePrograms = onSnapshot(query(programsCollectionRef), (snapshot) => { 
+                 programs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); 
+                 programs.sort((a, b) => (a.order || 0) - (b.order || 0)); 
+                  
+                 if (programs.length === 0) { 
+                     noProgramsEl.textContent = '프로그램이 없습니다. 관리자로 로그인하여 DB를 초기화해주세요.'; 
+                 } 
+                  
+                 renderPrograms(); 
+                 updateResults(); 
+             }, (error) => { 
+                 console.error("데이터 수신 오류:", error); 
+                 showAlert(`실시간 데이터 수신에 실패했습니다. <br>오류: ${error.message}`, "데이터 오류"); 
+                 noProgramsEl.textContent = '데이터를 불러오는 중 오류가 발생했습니다.'; 
+             }); 
+         } 
+
+         function renderPrograms() { 
+             if (!programsGrid) return; 
+              
+             const hasPrograms = programs && programs.length > 0; 
+             programsGrid.classList.toggle('hidden', !hasPrograms); 
+             noProgramsEl.classList.toggle('hidden', hasPrograms); 
+
+             if (!hasPrograms) return; 
+
+             programsGrid.innerHTML = programs.map(p => { 
+                 const isYouTubeVideo = p.videoUrl && (p.videoUrl.includes('youtube.com') || p.videoUrl.includes('youtu.be')); 
+                 let mediaElement; 
+                  
+                 if (isYouTubeVideo) { 
+                     // YouTube URL에서 동영상 ID 추출 
+                     const youtubeId = p.videoUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([\w-]{11})/)?.[1]; 
+                     mediaElement = youtubeId  
+                         ? `<iframe class="program-media w-full h-56 object-cover rounded-t-xl"  
+                                 src="https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&controls=0&modestbranding=1&fs=0" 
+                                 frameborder="0" 
+                                 allow="autoplay; encrypted-media" 
+                                 allowfullscreen 
+                                 title="YouTube video player" 
+                                 loading="lazy"></iframe>` 
+                         : `<img src="${p.image || 'https://placehold.co/600x400/png?text=이미지+없음'}" alt="${p.title}" class="w-full h-56 object-cover" onerror="this.onerror=null; this.src='https://placehold.co/600x400/png?text=이미지+오류';">`; 
+                 } else { 
+                     mediaElement = p.videoUrl 
+                         ? `<video class="program-media program-video w-full h-56 object-cover" src="${p.videoUrl}" poster="${p.image}" muted loop playsinline preload="metadata"></video>` 
+                         : `<img src="${p.image || 'https://placehold.co/600x400/png?text=이미지+없음'}" alt="${p.title}" class="w-full h-56 object-cover" onerror="this.onerror=null; this.src='https://placehold.co/600x400/png?text=이미지+오류';">`; 
+                 } 
+                  
+                 return ` 
+                     <div class="program-card flex flex-col bg-white/80 backdrop-blur-md rounded-2xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 border border-white/20"> 
+                         ${mediaElement} 
+                         <div class="p-6 flex flex-col flex-grow"> 
+                             <h3 class="text-xl font-bold text-gray-800 mb-2">${p.title}</h3> 
+                             <p class="text-gray-600 text-sm leading-relaxed mb-4 flex-grow">${p.description}</p> 
+                             <div class="flex justify-between items-center pt-4 border-t border-gray-200/80"> 
+                                 <button class="vote-btn bg-green-500 text-white font-semibold py-2 px-5 rounded-full hover:bg-green-600 transition-all shadow hover:shadow-md flex items-center gap-2" onclick="requestVote('${p.id}')"> 
+                                     <i class="fa-solid fa-check-to-slot"></i> 투표하기 
+                                 </button> 
+                                 <span class="vote-count text-lg font-bold text-gray-700">${p.votes || 0}표</span> 
+                             </div> 
+                             <div class="admin-controls ${isAdminMode ? 'flex' : 'hidden'} gap-2 mt-4 pt-4 border-t border-dashed border-gray-400"> 
+                                 <button class="bg-blue-500 text-white text-xs font-bold py-1 px-3 rounded-md hover:bg-blue-600 transition" onclick="editProgram('${p.id}')">수정</button> 
+                                 <button class="bg-red-500 text-white text-xs font-bold py-1 px-3 rounded-md hover:bg-red-600 transition" onclick="deleteProgram('${p.id}')">삭제</button> 
+                             </div> 
+                         </div> 
+                     </div> 
+                 `; 
+             }).join(''); 
+         } 
+          
+         // This function will find and play all videos on the page. 
+         function startAllVideos() { 
+             const videos = document.querySelectorAll('.program-video'); 
+             videos.forEach(video => { 
+                 video.play().catch(e => console.warn("비디오 재생 실패:", e)); 
+             }); 
+         } 
+          
+         function updateResults() { 
+             const resultsChart = document.getElementById('resultsChart'); 
+             if (!resultsChart || !isAdminMode) return; 
+
+             if (!programs || programs.length === 0) { 
+                 resultsChart.innerHTML = '<p class="text-center text-gray-500">표시할 투표 데이터가 없습니다.</p>'; 
+                 return; 
+             } 
+             const totalVotes = programs.reduce((sum, p) => sum + (p.votes || 0), 0); 
+
+             resultsChart.innerHTML = ` 
+                 <div class="text-center mb-6"> 
+                     <strong class="text-xl text-gray-700">총 투표 수: ${totalVotes}표</strong> 
+                 </div> 
+                 <div class="space-y-5"> 
+                 ${programs.map(p => { 
+                     const percentage = totalVotes > 0 ? ((p.votes || 0) / totalVotes * 100).toFixed(1) : 0; 
+                     return ` 
+                         <div> 
+                             <div class="flex justify-between items-center mb-1"> 
+                                 <div class="flex items-center gap-2"> 
+                                     <span class="font-semibold text-gray-800">${p.title}</span> 
+                                     <button class="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded-md hover:bg-gray-300" onclick="showVoters('${p.id}')">투표자 보기</button> 
+                                 </div> 
+                                 <span class="text-sm font-medium text-gray-600">${p.votes || 0}표 (${percentage}%)</span> 
+                             </div> 
+                             <div class="w-full bg-gray-200 rounded-full h-4"> 
+                                 <div class="bg-gradient-to-r from-yellow-400 to-orange-500 h-4 rounded-full transition-all duration-500" style="width: ${percentage}%"></div> 
+                             </div> 
+                         </div> 
+                     `; 
+                 }).join('')} 
+                 </div> 
+             `; 
+         } 
+
+         // --- Vote Logic --- 
+         window.requestVote = (id) => { 
+             if (!db) return showAlert('데이터베이스가 준비되지 않았습니다. 잠시 후 다시 시도해주세요.'); 
+             votingForId = id; 
+             showModal('voterAuthModal'); 
+             document.getElementById('voterEmployeeId').focus(); 
+         }; 
+
+         async function submitVote() { 
+             if (!db) return showAlert('데이터베이스가 준비되지 않았습니다. 잠시 후 다시 시도해주세요.'); 
+             const employeeId = document.getElementById('voterEmployeeId').value.trim(); 
+             const name = document.getElementById('voterName').value.trim(); 
+             if (!employeeId || !name) return showAlert('사번과 이름을 모두 입력해주세요.'); 
+
+             const alreadyVoted = programs.some(p => p.voters?.some(v => v.id === employeeId)); 
+             if (alreadyVoted) { 
+                 hideModal('voterAuthModal'); 
+                 return showAlert('이미 다른 프로그램에 투표하셨습니다. 한 사람당 한 번만 투표할 수 있습니다.'); 
+             } 
+              
+             try { 
+                 const programRef = doc(db, `artifacts/${appId}/public/data/programs`, votingForId); 
+                 await updateDoc(programRef, {  
+                     votes: increment(1),  
+                     voters: arrayUnion({ id: employeeId, name: name })  
+                 }); 
+                  
+                 hideModal('voterAuthModal'); 
+                 document.getElementById('voterEmployeeId').value = ''; 
+                 document.getElementById('voterName').value = ''; 
+                 showAlert('투표가 성공적으로 완료되었습니다!', '투표 완료'); 
+             } catch (error) { 
+                 console.error("투표 제출 오류:", error); 
+                 showAlert(`투표 중 오류가 발생했습니다. <br>오류: ${error.message}`, "오류"); 
+             } 
+         } 
+
+         // --- Admin Logic --- 
+         async function checkAdminPassword() { 
+             if (!auth) return showAlert('인증 서비스가 준비되지 않았습니다.', '초기화 중'); 
+             const email = document.getElementById('adminEmail').value.trim(); 
+             const password = document.getElementById('adminPassword').value; 
+             if (!email || !password) return showAlert('이메일과 비밀번호를 모두 입력해주세요.'); 
+              
+             try { 
+                 await signInWithEmailAndPassword(auth, email, password); 
+                 hideModal('passwordModal'); 
+                 showAlert('관리자 로그인 성공! 🔓'); 
+             } catch (error) { 
+                 console.error("로그인 실패:", error); 
+                 showAlert(`로그인에 실패했습니다. 정보를 확인해주세요.<br><br><b>오류:</b> ${error.code}`, '로그인 오류'); 
+             } finally { 
+                 document.getElementById('adminPassword').value = ''; 
+             } 
+         } 
+          
+         async function handleFormSubmit(e) { 
+             e.preventDefault(); 
+             if (!isAdminMode || !db) return showAlert('관리자만 사용 가능하거나, DB가 준비되지 않았습니다.'); 
+
+             const title = document.getElementById('programTitle').value.trim(); 
+             const description = document.getElementById('programDescription').value.trim(); 
+             const imageUrl = document.getElementById('programImage').value.trim(); 
+             const videoUrl = document.getElementById('programVideo').value.trim(); 
+
+             if (!title || !description || !imageUrl) return showAlert('프로그램 이름, 설명, 이미지 URL은 필수 입력입니다.'); 
+
+             try { 
+                 if (editingId) { 
+                     const docRef = doc(db, `artifacts/${appId}/public/data/programs`, editingId); 
+                     await updateDoc(docRef, { title, description, image: imageUrl, videoUrl }); 
+                     showAlert('프로그램이 수정되었습니다!'); 
+                     editingId = null; 
+                 } else { 
+                     await addDoc(collection(db, `artifacts/${appId}/public/data/programs`), { 
+                         title, 
+                         description, 
+                         image: imageUrl, 
+                         videoUrl, 
+                         votes: 0, 
+                         voters: [], 
+                         order: programs.length 
+                     }); 
+                     showAlert('새 프로그램이 추가되었습니다!'); 
+                 } 
+                 clearForm(); 
+             } catch (error) { 
+                 console.error("프로그램 추가/수정 오류:", error); 
+                 showAlert(`오류가 발생했습니다.<br>오류: ${error.message}`); 
+             } 
+         } 
+
+         function clearForm() { 
+             document.getElementById('programTitle').value = ''; 
+             document.getElementById('programDescription').value = ''; 
+             document.getElementById('programImage').value = ''; 
+             document.getElementById('programVideo').value = ''; 
+             editingId = null; 
+             // Add this line to reset the button text 
+             submitBtn.textContent = '프로그램 추가'; 
+             clearFormBtn.textContent = '입력 초기화'; 
+         } 
+
+         // 프로그램 수정 버튼 클릭 시 
+         window.editProgram = (id) => { 
+             const program = programs.find(p => p.id === id); 
+             if (!program) return; 
+             document.getElementById('programTitle').value = program.title; 
+             document.getElementById('programDescription').value = program.description; 
+             document.getElementById('programImage').value = program.image || ''; 
+             document.getElementById('programVideo').value = program.videoUrl || ''; 
+             editingId = id; 
+             // Change the button text 
+             submitBtn.textContent = '프로그램 수정'; 
+             clearFormBtn.textContent = '수정 취소'; 
+         }; 
+
+         // 프로그램 삭제 
+         window.deleteProgram = async (id) => { 
+             if (!isAdminMode) return; 
+             const confirmDelete = await showConfirm('정말로 이 프로그램을 삭제하시겠습니까?'); 
+             if (!confirmDelete) return; 
+             try { 
+                 await deleteDoc(doc(db, `artifacts/${appId}/public/data/programs`, id)); 
+                 showAlert('프로그램이 삭제되었습니다!'); 
+             } catch (error) { 
+                 console.error("삭제 오류:", error); 
+                 showAlert(`프로그램 삭제 중 오류가 발생했습니다.<br>오류: ${error.message}`); 
+             } 
+         }; 
+
+         // 투표자 보기 
+         window.showVoters = (id) => { 
+             const program = programs.find(p => p.id === id); 
+             if (!program || !program.voters) return showAlert('투표자가 없습니다.'); 
+             const voterListEl = document.getElementById('voterList'); 
+             voterListEl.innerHTML = program.voters.map(v => `<li>${v.id} - ${v.name}</li>`).join(''); 
+             document.getElementById('voterListTitle').textContent = `${program.title} 투표자 명단`; 
+             showModal('voterListModal'); 
+         }; 
+
+          
+         // --- Default Data Functions --- 
+         const defaultProgramsData = [ 
+             { order: 1, title: '🗿 가루다 파크', description: '발리 문화와 힌두교 문화를 한번에 보고<br>웅장한 바위벽과 아름다운 인공 연못 등 <br>발리 최대의 테마 파크를 즐겨보세요.<br>이동시간 : 편도 약 20분<br>이용시간 : 약 3시간', image: 'https://images.pexels.com/photos/13334227/pexels-photo-13334227.jpeg', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program1.mp4' }, 
+             { order: 2, title: '🎢 워터봄 발리', description: '발리 꾸따에 위치한 인기 워터파크입니다.<br>스릴 넘치는 워터슬라이드와 다양한 어트랙션<br>다양한 편의시설을 마음껏 즐겨보세요.<br>이동시간 : 편도 약 40분<br>이용시간 : 약 5시간', image: 'https://images.unsplash.com/photo-1741316041430-4e5362625ff2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program2.mp4' },  
+             { order: 3, title: '🛍️ 꾸따비치 & 비치워크 쇼핑센터', description: '발리의 대표적인 해변 꾸따비치에서<br>아름다운 해변과 여유를 만끽하고<br>멋진 전경의 쇼핑센터에서 편안한 쇼핑을 즐겨보세요.<br>이동시간 : 편도 약 40분<br>이용시간 : 약 5시간', image: 'https://cms.beachwalkbali.com/uploads/SUB_PROMOTION_WEB_eba6e4a9dd.jpg', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program3.mp4' }, 
+             { order: 4, title: '🏖️ 리조트 자유일정', description: '5성급 고급 호텔의 수영장과 부대시설을<br>마음껏 이용하며 누구의 방해도 받지 않는<br>완벽한 자유시간을 만끽하세요.<br>이동시간 : 없음<br>이용시간 : 자유', image: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/background.jpg', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program4.mp4' }, 
+             { order: 5, title: '🌊 울루와뚜 & 따나바락', description: '경이로운 자연과 힌두-자바 역사<br>독특한 건축물이 어우러진 울루와투와<br>인생샷 명소 따나바락 절벽을 찾아보세요.<br>이동시간 : 편도 약 1시간<br>이용시간 : 약 3시간', image: 'https://images.unsplash.com/photo-1445968813835-7c9479a87d8b?q=80&w=1172&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program5.mp4' }, 
+             { order: 6, title: '🏌️‍♂️ 골프', description: '발리 뉴 꾸따 골프 클럽에서<br>환상적인 해안절경을 감상하며<br>색다른 라운딩을 즐겨보세요.<br>이동시간 : 편도 약 40분<br>이용시간 : 약 5시간', image: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program6.mp4' }, 
+             { order: 7, title: '🚣 래프팅 & 우붓', description: '열대우림, 멋진 폭포, 깎아지른 협곡이 펼쳐진 아융강에서<br>스릴 넘치는 래프팅을 즐기고<br>발리의 예술과 문화, 영성이 조화롭게 어우러진 우붓을 둘러보세요.<br>이동시간 : 편도 약 2시간 30분<br>이용시간 : 약 5시간', image: 'https://cdn.pixabay.com/photo/2015/03/18/17/48/rafting-679719_1280.jpg', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program7.mp4' }, 
+             { order: 8, title: '🌴 발리스윙 & 우붓', description: '발리의 환상적인 정글 속에서 유명한 스윙을 즐기며<br>이국적인 풍경과 인생 사진을 남기고<br>발리의 예술과 문화, 영성이 조화롭게 어우러진 우붓을 둘러보세요.<br>이동시간 : 편도 약 2시간 30분<br>이용시간 : 약 5시간', image: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program8.png', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program8.mp4' }, 
+             { order: 9, title: ' 우붓 자유관광', description: '발리의 예술과 문화 중심지, 우붓에서<br>고즈넉한 사원과 왕궁을 둘러보고, 푸르른 계단식 논 사이를 거닐며<br>당신만의 속도로 숨은 매력을 발견해보세요.<br>이동시간 : 편도 약 2시간 30분<br>이용시간 : 약 5시간', image: 'https://images.unsplash.com/photo-1644027621944-1aface1ae9f3?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program9.mp4' }, 
+             { order: 10, title: '⛵ 인카 디너 선셋크루즈', description: '인도양의 붉은 노을을 배경으로<br>선상에서 펼쳐지는 다양한 공연을 즐기며<br>발리의 밤바다가 선사하는 낭만적인 추억을 만들어보세요.<br>이동시간 : 편도 약 1시간 30분<br>이용시간 : 약 2시간', image: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program10.png', videoUrl: 'https://raw.githubusercontent.com/incarmarketing/bali-vote-project/main/program10.mp4' }, 
+         ]; 
+
+         async function runInitialization() { 
+             if (!isAdminMode || !db) return showAlert('관리자만 사용 가능하거나, DB가 준비되지 않았습니다.'); 
+             const confirmed = await showConfirm("🚨 정말로 모든 투표 데이터를 삭제하고 기본 프로그램으로 덮어쓰시겠습니까?<br>이 작업은 되돌릴 수 없습니다!", "DB 초기화 확인"); 
+             if (!confirmed) return showAlert('초기화가 취소되었습니다.'); 
+
+             try { 
+                 showAlert('DB 초기화를 시작합니다. 잠시만 기다려주세요...'); 
+                 const programsCollectionRef = collection(db, `artifacts/${appId}/public/data/programs`); 
+                  
+                 const oldDocs = await getDocs(query(programsCollectionRef)); 
+                 const deleteBatch = writeBatch(db); 
+                 oldDocs.forEach(doc => deleteBatch.delete(doc.ref)); 
+                 await deleteBatch.commit(); 
+                  
+                 const addBatch = writeBatch(db); 
+                 defaultProgramsData.forEach(program => { 
+                     const newProgramRef = doc(programsCollectionRef); 
+                     addBatch.set(newProgramRef, { ...program, votes: 0, voters: [] }); 
+                 }); 
+                 await addBatch.commit(); 
+                  
+                 showAlert('초기 데이터 설정이 완료되었습니다.', '초기화 완료'); 
+             } catch (error) { 
+                 console.error("DB 초기화 오류:", error); 
+                 showAlert(`DB 초기화에 실패했습니다. Firebase 권한을 확인해주세요.<br>오류: ${error.message}`); 
+             } 
+         } 
+
+         async function addDefaultPrograms() { 
+             if (!isAdminMode || !db) return showAlert('관리자만 사용 가능하거나, DB가 준비되지 않았습니다.'); 
+             const confirmed = await showConfirm("기본 프로그램을 추가하시겠습니까? <br>이미 목록에 있는 프로그램은 중복으로 추가되지 않습니다.", "기본 프로그램 추가"); 
+             if (!confirmed) return; 
+
+             try { 
+                 showAlert('기본 프로그램을 추가합니다...'); 
+                 const programsCollectionRef = collection(db, `artifacts/${appId}/public/data/programs`); 
+                 const existingDocs = await getDocs(query(programsCollectionRef)); 
+                 const existingTitles = new Set(existingDocs.docs.map(doc => doc.data().title)); 
+
+                 const programsToAdd = defaultProgramsData.filter(p => !existingTitles.has(p.title)); 
+
+                 if (programsToAdd.length === 0) { 
+                     return showAlert('모든 기본 프로그램이 이미 목록에 있습니다.', '알림'); 
+                 } 
+
+                 const addBatch = writeBatch(db); 
+                 programsToAdd.forEach(program => { 
+                     const newProgramRef = doc(programsCollectionRef); 
+                     addBatch.set(newProgramRef, { ...program, votes: 0, voters: [] }); 
+                 }); 
+                 await addBatch.commit(); 
+
+                 showAlert(`${programsToAdd.length}개의 새로운 기본 프로그램이 추가되었습니다.`, '추가 완료'); 
+             } catch (error) { 
+                 console.error("기본 프로그램 추가 오류:", error); 
+                 showAlert(`기본 프로그램 추가에 실패했습니다.<br>오류: ${error.message}`); 
+             } 
+         } 
+
+         // --- Excel Export --- 
+         function exportToExcel() { 
+             if (!isAdminMode) return showAlert('관리자만 사용할 수 있는 기능입니다.'); 
+             if (programs.length === 0) return showAlert('다운로드할 데이터가 없습니다.'); 
+              
+             showAlert('투표자 데이터를 다운로드용으로 준비 중입니다...'); 
+             const allVoters = []; 
+             programs.forEach(p => { 
+                 if (p.voters?.length) { 
+                     p.voters.forEach(v => allVoters.push({ program: p.title.replace(/,/g, ''), id: v.id, name: v.name })); 
+                 } 
+             }); 
+              
+             if (!allVoters.length) return showAlert('다운로드할 투표 데이터가 없습니다.'); 
+              
+             const csv = `${"\uFEFF"}"프로그램","사번","이름"\n${allVoters.map(v => `"${v.program}","${v.id}","${v.name}"`).join('\n')}`; 
+             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); 
+             const link = document.createElement("a"); 
+             link.href = URL.createObjectURL(blob); 
+             link.download = "bali_vote_results.csv"; 
+             document.body.appendChild(link); 
+             link.click(); 
+             document.body.removeChild(link); 
+         } 
+
+     </script> 
+ </body> 
+ </html>
