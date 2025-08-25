@@ -384,12 +384,12 @@
             }
         }
 
-    // --- Event Listeners --- 
+   // --- Event Listeners --- 
          function setupEventListeners() { 
              const music = document.getElementById('background-music'); 
              const entryBtn = document.getElementById('entryBtn'); 
 
-             // 1. '입장하기' 버튼: 화면 전환과 최초 재생만 담당
+             // [수정 1] '입장하기' 버튼 클릭 시 로직
              entryBtn.addEventListener('click', () => {
                  // 즉각적인 시각적 반응을 최우선으로 실행
                  entryScreen.classList.add('opacity-0');
@@ -824,6 +824,7 @@
     </script>
 </body>
 </html>
+
 
 
 
