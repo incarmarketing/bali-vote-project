@@ -388,17 +388,22 @@
          function setupEventListeners() { 
              const music = document.getElementById('background-music'); 
              const entryBtn = document.getElementById('entryBtn'); 
-            let userPaused = false; // 사용자가 직접 정지했는지 추적
 
              // 1. '입장하기' 버튼: 화면 전환과 최초 재생만 담당
              entryBtn.addEventListener('click', () => {
-                 // 즉각적인 시각적 반응
+                 // 즉각적인 시각적 반응을 최우선으로 실행
                  entryScreen.classList.add('opacity-0');
                  mainWrapper.classList.remove('hidden');
 
                  // 음악 재생 시도 (실패해도 다른 코드에 영향을 주지 않음)
-                 music.play().catch(e => console.warn("음악 재생 실패:", e));
+                 const playPromise = music.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.warn("음악 재생에 실패했습니다. 사용자의 상호작용이 필요합니다.", error);
+                    });
+                }
 
+                 // 화면 전환 효과 마무리
                  setTimeout(() => {
                      entryScreen.classList.add('hidden');
                      startAllVideos();
@@ -411,40 +416,35 @@
                     title: 'INCAR HIGH, BALI HI',
                     artist: '배경 음악',
                 });
-
-                navigator.mediaSession.setActionHandler('play', () => {
-                    music.play();
-                    userPaused = false; // 사용자가 재생을 원함
-                });
-                
-                navigator.mediaSession.setActionHandler('pause', () => {
-                    music.pause();
-                    userPaused = true; // 사용자가 직접 정지함
-                });
+                navigator.mediaSession.setActionHandler('play', () => music.play());
+                navigator.mediaSession.setActionHandler('pause', () => music.pause());
             }
 
             // 3. 오디오 상태와 OS 상태 동기화
             music.onplay = () => {
-                if ('mediaSession' in navigator) {
-                    navigator.mediaSession.playbackState = 'playing';
-                }
+                if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
             };
             music.onpause = () => {
-                if ('mediaSession' in navigator) {
-                    navigator.mediaSession.playbackState = 'paused';
-                }
+                if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
             };
 
-            // 4. 화면 꺼짐/전환 시 자동 정지 및 재개
+            // 4. 화면 꺼짐/전환 시 자동 정지
             document.addEventListener('visibilitychange', () => {
-                if (document.hidden) {
-                    // 페이지가 숨겨지면 무조건 정지
+                if (document.hidden && !music.paused) {
                     music.pause();
-                } else if (!userPaused && entryScreen.classList.contains('hidden')) {
-                    // 사용자가 직접 끈 게 아니고, 입장 화면이 지난 상태면 다시 재생
-                    music.play().catch(e => console.warn("음악 자동 재개 실패:", e));
                 }
             });
+
+             // --- 나머지 기존 코드는 그대로 유지 ---
+             adminToggleBtn.onclick = () => showModal('passwordModal'); 
+             document.getElementById('loginBtn').onclick = checkAdminPassword; 
+             clearFormBtn.onclick = clearForm; 
+             document.getElementById('initDbBtn').onclick = runInitialization; 
+             document.getElementById('addDefaultsBtn').onclick = addDefaultPrograms; 
+             document.getElementById('submitVoteBtn').onclick = submitVote; 
+             excelDownloadBtn.onclick = exportToExcel; 
+             programForm.addEventListener('submit', handleFormSubmit); 
+         }
 
              // --- 나머지 기존 코드는 그대로 유지 ---
              adminToggleBtn.onclick = () => showModal('passwordModal'); 
@@ -824,6 +824,7 @@
     </script>
 </body>
 </html>
+
 
 
 
