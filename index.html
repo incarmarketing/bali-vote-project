@@ -384,22 +384,25 @@
             }
         }
 
-      // --- Event Listeners --- 
+     // --- Event Listeners --- 
          function setupEventListeners() { 
              const music = document.getElementById('background-music'); 
              const entryBtn = document.getElementById('entryBtn'); 
-            let isMusicIntendedToPlay = false; // 음악이 재생되어야 하는 상태인지 추적
+            let isMusicIntendedToPlay = false; // 사용자가 음악을 재생하려 했는지 추적
 
              entryBtn.addEventListener('click', () => {
                  entryScreen.classList.add('opacity-0');
                  mainWrapper.classList.remove('hidden');
 
-                // 음악 재생을 시도하고 성공하면 상태를 true로 변경
                  music.play().then(() => {
                     isMusicIntendedToPlay = true;
+                    // 음악이 재생 시작되면 미디어 세션 상태를 'playing'으로 설정
+                    if ('mediaSession' in navigator) {
+                        navigator.mediaSession.playbackState = 'playing';
+                    }
                 }).catch(e => {
-                    isMusicIntendedToPlay = false; // 실패하면 false로 유지
-                    console.warn("음악 재생에 실패했습니다.", e);
+                    isMusicIntendedToPlay = false;
+                    console.warn("음악 재생 실패:", e);
                 });
 
                  setTimeout(() => {
@@ -407,31 +410,36 @@
                      startAllVideos();
                  }, 1000);
              });
-             
-            // 페이지가 숨겨질 때 (더 안정적인 이벤트 추가)
-            const handlePageHide = () => {
-                if (isMusicIntendedToPlay) {
+
+            // --- [가장 중요] 미디어 세션 API 설정 ---
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: 'INCAR HIGH, BALI HI',
+                    artist: '배경 음악',
+                    album: '발리 여행 선호도 조사'
+                });
+
+                // OS가 '재생' 명령을 보낼 때 (잠금화면, 알림창 등)
+                navigator.mediaSession.setActionHandler('play', () => {
+                    isMusicIntendedToPlay = true;
+                    music.play();
+                    navigator.mediaSession.playbackState = 'playing';
+                });
+
+                // OS가 '일시정지' 명령을 보낼 때
+                navigator.mediaSession.setActionHandler('pause', () => {
+                    isMusicIntendedToPlay = false;
+                    music.pause();
+                    navigator.mediaSession.playbackState = 'paused';
+                });
+            }
+
+            // 페이지가 비활성화될 때 (탭 전환, 홈 화면 이동 등)
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden && isMusicIntendedToPlay) {
                     music.pause();
                 }
-            };
-
-            // 페이지가 다시 보일 때
-            const handlePageShow = () => {
-                if (isMusicIntendedToPlay) {
-                    music.play().catch(e => console.warn("음악 자동 재개 실패:", e));
-                }
-            };
-
-            // 여러 이벤트를 사용하여 호환성 높임
-            document.addEventListener('visibilitychange', () => {
-                if (document.hidden) {
-                    handlePageHide();
-                } else {
-                    handlePageShow();
-                }
             });
-            window.addEventListener('pagehide', handlePageHide);
-            window.addEventListener('pageshow', handlePageShow);
 
              adminToggleBtn.onclick = () => showModal('passwordModal'); 
              document.getElementById('loginBtn').onclick = checkAdminPassword; 
@@ -810,6 +818,7 @@
     </script>
 </body>
 </html>
+
 
 
 
