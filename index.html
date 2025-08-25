@@ -384,19 +384,23 @@
             }
         }
 
-       // --- Event Listeners --- 
+      // --- Event Listeners --- 
          function setupEventListeners() { 
              const music = document.getElementById('background-music'); 
              const entryBtn = document.getElementById('entryBtn'); 
+            let isMusicIntendedToPlay = false; // 음악이 재생되어야 하는 상태인지 추적
 
-            // [수정 1] 모바일 버튼 즉시 반응하도록 순서 변경
              entryBtn.addEventListener('click', () => {
-                // 화면 전환을 먼저 실행
                  entryScreen.classList.add('opacity-0');
                  mainWrapper.classList.remove('hidden');
 
-                // 그 다음에 음악 재생 시도
-                 music.play().catch(e => console.warn("음악 재생에 실패했습니다. 사용자의 상호작용이 필요합니다.", e));
+                // 음악 재생을 시도하고 성공하면 상태를 true로 변경
+                 music.play().then(() => {
+                    isMusicIntendedToPlay = true;
+                }).catch(e => {
+                    isMusicIntendedToPlay = false; // 실패하면 false로 유지
+                    console.warn("음악 재생에 실패했습니다.", e);
+                });
 
                  setTimeout(() => {
                      entryScreen.classList.add('hidden');
@@ -404,18 +408,30 @@
                  }, 1000);
              });
              
-            // [수정 2] 화면이 꺼지면 음악이 멈추도록 이벤트 추가
-            document.addEventListener('visibilitychange', () => {
-                // 페이지가 보이지 않으면 음악 일시정지
-                if (document.hidden) {
+            // 페이지가 숨겨질 때 (더 안정적인 이벤트 추가)
+            const handlePageHide = () => {
+                if (isMusicIntendedToPlay) {
                     music.pause();
+                }
+            };
+
+            // 페이지가 다시 보일 때
+            const handlePageShow = () => {
+                if (isMusicIntendedToPlay) {
+                    music.play().catch(e => console.warn("음악 자동 재개 실패:", e));
+                }
+            };
+
+            // 여러 이벤트를 사용하여 호환성 높임
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    handlePageHide();
                 } else {
-                    // 입장 화면이 사라진 상태에서 다시 페이지가 보이면 음악 재생
-                    if (entryScreen.classList.contains('hidden')) {
-                        music.play().catch(e => console.warn("음악 자동 재개 실패:", e));
-                    }
+                    handlePageShow();
                 }
             });
+            window.addEventListener('pagehide', handlePageHide);
+            window.addEventListener('pageshow', handlePageShow);
 
              adminToggleBtn.onclick = () => showModal('passwordModal'); 
              document.getElementById('loginBtn').onclick = checkAdminPassword; 
@@ -794,5 +810,6 @@
     </script>
 </body>
 </html>
+
 
 
