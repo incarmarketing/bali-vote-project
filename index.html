@@ -384,67 +384,69 @@
             }
         }
 
-     // --- Event Listeners --- 
+    // --- Event Listeners --- 
          function setupEventListeners() { 
              const music = document.getElementById('background-music'); 
              const entryBtn = document.getElementById('entryBtn'); 
+            let userPaused = false; // 사용자가 직접 정지했는지 추적
 
+             // 1. '입장하기' 버튼: 화면 전환과 최초 재생만 담당
              entryBtn.addEventListener('click', () => {
+                 // 즉각적인 시각적 반응
                  entryScreen.classList.add('opacity-0');
                  mainWrapper.classList.remove('hidden');
+
+                 // 음악 재생 시도 (실패해도 다른 코드에 영향을 주지 않음)
                  music.play().catch(e => console.warn("음악 재생 실패:", e));
+
                  setTimeout(() => {
                      entryScreen.classList.add('hidden');
                      startAllVideos();
                  }, 1000);
              });
 
-            // --- OS 미디어 제어를 위한 Media Session API 설정 ---
+            // 2. OS 미디어 제어 (잠금 화면 등)
             if ('mediaSession' in navigator) {
                 navigator.mediaSession.metadata = new MediaMetadata({
                     title: 'INCAR HIGH, BALI HI',
                     artist: '배경 음악',
                 });
 
-                // OS의 '재생' 명령 처리
-                navigator.mediaSession.setActionHandler('play', () => music.play());
+                navigator.mediaSession.setActionHandler('play', () => {
+                    music.play();
+                    userPaused = false; // 사용자가 재생을 원함
+                });
                 
-                // OS의 '일시정지' 명령 처리
-                navigator.mediaSession.setActionHandler('pause', () => music.pause());
+                navigator.mediaSession.setActionHandler('pause', () => {
+                    music.pause();
+                    userPaused = true; // 사용자가 직접 정지함
+                });
             }
 
-            // --- 오디오 상태와 OS 상태를 동기화 ---
+            // 3. 오디오 상태와 OS 상태 동기화
             music.onplay = () => {
                 if ('mediaSession' in navigator) {
                     navigator.mediaSession.playbackState = 'playing';
                 }
             };
-
             music.onpause = () => {
                 if ('mediaSession' in navigator) {
                     navigator.mediaSession.playbackState = 'paused';
                 }
             };
 
-            // --- 페이지가 숨겨질 때 자동으로 음악 정지 ---
+            // 4. 화면 꺼짐/전환 시 자동 정지 및 재개
             document.addEventListener('visibilitychange', () => {
-                // 페이지가 보이지 않고, 음악이 재생 중일 때만 정지시킴
-                if (document.hidden && !music.paused) {
+                if (document.hidden) {
+                    // 페이지가 숨겨지면 무조건 정지
                     music.pause();
+                } else if (!userPaused && entryScreen.classList.contains('hidden')) {
+                    // 사용자가 직접 끈 게 아니고, 입장 화면이 지난 상태면 다시 재생
+                    music.play().catch(e => console.warn("음악 자동 재개 실패:", e));
                 }
             });
 
              // --- 나머지 기존 코드는 그대로 유지 ---
-             adminToggleBtn.onclick = () => showModal('passwordModal'); 
-             document.getElementById('loginBtn').onclick = checkAdminPassword; 
-             clearFormBtn.onclick = clearForm; 
-             document.getElementById('initDbBtn').onclick = runInitialization; 
-             document.getElementById('addDefaultsBtn').onclick = addDefaultPrograms; 
-             document.getElementById('submitVoteBtn').onclick = submitVote; 
-             excelDownloadBtn.onclick = exportToExcel; 
-             programForm.addEventListener('submit', handleFormSubmit); 
-         }
-
              adminToggleBtn.onclick = () => showModal('passwordModal'); 
              document.getElementById('loginBtn').onclick = checkAdminPassword; 
              clearFormBtn.onclick = clearForm; 
@@ -822,6 +824,7 @@
     </script>
 </body>
 </html>
+
 
 
 
