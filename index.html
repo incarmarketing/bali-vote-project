@@ -387,18 +387,17 @@
         // --- Event Listeners ---
         function setupEventListeners() {
             const music = document.getElementById('background-music');
-            const entryBtn = document.getElementById('entryBtn');
-
-            entryBtn.addEventListener('click', () => {
-                music.play().catch(e => console.warn("음악 재생 실패:", e));
-                entryScreen.classList.add('opacity-0');
-                mainWrapper.classList.remove('hidden');
-                setTimeout(() => {
-                    entryScreen.classList.add('hidden');
-                    // Start all videos after the entry screen fades out
-                    startAllVideos();
-                }, 1000);
-            });
+            const entryBtn = document.addEventListener('visibilitychange', () => {
+                 // If the page is hidden, pause the music
+                 if (document.hidden) {
+                     music.pause();
+                 } else {
+                     // If the user has already passed the entry screen, resume music
+                     if (entryScreen.classList.contains('hidden')) {
+                         music.play().catch(e => console.warn("음악 자동 재개 실패:", e));
+                     }
+                 }
+             });
 
             adminToggleBtn.onclick = () => showModal('passwordModal');
             document.getElementById('loginBtn').onclick = checkAdminPassword;
@@ -777,5 +776,6 @@
     </script>
 </body>
 </html>
+
 
 
