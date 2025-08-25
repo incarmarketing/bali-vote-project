@@ -390,15 +390,19 @@
             const entryBtn = document.getElementById('entryBtn');
 
             entryBtn.addEventListener('click', () => {
-                music.play().catch(e => console.warn("음악 재생 실패:", e));
-                entryScreen.classList.add('opacity-0');
-                mainWrapper.classList.remove('hidden');
-                setTimeout(() => {
-                    entryScreen.classList.add('hidden');
-                    // Start all videos after the entry screen fades out
-                    startAllVideos();
-                }, 1000);
-            });
+                // 1. 시각적 효과를 먼저 적용하여 즉각적인 반응을 보여줍니다.
+                 entryScreen.classList.add('opacity-0');
+                 mainWrapper.classList.remove('hidden');
+
+                // 2. 그 다음에 음악 재생을 시도합니다.
+                 music.play().catch(e => console.warn("음악 재생에 실패했습니다. 사용자의 상호작용이 필요합니다.", e));
+
+                // 3. 1초 후 입장 화면을 완전히 숨기고 비디오를 재생합니다.
+                 setTimeout(() => {
+                     entryScreen.classList.add('hidden');
+                     startAllVideos();
+                 }, 1000);
+             });
 
             adminToggleBtn.onclick = () => showModal('passwordModal');
             document.getElementById('loginBtn').onclick = checkAdminPassword;
@@ -777,3 +781,4 @@
     </script>
 </body>
 </html>
+
