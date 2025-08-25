@@ -384,21 +384,33 @@
             }
         }
 
-        // --- Event Listeners ---
+       // --- Event Listeners ---
         function setupEventListeners() {
             const music = document.getElementById('background-music');
             const entryBtn = document.getElementById('entryBtn');
 
-            entryBtn.addEventListener('click', () => {
-                music.play().catch(e => console.warn("음악 재생 실패:", e));
-                entryScreen.classList.add('opacity-0');
-                mainWrapper.classList.remove('hidden');
-                setTimeout(() => {
-                    entryScreen.classList.add('hidden');
-                    // Start all videos after the entry screen fades out
-                    startAllVideos();
-                }, 1000);
+            // ... 기존 entryBtn, adminToggleBtn 등의 이벤트 리스너 코드 ...
+            
+            programForm.addEventListener('submit', handleFormSubmit);
+
+            // ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+            // --- 여기부터 새로운 코드를 추가하세요 ---
+            // --- 페이지 가시성 변경 감지 (음악 자동 재생/일시정지) ---
+            document.addEventListener('visibilitychange', () => {
+                // 사용자가 페이지를 보고 있지 않으면 음악을 일시정지합니다.
+                if (document.hidden) {
+                    music.pause();
+                } 
+                // 사용자가 페이지를 다시 보고 있고, 음악이 이미 재생 시작된 상태라면 다시 재생합니다.
+                // music.duration > 0 && !music.paused 조건은 사용자가 '입장하기'를 누르지 않은 상태에서
+                // 탭을 나갔다 들어왔을 때 음악이 저절로 재생되는 것을 방지합니다.
+                else if (music.duration > 0 && music.paused) {
+                    music.play().catch(e => console.warn("음악 자동 재시작 실패:", e));
+                }
             });
+            // --- 여기까지 새로운 코드를 추가하세요 ---
+            // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+        }
 
             adminToggleBtn.onclick = () => showModal('passwordModal');
             document.getElementById('loginBtn').onclick = checkAdminPassword;
@@ -777,3 +789,4 @@
     </script>
 </body>
 </html>
+
